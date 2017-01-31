@@ -1,0 +1,45 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/lib/tooltip.js"></script>  
+
+  <script src = "../assets/momentum.js"></script>  
+  <script src = "../assets/data/Urosen.json"></script>    
+</head> 
+<body>
+  
+  <div id = "iterates" style="position:relative;"></div>
+  <div id = "sliderz" style="position:relative; top:175px"></div>  
+  <script>
+  var alpha = 0.00038
+  var beta = 0.995
+
+  var update = stemGraphGen(920, 170, 200)
+                .axis([-0.05,1.05])(d3.select("#iterates"))
+
+
+  var b = zeros(200); b[0] = 2499.75
+  var iter = geniterMomentum(RU, RLambda, b, alpha, beta) 
+  var res = function(i) {
+     return iter(i)[0]
+    //return numeric.add(iter(i)[1] , numeric.mul(-1,iter(100000)[1]))
+  }
+  i = 70
+  update(iter(i)[1], iter(10000000)[1])
+
+  var slider = sliderGen([920, 60])
+            .startxval(i)
+            .ticks([0,200])
+            .margin({right: 3, left: 15})
+            .change(function(i) {
+              update(iter(Math.floor(i))[1], iter(10000000)[1])
+              console.log(i)
+            })
+            .cRadius(5)(d3.select("#sliderz"))
+  
+
+  </script> 
+</body>

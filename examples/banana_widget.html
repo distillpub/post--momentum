@@ -1,0 +1,19 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/lib/contour_plot.js"></script>  
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/iterates.js"></script>  
+</head> 
+<body>
+  <div id = "banana" style="position:absolute"></div>
+  </div>
+  <script>
+
+  var iterControl = genIterDiagram(bananaf, [1,1/3], [[-2,2],[2/3 + 0.4,-2/3 + 0.4]])
+                    (d3.select("#banana"))
+
+</script>
+</body>

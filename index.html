@@ -1,0 +1,1139 @@
+
+<!doctype html>
+<meta charset="utf-8">
+<script src="http://distill.pub/template.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+<script src = "assets/lib/d3.v4.min.js"></script>
+<script src = "assets/lib/numeric-1.2.6.min.js"></script>
+<script src = "assets/utils.js"></script>
+<script src = "assets/flow.js"></script>
+<script src = "assets/momentum.js"></script>
+<script src = "assets/poly.js"></script>
+<script src = "assets/data/Sigma.json"></script> 
+<script src = "assets/data/matrix.json"></script>
+<script src = "assets/data/Uval.json"></script>
+<script src = "assets/flow.js"></script>
+<script src = "assets/milestones.js"></script>  
+<script src = "assets/lib/contour_plot.js"></script>
+<script src = "assets/lib/tooltip.js"></script>  
+<script src = "assets/iterates.js"></script> 
+<script src = "assets/data/Urosen.json"></script>    
+<script src = "assets/phasediagram.js"></script>  
+<script src = "assets/eigenfeatures.js"></script>
+
+<link rel="stylesheet" type="text/css" href="assets/widgets.css">
+
+<script type="text/front-matter">
+  title: A Guide to Momentum
+  description: A Guide to Momentum.
+  authors:
+    - Gabriel Goh: http://gabgoh.github.io
+  affiliations:
+    - UC Davis: http://math.ucdavis.edu
+</script>
+
+<dt-article class="centered">
+  <h1>A Guide to Momentum [DRAFT]</h1>
+  <h2></h2>
+  <dt-byline>
+  </dt-byline>
+
+  <p>
+  If you've spent enough some time optimizing smooth functions, chances are you've met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology : Ill-conditioning, pathological curvature, dead gradients. 
+  </p>
+  <p>
+  The problem manifests when minimizing a function $f$ using gradient descent,
+
+ $$w^{k+1} = w^k-\alpha\nabla f(w^k),$$
+
+  and its symptoms somewhat subtle. Your choice of $\alpha$, the step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss $f(x^k)$. But as the iterations progress, you start to get a nagging feeling you're not making as much progress as you should be. You're iterating hard, but the loss, $f(w^k)$ isn't getting smaller. Should you keep iterating, and hope for the best?
+  </p>
+
+  <p>
+  The problem could be pathological curvature. We've all seen a certain picture, in 2D, of what this looks like. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. $w^k$ only approaches the optimum in small, tedious steps.
+  </p> 
+
+  <div class=".l-middle-outset" style = "width:800px">
+  <div id="sliderAlpha" style="display:inline">
+    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">α</text>
+  </div>
+
+  <div id="sliderBeta" style="display:inline">
+    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">β</text>
+  </div>
+  </div>
+
+  <div id="banana" class=".l-middle-outset"> </div>
+
+  <script>
+
+  // Render Foreground
+  var iterControl = genIterDiagram(bananaf, [1,1/3], [[-2,2],[2/3 + 0.4,-2/3 + 0.4]])
+                    .alpha(0.003)
+                    .beta(0)
+                    (d3.select("#banana").style("position","relative"))
+  
+  var iterChange = iterControl.control
+  var getw0 = iterControl.w0
+
+  var StepRange = d3.scaleLinear().domain([0,100]).range([0,0.0062])
+  var MomentumRange = d3.scaleLinear().domain([0,100]).range([0,0.98])
+
+  var update = function (i,j) { iterChange(i, 0, getw0()) }
+  
+  var slidera = sliderGen([200, 25])
+              .ticks([0,0.003])
+              .change( function (i) { iterChange(getalpha(), getbeta(), getw0() ) } )
+              .cRadius(5)
+              .margins(20,20)
+
+  var sliderb = sliderGen([200, 25])
+              .ticks([0,0.98])
+              .change( function (i) { iterChange(getalpha(), getbeta(), getw0() ) } )
+              .cRadius(5)
+              .margins(20,20)
+
+  var getalpha = slidera( d3.select("#sliderAlpha")).xval
+  var getbeta  = sliderb( d3.select("#sliderBeta")).xval
+
+  </script>
+  
+  <p>
+  But there is a simple tweak to gradient descent which makes things work much better. Add an auxiliary sequence, $z^k$, and an extra parameter $\beta$, which Tensorflow calls <a href = "https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/training_ops.cc#L129">momentum</a>,
+
+  $$
+  \begin{aligned}
+  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\
+  w^{k+1}&=w^{k}-\alpha z^{k+1}.
+  \end{aligned}
+  $$
+
+  When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+  </p>
+  <p>
+  Optimizers call this minor miracle "acceleration".
+  </p>
+
+<!--   <p>
+  Now, If you've heard about momentum before, you might now be anticipating something along the lines of "Momentum smoothens out oscillations within gradient descent, allowing the iterates to move in the direction of the true optimum". This little bit of mathematical folklore is unfortunately a half truth. As the above demo clearly shows, momentum can help even when there are no oscillations, sometimes even creating its own oscillations when pushed too far. The smoothing effect of momentum, as far as I can tell, is not the only source of its power.
+  </p> -->
+
+  <p>
+  This tiny modification may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives about a quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention. 
+  </p>
+
+  <p>  
+  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now - momentum is an algorithm for the book.
+  </p>
+
+  <h2>First Steps: Gradient Descent</h2>
+  <p>
+  We begin by studying gradient descent on simplest model possible which isn't trivial. I choose the convex quadratic,
+
+  $$f(w) = \tfrac{1}{2}w^TAw - b^Tw, \qquad w \in \mathbf{R}^n. $$
+
+  Simple as this model may be, it is rich enough to approximate of many functions (think of $A$ as your favorite model of curvature - the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write a formula for gradient descent iterations here in closed form, with no approximating bounds or inequalities.
+  </p>
+
+  <p>
+  This is how it goes. Since $\nabla f(w)=Aw - b$, the iterates are
+
+  $$
+  w^{k+1}=w^{k}- \alpha (Aw^{k} - b)
+  $$
+
+  Here's the trick. There is a very natural space to view gradient descent where the iterates all act independently - the eigenvalues of $A$.
+  </p>
+  <div style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
+  <div id = "mom2" style="width:400px; position:absolute; left:400px; top:0px"></div>
+  </div>
+  <script>
+
+  var U = givens(Math.PI/4)
+  var Ut = numeric.transpose(U)
+  // Render Foreground
+  var left = d3.select("#mom1")
+  
+  var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
+            .width(340)
+            .height(340)
+            .iters(300)
+            .alpha(0.018)
+            .drag(function() { 
+              c2.control(c1.alpha(), 
+                         c1.beta(), 
+                         numeric.dot(U,c1.w0())) })
+            (left)
+
+  var s = 150
+  left.select("svg")
+      .append("line").attr("x1", s).attr("x2",340-s).attr("y1", s).attr("y2",340-s)
+      .style("stroke", "red")
+      .style("stroke-width", 1)
+
+  s = 100
+  left.select("svg")
+      .append("line").attr("x1", 340-s).attr("y1", s).attr("x2",s).attr("y2",340-s)
+      .style("stroke", "red")
+      .style("stroke-width", 1)        
+
+  s = 100
+  left.select("svg")
+      .append("text").attr("x", 135).attr("y", 145)
+      .style("font-size", "13px")
+      .text("q₁")
+
+  left.select("svg")
+      .append("text").attr("x", 240).attr("y", 95)
+      .style("font-size", "13px")      
+      .text("q₂")
+
+  var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
+            .width(340)
+            .height(340)
+            .iters(300)
+            .alpha(0.018)            
+            .drag(function() { 
+              c1.control(c2.alpha(), 
+                         c2.beta(), 
+                         numeric.dot(Ut,c2.w0())) })
+            (d3.select("#mom2"))
+
+// Initalize
+c2.control(0.018,0,[1.7,2.1])
+c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
+
+</script>
+<p>
+  Every symmetric matrix $A$ has an eigenvalue decomposition
+
+  $$
+  A=Q \text{diag}(\lambda_{1},\ldots,\lambda_{n})Q^{T},\qquad Q = [q_1,\ldots,q_n],
+  $$
+
+  and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. Perform a change of variables, $x^{k} = Q^T(w^{k} - w^\star)$. And the iterations break apart, becoming
+
+  $$
+  x_{i}^{k+1}=x_{i}^{k}-\alpha \lambda_ix_{i}^{k} = (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^kx^0_i
+  $$
+
+  Moving back to our original space $w$, we can see that
+
+  $$
+  w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
+  $$
+
+  and there we have it - gradient descent in closed form.
+  </p>
+  </p>
+  <h3>Decomposing the Error</h3>
+  <p>
+  The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of $Q$. And each of these errors in the eigenspaces follow its own, solitary path to the minimum, at a rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
+  </p>
+  <p>
+  For most step-sizes, the eigenvectors with largest eigenvectors converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's sub-optimality to the loss
+  $$
+  f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
+  $$
+  we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
+  </p>
+  <div id = "sliderStepAlpha" style="width:920px; height:20px">
+  <text style="font-size: 15px; top: -9px; left: 10px; position: relative;">  α</text>
+  </div>
+  <div id = "obj"></div>  
+  <div id = "milestonesSlider" style="width:920px; height:20px"> </div> 
+  <script>
+  var controlmilestones = sliderGen([917, 25])
+              .ticks([0,100,150])
+              .tooltip(function(i) {return ["a","b","c","d","e"][i]})
+              .mouseover(function(i) {console.log("Mouseover", i)})
+              .cRadius(0)
+              .tooltip(function(d) { return "λ<sub>"+(d+1)+"</sub> = " + [1,10,100][d] + "<br>x<sub>" + (d+1) + "</sub><sup style=\"position:relative; left:-5px\">0</sup> = 1"})              
+              .tickConfig(1.5,5,true)              
+              .margins(10,15)(d3.select("#milestonesSlider"))
+
+  var updateSliderAlpha = renderMilestones(d3.select("#obj"), controlmilestones.tick)
+
+  var slider = sliderGen([300, 25])
+              .ticks([0,1,(2*100)/(101),2])
+              .change( function (i) { updateSliderAlpha(i,0)} )
+              .cRadius(5)
+              .margins(20,20)
+              .tooltip( function(i) { return ["zero",false,"optimal stepsize","upper limit"][i] })
+
+  slider( d3.select("#sliderStepAlpha") )  
+  
+  </script>
+  <p>
+  The loss, $f(w^k)$ is a superposition of exponentially decaying curves. For the quadratic function $f$ with $A = \text{diag}([1,10,100])$ and $b = [1,1/\sqrt{10}, 1/\sqrt{100}]$, we see three curves, each with its own rate of decay, depending on the step-length $\alpha$. The timeline beneath the plot visualizes the milestones of descent - with a tick every time error in one eigenspace as it dips below a certain tolerance. Our iterates thus move through 3 stages of convergence, and when the $k$ passes the final milestone, convergence is achieved. The rate at which the slowest error goes down is referred to as the convergence rate.
+  <h3>Choosing A Step-size</h3>
+  <p>
+  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, $|1-\alpha \lambda_i|$ must be strictly less than 1 for all $i$. All workable step-sizes, therefore, fall in the interval
+
+  $$
+  0<\alpha<\frac{2}{\lambda_n}
+  $$
+  </p>
+  <p>
+  Setting the step-length too large will hinder the large eigenspaces, while a step-length too small hurts everything. The optimal $\alpha$ can be done by solving a one dimensional optimization problem over $\alpha$ to get
+  $$
+  \begin{aligned}
+  \text{optimal }\alpha ={\mathop{\text{argmin}}\limits_\alpha}\{\max_{i}\{1-\alpha\lambda_{i}\}\} & =\frac{2}{\lambda_{1}+\lambda_{n}},\\
+  \text{convergence rate = }{\min_\alpha}\{\max_{i}\{1-\alpha\lambda_{i}\}\} & =\frac{\lambda_{n}/\lambda_{1}-1}{\lambda_{n}/\lambda_{1}+1}.,
+  \end{aligned}
+  $$
+  For ill conditioned problems, the optimal $\alpha$ gets uncomfortably close to limit of divergence. This, however, justifies the heuristic of choosing the largest stepsize you can get away with. 
+  </p>
+  <p>
+  Notice the ratio $\lambda_n/\lambda_1$ determines the convergence rate of the problem. In fact, this ratio appears often enough that we give it a name, and a symbol - the condition number.
+  $$
+  \text{condition number} := \kappa :=\frac{\lambda_n}{\lambda_1}
+  $$
+  The condition number means many things. It is a measure of how singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context - the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $1$ is ideal, giving convergence in one step (of course, the function is trivial). And larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological curvature.
+  </p>
+
+  <h2>
+  The Path of Descent
+  </h2>
+
+  <p>
+  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. The pathological directions, the eigenvectors with smallest eigenvalues, are what causes gradient descent to slow down. With this understanding, we can analyze the precise path the iterates take to the solution, shedding light on a number of interesting phenomena.
+  </p>
+
+  <h3>Implicit Regularization</h3>
+  <p>
+  Linear Regression, conveniently a quadratic objective, provides a cartoon we need for understanding pathological curvature in deep learning. Let's do a quick refresher. In Linear Regression we fit $n$ features (the components of $z_i$) to observations $d_i$. Assume there are $m$ data points, stacked to form matrix $Z$. Then Linear Regression is
+
+  $$
+  \text{minimize}\qquad \frac{1}{2}\sum_i^m (z_i^Tw - d_i)^2 = \tfrac{1}{2}\|Zw-d\|^2
+  $$
+
+  which is equivalent to
+  $$
+  \text{minimize}\qquad\tfrac{1}{2}w^{T}Z^{T}Zw-(Zd)^{T}w
+  $$
+  a quadratic function. To understand gradient descent on linear regression, we must understand the eigenvectors of $A^TA$.
+<!--   Now notice a surprising connection to unsupervised learning. The directions $q_i$ are exactly principle components of $Z$! And thus we arrive at a first conclusion
+   </p>
+   <p><i>
+  Gradient descent makes good progress in directions corresponding to the strongest principle components, and bad progress in its weakest. </i>
+  </p>
+  <p>
+  This makes intuitive sense. The principle components of $X$ measure the quality of data in the corresponding directions. And thus, the strongest principle components also give the strongest error correcting signals in the gradient! Let's refine this insight with a few examples.
+  </p> -->
+  <h3>Bad Scaling</h3>
+
+  <p>
+  One simple culprit of pathological curvature is a bad scaling of the data. Even if the data were perfectly uncorrelated with mean 0, i.e. $Z^TZ$ was diagonal, the condition number of the matrix still depends on the variance of the individual features (the values of the diagonal). If the ratio of the largest and smallest variances are large, the matrix $Z^TZ$ becomes ill conditioned <dt-fn>This holds even if the matrix is correlated, see <dt-cite key="wiesler2011convergence"></dt-cite></dt-fn>.
+  </p>
+
+  <p>
+  Fortunately, this kind of pathological curvature is relatively easily fixed. It displays a clear signature - the value of the gradients in the "pathological coordinates" are abnormally small. And they can thus be weighted upwards. This is the principle behind Adagrad <dt-cite key="duchi2011adaptive"></dt-cite> and ADAM <dt-cite key="kingma2014adam"></dt-cite>. And in the training of deep neural networks, we can modify our objective so that the data is normalized before moving to the next layer - this is batch normalization <dt-cite key="ioffe2015batch"></dt-cite>, a surprisingly powerful heuristic. </p>
+
+  <h3>Feature Coadaptiation</h3>
+
+  <p>
+  A more insidious example of pathological curvature comes when the directions of pathology are not axis aligned. In an extreme example, two features (say $i$ and $j$) are completely identical. Say, $i$ corresponds to height in feet, and $j$ corresponds to height in meters. Let $e_i$ be the $i^{th}$ unit vector. Then the matrix $Z^TZ$ is singular, as
+
+  $$
+  Ze_i = Ze_j \Rightarrow Z^TZ(e_i-e_j) = 0
+  $$
+
+  and the condition number is infinite. If the two columns were close, but not equal (height and weight, say), the matrix would be close to singular, but ill conditioned. 
+  </p>
+
+  <h3>Eigenfeatures</h3>
+
+  <p>
+  You might object that the above example is too simplistic: it is not often the case that two entangled features are the culprit. As the number of features get higher, we introduce subtle correlations everywhere, making the question of where the pathological curvature lies murkier. As we shall see, however, the eigenvectors of $Q$ give us a powerful tool to peel these correlations apart, giving us useful information as to where the data's blind spots are.
+  </p>
+
+  <p>
+  Consider polynomial regression. We begin with 1D data, $\xi_i$, and lift it to $n$ dimensional space via the feature map
+
+  $$
+  \xi \mapsto (\xi^0, \xi^1, \ldots, \xi^{n-1}).
+  $$
+
+  To the human eye, these monomials look very much alike. $\xi^2$ resembles $\xi^4$, and $\xi^3$ resembles $\xi^5$. In fact, from a visual inspection of these curves, one might venture that beyond the fourth or so power, the polynomials cannot furnish any new information. Is this truly the case? Given some 1D features $\xi_i$, lets form $Z$,
+
+  $$
+  Z=\left(\begin{array}{ccccc}
+  1 & \xi_{1} & \xi_{1}^{2} & \ldots & \xi_{1}^{n-1}\\
+  1 & \xi_{2} & \xi_{2}^{2} & \ldots & \xi_{1}^{n-1}\\
+  \vdots & \vdots & \vdots & \ddots & \vdots\\
+  1 & \xi_{m} & \xi_{m}^{2} & \ldots & \xi_{m}^{n-1}
+  \end{array}\right).
+  $$
+
+  and look at the eigenvectors of $Z^TZ$. 
+  </p>
+  <p>
+  The eigenvectors, $Q$, if you will recall represent a rotation of $w$ space into $x$ space, which has the very special property that gradient descent acts independently on the features there. But $Q$ can also be interpreted as a data preprocessing operator. $Q$ decorrelates the data, since $(ZQ)^T(ZQ)$ is diagonal. Therefore it is seems sensible to visualize this rotation by performing the same transformation on the feature map, giving our data decorrelated features, 
+
+  $$
+  \xi\mapsto Q[\xi^{0},\xi^{1}\ldots,\xi^{n}].
+  $$
+
+  This eigenfeaturemap is visualized below.
+  </p>
+
+
+<div id = "poly2"></div>
+
+<div id="eigenFeatures" style="display:block; margin-left:auto; margin-right:auto; width:920px; position:relative; top:20px; height:250px">
+  <svg>
+  </svg>
+</div>
+
+<script>
+var control = renderEigenFeatures(d3.select("#poly2")) 
+renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
+</script>
+
+
+  <p>
+  The eigenfeatures from 1 to 7, the largest components, are mostly smooth curves capturing variations between the clusters. Following that, we see features of finer and finer detail. Smooth variations within clusters, peaks within clusters, and finally, jagged polynomials which differ wildly on neighboring points. It is not a huge jump to conjecture that the eigenfeatures of the largest eigenvectors have the most utility, and the smallest ones are little more than noise. Lets take a look at the iterates of gradient descent behave, starting at $w=0$.
+  </p>
+
+  <div id = "poly" style="position:relative"></div>
+  <script>renderPolyFit(d3.select("#poly"))</script>
+
+  <p>
+  The behavior is exactly as you might expect. Our model has more than enough expressive power to overfit any dataset. And yet, for all reasonable runtimes, it does not. Gradient descent produces a decent result in a few minutes, and starts overfitting data only at the $k=10^8$ mark (a year and a half of runtime). And the whole thing reaches final convergence in about about 10 billion years, assuming your computer's still running then! That seems like a lot of work for polynomial regression in 25 variables. But the directions of slowest progress are also the directions which overfit the data. And thus pathological curvature here, is a surprising friend, putting into check our model's worst instincts. This is taken advantage of in Early Stopping.
+  </p>
+
+  <h3>Laplacian Systems</h3>
+  <p>
+
+  A completely different source of pathological curvature comes from a quadratics defined on graphs - the graph Laplacian. Imagine a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. This is too, a manifestation of pathological curvature, and can be seen vividly in Laplacian Systems.
+  </p>
+  <p>
+  Given a graph $G=(V,E)$, the quadratic form induced by the graph is. 
+  $$
+  f(w) =  \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
+  $$
+  The matrix $L_G$ is the Laplacian matrix, and can be written explicitly as
+  $$
+  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases} 
+  $$
+  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph. Small world graphs, like expanders and dense graphs, have excellent conditioning. Long, wiry graphs, like paths and grids, condition poorly. The reason for this will be clear in a moment.
+  </p>
+  <h4>The Colorization Problem</h4>
+  <p>
+  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to
+
+  $$
+  \text{minimize} \qquad  \color{#7570b3}{\frac{1}{2} \sum_{i\in D} (w_i - 1)^2} + \color{#d95f02}{\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.}
+  $$
+
+  This is the colorization problem. The two sums in the function serve distinct purposes. The first is the <span style="color:#7570b3">colorizer</span> - making the distinguished pixels closer to $1$ (our target color). And the second is a <span style="color:#d95f02">smoother</span>, spreading out these colors in the pixels of the image. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  
+  $$
+  w_{i}^{k+1}=\begin{cases}
+  w_{i}^{k}-\alpha(w_{i}^{k}-1)-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k}) & i\in D\\
+  w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k}) & i\notin D
+  \end{cases}
+  $$
+
+  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
+  </p>
+  <div id = "flow"></div>
+  <script>renderFlowWidget(d3.select("#flow"))</script>
+  <p>
+  This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
+
+  </p>  
+  <p>
+  <i>
+  In graph Laplacians, gradient descent makes good progress in directions corresponding to high frequency errors, and bad progress low frequency errors.
+  </i>
+  </p>
+  <p>
+  This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph. 
+  </p>
+
+  <h2>The Dynamics of Momentum</h2>
+
+  <p>
+  Let's turn our attention back to momentum. Recall the momentum update is
+
+  $$
+  \begin{aligned}
+  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\
+  w^{k+1}&=w^{k}-\alpha z^{k+1}.
+  \end{aligned}
+  $$
+
+  Since $\nabla f(w^k) = Ax - b$, the update on the quadratic is
+
+  $$
+  \begin{aligned}
+  z^{k+1}&=\beta z^{k}+ (Aw^{k}-b)\\
+  w^{k+1}&=w^{k}-\alpha z^{k+1}
+  \end{aligned}
+  $$
+
+  following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of variables $
+  x^{k} = Q(w^{k} - w^\star)$ and $ y^{k} = Qz^{k}$ to yield the update rule
+
+  $$
+  \begin{aligned}
+  y_{i}^{k+1}&=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}\\
+  x_{i}^{k+1}&=x_{i}^{k}-\alpha y_{i}^{k+1}.
+  \end{aligned}
+  $$
+
+  in which each of the components of $x$ and $y$ act independently of the other coordinates (though $x_i$ and $y_i$ are coupled). And therefore,
+
+  <dt-fn>
+  This is true as we can write updates in matrix form as
+  $$
+  \left(\!\!\begin{array}{cc}
+  1 & 0\\
+  \alpha & 1
+  \end{array}\!\!\right)\Bigg(\!\!\begin{array}{c}
+  y_{i}^{k+1}\\
+  x_{i}^{k+1}
+  \end{array}\!\!\Bigg)=\left(\!\!\begin{array}{cc}
+  \beta & \lambda_{i}\\
+  0 & 1
+  \end{array}\!\!\right)\left(\!\!\begin{array}{c}
+  y_{i}^{k}\\
+  x_{i}^{k}
+  \end{array}\!\!\right)
+  
+  $$
+  which implies, by inverting the matrix on the left,
+  $$
+  \Bigg(\!\!\begin{array}{c}
+  y_{i}^{k+1}\\
+  x_{i}^{k+1}
+  \end{array}\!\!\Bigg)=\left(\!\!\begin{array}{cc}
+  \beta & \lambda_{i}\\
+  -\alpha\beta & 1-\alpha\lambda_{i}
+  \end{array}\!\!\right)\left(\!\!\begin{array}{c}
+  y_{i}^{k}\\
+  x_{i}^{k}
+  \end{array}\!\!\right)=R^{k+1}\left(\!\!\begin{array}{c}
+  x_{i}^{0}\\
+  y_{i}^{0}
+  \end{array}\!\!\right)
+  $$
+
+  </dt-fn>
+  $$
+  \left(\!\!\begin{array}{c}
+  y_{i}^{k}\\
+  x_{i}^{k}
+  \end{array}\!\!\right)=R^k\left(\!\!\begin{array}{c}
+  y_{i}^{0}\\
+  x_{i}^{0}
+  \end{array}\!\!\right)
+  \qquad 
+  R = \left(\!\!\begin{array}{cc}
+  \beta & \lambda_{i}\\
+  -\alpha\beta & 1-\alpha\lambda_{i}
+  \end{array}\!\!\right).
+  $$
+<!-- 
+  Where 
+
+  $$
+  R = \left(\!\!\begin{array}{cc}
+  \beta & \lambda_{i}\\
+  -\alpha\beta & 1-\alpha\lambda_{i}
+  \end{array}\!\!\right)
+  $$
+ -->
+  We are almost there. We need a second trick. There are many ways of taking a matrix to the $k^{th}$ power. But for the $2 \times 2$ case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvectors of $R$, $\sigma_1$ and $\sigma_2$. 
+
+  $$
+\color{#AAA}{\color{black}{R^{k}}=\begin{cases}
+\color{black}{\sigma_{1}^{k}}R_{1}-\color{black}{\sigma_{2}^{k}}R_{2} & \sigma_{1}\neq\sigma_{2}\\
+\sigma_{1}^{k}(nR/\sigma_1-(n-1)I) & \sigma_{1}=\sigma_{2}
+\end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
+  $$
+
+   This formula may be a lot to take in, but I've highlighted the important bits. This formula plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two, which may have real or complex values. And since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now 
+
+   $$\max \{|\sigma_1|, |\sigma_2|\} < 1.$$
+
+   The exact values of $\alpha$ and $\beta$ needed to achieve this is complicated. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior 
+  </p>
+  <div id = "momentum2D"></div>
+  <script>renderMomentum(d3.select("#momentum2D"))</script> 
+
+  <p>
+
+  Notice an immediate boon we get. Momentum allows us to use a crank up the step-length up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$. 
+  </p>
+  <h3>The Critical Damping Coefficient</h3>
+
+  <p>
+  Let us take a brief detour. When $\alpha$ becomes small (as often is the case for the smallest eigenvalues in problems with pathological curvature), Qian <dt-cite key="qian1999momentum"></dt-cite> points out that momentum admits an interesting physical interpretation. Let us try to understand this heuristically, by thinking of a world with discrete time. In this world, at each tick, $x_i^k$ updates as
+
+  $$x_i^{k+1} = x_i^k - \alpha y_i^{k+1}.$$
+
+  Since $\alpha$ is small, we can think of $x_i$ as position of a particle (in 1D), and $y_i$ as its velocity (since at each iteration, we move in a small step along $y$). The update on $y_i$, our velocity, is 
+
+  $$y_{i}^{k+1}=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}.$$
+
+  When $\beta=1$ and $\lambda_i = 0$, the update rule looks like
+
+  $$y_i^{k+1} = y_i^k$$
+
+  This is Netwon's First Law - the particle's velocity remains constant; An object in motion stays in motion. Introduce $\beta < 1$ and the equation becomes
+
+  $$y_i^{k+1} = \beta y_i^k.$$
+
+  The particle decelerates. $\beta$ can be thought of as a damping coefficient - the amount of kinetic energy the particle loses at each tick (perhaps due to friction). Finally, the velocity is modified by $\lambda_{i}x_{i}^{k}$ - an external force field. This external force varies in proportion to the particle's position, $x^k_i$, exerting no force when $x^k_i = 0$. This should remind you of something familiar. The damped harmonic oscillator!
+  </p>
+
+  <p>
+  And if you don't recall your high school physics, the damped harmonic oscillator is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. We can understand this visually in a phase portrait.
+  </p>
+  <div id = "phasediagram" style="display: block;position:relative;width:920px;height: 520px;margin-left: auto;margin-right: auto;"></div>
+  </div>
+  <script>
+  phaseDiagram(d3.select("#phasediagram"))
+  </script>
+  <p>
+
+  </p>
+  <p>
+  The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of 
+
+  $$
+  1 - \sqrt{\alpha\lambda_i}.
+  $$
+
+  A square root improvement over gradient descent, $1-\alpha\lambda_i$! This is our first quadratic speedup. Alas, this only applies to the error in the $i^{th}$ eigenspace. 
+  </p>
+
+  <p>
+  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair, <dt-fn> and involves an optimization problem over
+  $$
+  \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
+  \beta & \lambda_{i}\\
+  -\alpha\beta & 1-\lambda_{i}
+  \end{array}\right) \! \bigg\|,\ldots,\bigg\| \! \left(\begin{array}{cc}
+  \beta & \lambda_{n}\\
+  -\alpha\beta & 1-\lambda_{n}
+  \end{array}\right)\! \bigg\|\right\}.
+  $$
+  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> which I will for you as an exercise. Let's take it as a given that the critical point is
+  $$
+  \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
+  $$
+  Plug this in, and you get a convergence rate of
+  $$
+  \frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}.
+  $$
+  Compare this to the convergence rate of gradient descent
+  $$
+  \frac{\kappa-1}{\kappa+1}.
+  $$
+  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. For ill conditioned problems, set $\beta$ as close to $1$ as you can, and make the $\alpha$ as high as possible. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
+  </p>
+
+  <div style = "width:920px; height:20px">
+  <div id="sliderAlpha1" style="display:inline">
+    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">α</text>
+  </div>
+
+  <div id="sliderBeta1" style="display:inline">
+    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">β</text>
+  </div>
+  </div>
+
+  <div id = "objectiveAlphaBeta"></div>  
+
+  <script>
+
+  var optalpha = 100*Math.pow(2/(Math.sqrt(1)+Math.sqrt(100)),2)
+  var slidera = sliderGen([400, 25])
+                .ticks([0,2,optalpha,4])
+                .change( function (i) { updatem2(i, getbeta1() ) } )
+                .cRadius(5)
+                .startxval(1.9)
+                .margins(20,20)
+
+  var optbeta = Math.pow((Math.sqrt(1)-Math.sqrt(100))/(Math.sqrt(1)+Math.sqrt(100)),2)
+  var sliderb = sliderGen([200, 25])
+                .ticks([0,optbeta,1])
+                .change( function (i) { updatem2(getalpha1(), i ) } )
+                .cRadius(5)
+                .startxval(0.98)
+                .margins(20,20)
+
+  var getalpha1 = slidera( d3.select("#sliderAlpha1")).xval
+  var getbeta1  = sliderb( d3.select("#sliderBeta1")).xval 
+
+  var StepRange2 = d3.scaleLinear().domain([0,100]).range([0,1])
+  var MomentumRange2 = d3.scaleLinear().domain([0,100]).range([0,1])
+
+  var updatem2 = renderMilestones(d3.select("#objectiveAlphaBeta"), function() {})
+  updatem2(1.9, 0.98)
+  
+  </script>
+  <p>
+  While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
+  </p>
+
+  <h2>
+  The Resisting Oracle
+  </h2>
+  <p>
+  If a single auxiliary sequence provides a quadratic speedup, what would two sequences give? Could one perhaps choose the alphas and betas intelligently and adaptively to do even better? It is tempting to ride this wave of optimism - to the cube root and beyond! Now, improvements to the momentum algorithm do exist - but they all run up to a certain, critical, almost inescapable lower bound.
+  </p>
+  <h3>Adventures in Algorthmic Space</h3>
+  <p>
+  To understand the limits of what we can do, we must first formally define the algorithmic space in which we are searching. Here's one possible definition. The observation we will make is that both Gradient Descent and momentum can be "unrolled". Indeed, since
+  $$
+  \begin{aligned}w^{1} & =w^{0}-\alpha\nabla f(w^{0})\\
+  w^{2} & =w^{1}-\alpha\nabla f(w^{1})=w^{0}-\alpha\nabla f(w^{1})-\alpha\nabla f(w^{0})\\
+   & \vdots\\
+  w^{k} & =w^{0}-\alpha\nabla f(w^{k-1})+\cdots+\alpha\nabla f(w^{0})
+  \end{aligned}
+  $$
+  can write gradient descent as
+
+  $$
+  w^{k}=w^{0}-\alpha\sum_{i}\nabla f(w^{i}).
+  $$
+
+  A similar trick can be done with momentum,
+
+  $$
+  w^{k}=w^{0}+\alpha\sum\frac{(1-\beta^{k})}{1-\beta}\nabla f(w^{k})
+  $$
+
+  In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more can be written in (though not quite so neatly) this unrolled form. Therefore the class of algorithms for which
+
+  $$
+  w^{k} = w^{0}+\sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
+  $$
+
+  is a superset of momentum, gradient descent and a whole bunch of other iterations you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
+
+  $$
+  w^{k} = w^{0}+\sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
+  $$
+
+  This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods". Now comes the Achille's heel of all methods of this kind.
+
+  </p>
+  <h3>The Worst Function in the World</h3>
+  <p>
+  Here it is. 
+
+  $$
+  f^n(w) = \frac{(\kappa-1)}{8}\left(\left(w_{1}-1\right)^{2}+\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}\right)+\frac{1}{2}\|w\|^{2}
+  $$
+
+  The function looks rather innocent. It is a quadratic. It is simple to express. And it is surprisingly explicable. In fact, we've seen it once before already. This is just a variation on the colorization problem, one with a small regularization term which determines how well behaved it is. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function. 
+  </p>
+
+  <p>
+  The optimal solution of this problem is 
+
+  $$
+  w_{i}^{\star}=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}
+  $$
+
+  and the condtion number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
+  </p>
+
+  <div style = "width:920px; height:20px">
+  <div id="sliderAlphaR" style="display:inline">
+    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">α</text>
+  </div>
+
+  <div id="sliderBetaR" style="display:inline">
+    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">β</text>
+  </div>
+  </div>
+
+  <div style="position:relative; width:920px; height:220px">
+  <div id = "iterates" style="position:relative;"></div>
+  <div id = "sliderz" style="position:relative; top:175px"></div>  
+  </div>
+  <script>
+
+  var update = stemGraphGen(920, 170, 200)
+                .ylabel("$w^k$ (purple) $\\quad w^\\star$ (pink)")
+                .axis([-0.05,1.05])(d3.select("#iterates"))
+
+  var b = zeros(200); b[0] = 2499.75
+  var iter = geniterMomentum(RU, RLambda, b, 0.00038, 0.995) 
+  i = 140
+  var wstar = iter(10000000)[1]
+  update(iter(i)[1], wstar)
+
+  var L1s = Math.sqrt(RLambda[0])
+  var Lns = Math.sqrt(RLambda[RLambda.length-1])
+  var optAlphaRosen = 2/ (L1s + Lns); optAlphaRosen = optAlphaRosen*optAlphaRosen
+  var optBetaRosen = (Lns - L1s)/(Lns + L1s); optBetaRosen = optBetaRosen*optBetaRosen
+  var slider = sliderGen([920, 60])
+            .startxval(i)
+            .ticks([0,200])
+            .margin({right: 3, left: 15})
+            .change(function(i,handle) {
+              update(iter(Math.floor(i))[1], wstar)
+              handle.select("text").text("k = " + Math.floor(i) ) 
+            })
+            .cRadius(5)(d3.select("#sliderz")).xval
+  
+  var alpha = sliderGen([400, 25])
+            .ticks([0,optAlphaRosen,0.0004])
+            .tooltip(function(i) { return [false, "Optimal Stepsize", false][i]})
+            .margins(20,20)
+            .change(function(i) {
+              iter = geniterMomentum(RU, RLambda, b, i, beta())
+              update(iter(Math.floor(slider()))[1], wstar)
+            })
+            .cRadius(5)(d3.select("#sliderAlphaR")).xval
+  
+  var beta = sliderGen([200, 25])
+            .ticks([0,optBetaRosen,1])
+            .margins(20,20)
+            .tooltip(function(i) { return [false, "Optimal Momentum", false][i]})           
+            .change(function(i) {
+              iter = geniterMomentum(RU, RLambda, b, alpha(), i)
+              update(iter(Math.floor(slider()))[1], wstar)
+            })
+            .cRadius(5)(d3.select("#sliderBetaR")).xval
+
+  </script> 
+  <p>
+  Momentum does shockingly well on this problem. For the optimal choice of $\alpha$ and $\beta$, it converges in exactly $n$ steps. But notice that no matter what the choice of $\alpha$ and $\beta$, the iterates all have a dead zone of zeros for $i\geq k$. This is true, in fact, for every possible linear first order algorithm. First observe that each component of the gradient depends only on the values directly before and after it:
+  
+  $$
+\nabla f(x)_{i}=\frac{\kappa-1}{4}(2w_{i}-w_{i-1}-w_{i+1})+w_{i}, \qquad i \neq 1.
+  $$
+  
+  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
+
+  $$
+
+\begin{aligned}
+w^{0} & =0\\
+w^{1} & =[w_{1}^{1},0,\ldots,0]\\
+w^{2} & =[w_{1}^{1},w_{2}^{2},0,\ldots,0]\\
+ & \vdots\\
+w^{k} & =[w_{1}^{k},w_{2}^{k},\ldots,w_{k}^{k},0,\ldots,0]
+\end{aligned}
+  $$  
+  
+  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ can propagate to $w_k$. We can therefore sum up the errors which can not have changed yet
+
+  $$
+\begin{aligned}
+\|w^{k}-w^{\star}\| & \geq\sum_{i=k+1}^{n}\!\!w_{i}^{\star}\\
+ & =\sum_{i=k+1}^{n}\!\!\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\
+ & =\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{k}-w^{0}\|+\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}
+\end{aligned}
+  $$
+
+  With the final term going to 0 as $n$ gets large. And there we have it - the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than. 
+  </p>
+  <p>
+  Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favourite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum. 
+  </p>
+
+  <h2>Onwards and Downwards</h2>
+  <p>
+  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But Like the proverbial blind men feeling elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will unify into a satisfying whole.
+  </p>
+</dt-article>
+
+<!--   The invention of acceleration, which we date almost 30 years ago, is old enough to be called "classical". But even in this day it is not fully understood. Its intuitions remain tricky  to grasp. Not for a lack of trying. Nemerovski called it an "analytical trick". And in the last 2 years there has been a small boom of papers on acceleration, probing it's deeper connections to physics, quasi-newton, ordinary differential equations, classical algorithms like conjugate gradient, and more. In this blog post, I hope to give you a taste of why momentum works. And how these insights can be brought into everyday practice.
+ -->
+
+<!--    The slider visualizes the eigenvalues on a logramtic scale - and the price paid for pathological curvature here is, well, shall I say arbitrarily bad. On a 2014 Macbook Pro, this would take a grand total of 299 years to converge, just in time perhaps for the heat death of the universe. All this work for polynomial regression with 25 variables! Of course, there are far way more numerically stable ways to solve this system (like the QR factorization). But that is not the point of this post. -->
+
+<!--<p>
+Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coadaptation". I'll leave you to read the details of this paper on your own - but here's the PG-13 version. A deep neural net generates features within its layers. To exploit the full modeling power of the network, they should be in some sense independent - information about a certain feature cannot be derived from information in other features. In linear regression, this independence takes on a stronger meaning. For the problem to be well conditioned, the features need to be linearly independent. And the condition number is precisely a measure of how well these features correlate.
+</p>-->
+
+<!--To do this, we diagonalize $R$,  $U^{-1} \Sigma U = R$ (A technical note: When the roots are repeated, diagonalization fails. Let's sweep this under the rug.). And thus
+
+  $$
+  R^{k} = (U^{-1}\Sigma U)^{k} =U^{-1}\Sigma^{k}U
+  $$
+
+  </p>
+
+  <p>-->
+
+
+<!--
+  <h2>
+  Thinking Outside the Box
+  </h2>
+  <p>
+
+
+  How can this be true? The answer is simple. These are not pure gradient methods. Indeed, by carefully examining the structure of these problems, it is possible to find a basis where, and perform optimization on that space. This is method of preconditioning.
+
+
+  As we brush up against the limits of first order methods, a whole new vista emerges. For starters, second order methods are plentiful. Newton's Method, the Natural Gradient methods. In a sense, the study of optimization is the study of problem structure. It is the detailed analysis of a problem class, it's symmmetries, its bottlenecks and its statistical', from which new and beautiful algorithms emerge.
+  </p>-->
+    
+<!-- 
+  <dt-fn>
+    The demo above suggests that $\beta$ is optimized when the eigenvalues of $R$, 
+
+    $$
+  \begin{aligned}
+  \sigma_{1} & =\tfrac{1}{2}\big(1+\beta-\alpha\lambda_{i}+\sqrt{(1+\beta+\alpha\lambda_{i})^{2}-4\beta}\big)\\
+  \sigma_{2} & =\tfrac{1}{2}\big(1+\beta-\alpha\lambda_{i}-\sqrt{(1+\beta+\alpha\lambda_{i})^{2}-4\beta}\big)
+  \end{aligned}
+    $$
+
+    are repeated, $\sigma_{1} = \sigma_{2}$. So setting the discriminant to 0, we get, for any choice of stepsize $\alpha$, 
+
+    $$
+    (1+\beta+\alpha\lambda_i)^{2}-4\beta=0 \iff \beta = 1-\alpha\lambda_i-\sqrt{\alpha\lambda_i}
+    $$
+
+    Now we optimize for $\alpha$ the way we did before, to get
+    $$
+  \begin{aligned}
+  \text{ }\underset{\alpha}{\text{argmin}}\{\max_{i}\{1-\sqrt{\alpha_{i}\lambda_{i}}\}\} & =\left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}.\\
+  \underset{\alpha}{\text{min}}\{\max_{i}\{1-\sqrt{\alpha_{i}\lambda_{i}}\}\} & =\frac{\sqrt{\lambda_{n}/\lambda_{1}}-1}{\sqrt{\lambda_{n}/\lambda_{1}}+1}
+  \end{aligned}
+    $$
+  </dt-fn>-->
+
+<!--
+  $$
+  R = \left(\begin{array}{cc}
+  \beta & \lambda_{i}\\
+  -\alpha\beta & 1-\alpha\lambda_{i}
+  \end{array}\right)
+  $$
+
+  Recall that the eigenvalues are the roots of the characteristic polynomial
+
+  $$
+  \gamma \mapsto\det \left(\begin{array}{cc}
+  \beta -\gamma& \lambda_{i}\\
+  -\alpha\beta & 1-\alpha\lambda_{i} - \gamma
+  \end{array}\right)
+  $$-->
+
+<!--     You probably now have in your mind the image of a spring bouncing up and down, with oscillations of decreasing amplitude. But the rate in which these movements decay depends strongly the amount it is damped. Is the spring immersed in water? Or is it in a frictionless vacuum? In our analogy, the damping coefficient is controlled by our momentum parameter, $\beta$. Gradient descent ($\beta = 0$) corresponds to over-damping. There's no oscillation, but the spring is immersed in a viscous fluid which is restricting its movement just a little too much. When $\beta = 1$, we're under-damping. Here's there's no resistance at all, and spring oscillates up and down forever, missing the optimal value over and over. The best value of $\beta$ must lie somewhere in the middle. This sweet spot, the "critical damping rate", happens exactly when the eigenvalues of $R$ are repeated, which happens when (work this out!) 
+  <dt-fn> Hint : the eigenvalues are $\frac{1}{2} \left(-\sqrt{(-\alpha  \lambda +\beta +1)^2-4 \beta }-\alpha 
+   \lambda +\beta +1\right)$</dt-fn> -->
+  
+  
+<dt-appendix></dt-appendix>
+<script type="text/bibliography">
+@article{o2015adaptive,
+  title={Adaptive restart for accelerated gradient schemes},
+  author={O’Donoghue, Brendan and Candes, Emmanuel},
+  journal={Foundations of computational mathematics},
+  volume={15},
+  number={3},
+  pages={715--732},
+  year={2015},
+  publisher={Springer},
+  url={https://arxiv.org/abs/1204.3982}
+}  
+
+@article{flammarion2015averaging,
+  title={From averaging to acceleration, there is only a step-size},
+  author={Flammarion, Nicolas and Bach, Francis},
+  booktitle={Proceedings of the International Conference on Learning Theory (COLT)},
+  year={2015},
+  url={https://arxiv.org/abs/1504.01577}
+}
+  
+@article{ioffe2015batch,
+  title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
+  author={Ioffe, Sergey and Szegedy, Christian},
+  journal={arXiv preprint arXiv:1502.03167},
+  year={2015},
+  url={https://arxiv.org/abs/1502.03167}
+}
+
+@article{duchi2011adaptive,
+  title={Adaptive subgradient methods for online learning and stochastic optimization},
+  author={Duchi, John and Hazan, Elad and Singer, Yoram},
+  journal={Journal of Machine Learning Research},
+  volume={12},
+  number={Jul},
+  pages={2121--2159},
+  year={2011},
+  url={http://jmlr.org/papers/v12/duchi11a.html}
+}
+
+@article{kingma2014adam,
+  title={Adam: A method for stochastic optimization},
+  author={Kingma, Diederik and Ba, Jimmy},
+  journal={arXiv preprint arXiv:1412.6980},
+  year={2014},
+  url={https://arxiv.org/abs/1412.6980}
+}
+
+@book{briggs2000multigrid,
+  title={A multigrid tutorial},
+  author={Briggs, William L and Henson, Van Emden and McCormick, Steve F},
+  year={2000},
+  publisher={SIAM},
+  doi={10.1137/1.9780898719505}
+}
+
+@article{su2014differential,
+  title={A differential equation for modeling Nesterov’s accelerated gradient method: Theory and insights},
+  author={Su, Weijie and Boyd, Stephen and Candes, Emmanuel},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={2510--2518},
+  year={2014},
+  url={https://arxiv.org/abs/1503.01243}
+}
+
+@article{polyak1964some,
+  title={Some methods of speeding up the convergence of iteration methods},
+  author={Polyak, Boris T},
+  journal={USSR Computational Mathematics and Mathematical Physics},
+  volume={4},
+  number={5},
+  pages={1--17},
+  year={1964},
+  publisher={Elsevier},
+  url={https://www.researchgate.net/profile/Boris_Polyak2/publication/243648538_Some_methods_of_speeding_up_the_convergence_of_iteration_methods/links/5666fa3808ae34c89a01fda1.pdf},
+  doi={10.1016/0041-5553(64)90137-5}
+}
+
+@article{flammarion2015averaging,
+  title={From Averaging to Acceleration, There is Only a Step-size.},
+  author={Flammarion, Nicolas and Bach, Francis R},
+  booktitle={COLT},
+  pages={658--695},
+  year={2015},
+  url={https://arxiv.org/abs/1504.01577}
+}
+
+@article{williamsnthpower,
+  title={The Nth Power of a 2x2 Matrix.},
+  author={Williams, Kenneth},
+  journal={Mathematics Magazine},
+  volume={65},
+  number={5},
+  pages={336},
+  year={1992},
+  publisher={MAA},
+  url={http://people.math.carleton.ca/~williams/papers/pdf/175.pdf},
+  doi={10.2307/2691246}
+}
+
+@article{hardtzen,
+  title={The Zen of Gradient Descent},
+  author={Hardt, Moritz},
+  year={2013},
+  url={http://blog.mrtz.org/2013/09/07/the-zen-of-gradient-descent.html}
+}
+
+@book{nesterov2013introductory,
+  title={Introductory lectures on convex optimization: A basic course},
+  author={Nesterov, Yurii},
+  volume={87},
+  year={2013},
+  publisher={Springer Science \& Business Media},
+  doi={10.1007/978-1-4419-8853-9}
+}
+
+@article{rutishauser1959theory,
+  title={Theory of gradient methods},
+  author={Rutishauser, Heinz},
+  booktitle={Refined iterative methods for computation of the solution and the eigenvalues of self-adjoint boundary value problems},
+  pages={24--49},
+  year={1959},
+  publisher={Springer},
+  doi={10.1007/978-3-0348-7224-9_2}
+}
+
+@article{bubeck2015geometric,
+  title={A geometric alternative to Nesterov's accelerated gradient descent},
+  author={Bubeck, S{\'e}bastien and Lee, Yin Tat and Singh, Mohit},
+  journal={arXiv preprint arXiv:1506.08187},
+  year={2015},
+  url={https://arxiv.org/pdf/1506.08187.pdf}
+}
+
+@article{drusvyatskiy2016optimal,
+  title={An optimal first order method based on optimal quadratic averaging},
+  author={Drusvyatskiy, Dmitriy and Fazel, Maryam and Roy, Scott},
+  journal={arXiv preprint arXiv:1604.06543},
+  year={2016},
+  url={https://arxiv.org/pdf/1604.06543.pdf}
+}
+
+@article{allen2014linear,
+  title={Linear coupling: An ultimate unification of gradient and mirror descent},
+  author={Allen-Zhu, Zeyuan and Orecchia, Lorenzo},
+  journal={arXiv preprint arXiv:1407.1537},
+  year={2014},
+  url={https://arxiv.org/pdf/1407.1537.pdf}
+}
+
+@article{nesterov2008accelerating,
+  title={Accelerating the cubic regularization of Newton’s method on convex problems},
+  author={Nesterov, Yu},
+  journal={Mathematical Programming},
+  volume={112},
+  number={1},
+  pages={159--181},
+  year={2008},
+  publisher={Springer},
+  doi={10.1007/s10107-006-0089-x}
+}
+
+@article{qian1999momentum,
+  title={On the momentum term in gradient descent learning algorithms},
+  author={Qian, Ning},
+  journal={Neural networks},
+  volume={12},
+  number={1},
+  pages={145--151},
+  year={1999},
+  publisher={Elsevier},
+  doi={10.1016/s0893-6080(98)00116-6}
+}
+
+@article{amari1998natural,
+  title={Natural gradient works efficiently in learning},
+  author={Amari, Shun-Ichi},
+  journal={Neural computation},
+  volume={10},
+  number={2},
+  pages={251--276},
+  year={1998},
+  publisher={MIT Press}
+}
+
+@inproceedings{wiesler2011convergence,
+  title={A convergence analysis of log-linear training},
+  author={Wiesler, Simon and Ney, Hermann},
+  booktitle={Advances in Neural Information Processing Systems},
+  pages={657--665},
+  year={2011}
+}
+</script>
+
+  <script>
+      renderMathInElement(
+          document.body,
+          {
+              delimiters: [
+                  {left: "$$", right: "$$", display: true},
+                  {left: "$", right: "$", display: false},
+              ]
+          }
+      );  </script>

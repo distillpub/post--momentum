@@ -1,0 +1,51 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/data/Sigma.json"></script> 
+  <script src = "../assets/data/matrix.json"></script>
+  <script src = "../assets/data/Uval.json"></script>
+  <script src = "../assets/flow.js"></script>
+  <script src = "../assets/lib/tooltip.js"></script>  
+
+<style>
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  pointer-events: none;
+}
+
+
+/* Northward tooltips */
+.d3-tip.n:after {
+  content: "\25BC";
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+	<div id = "flow"></div>
+  <script>renderFlowWidget(d3.select("#flow"))</script>
+</body>

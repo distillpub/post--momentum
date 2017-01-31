@@ -1,0 +1,44 @@
+<html>
+<head>
+<script src="http://distill.pub/template.js"></script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/lib/contour_plot.js"></script>  
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/iterates.js"></script>  
+  <script src = "../assets/momentum.js"></script>  
+  <script src = "../assets/phasediagram.js"></script>  
+</head> 
+
+  <script>
+  function mathjax() {
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\$','\$']],
+      processEscapes: true
+    }
+  });
+  }
+  </script>
+
+<body onload = "mathjax()">
+  <dt-article class="centered">
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+
+You can resize the bounding box by clicking to place the cursor within the text, then dragging on one of the sizing handles around the perimeter of the bounding box. Shift-dragging a sizing handle will constrain the proportions of the bounding box. Make sure you don’t accidentally drag a sizing handle with the Selection tool, or you’ll scale the text, not its bounding box.
+  </p>
+  <div id = "phasediagram" style="position:relative; width:920; height:520px"></div>
+  </div>
+  <script>
+  phaseDiagram(d3.select("#phasediagram"))
+  </script>
+  <p>
+Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+
+You can resize the bounding box by clicking to place the cursor within the text, then dragging on one of the sizing handles around the perimeter of the bounding box. Shift-dragging a sizing handle will constrain the proportions of the bounding box. Make sure you don’t accidentally drag a sizing handle with the Selection tool, or you’ll scale the text, not its bounding box.
+  </p>
+  </dt-article>
+</body>

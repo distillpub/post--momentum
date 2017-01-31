@@ -1,0 +1,26 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/lib/tooltip.js"></script>  
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/milestones.js"></script>  
+</head> 
+<body>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <div id = "obj"></div>  
+  <div id = "sliderStep" style="position:relative; top:0px"></div>
+  <script>
+
+var slider = sliderGen([917, 25])
+            .ticks([0,10,150])
+            .tooltip(function(i) {return ["a","b","c","d","e"][i]})
+            .cRadius(5)
+            .margins(10,15)
+var control = slider(d3.select("#sliderStep"))
+
+var update = renderMilestones(d3.select("#obj"), control.tick)
+
+</script>
+</body>

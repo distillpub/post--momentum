@@ -1,0 +1,343 @@
+<style>
+#attentional-ex3 .stage {
+  position: relative;
+  margin-bottom: 24px;
+}
+#attentional-ex3 .waveform {
+  position: absolute;
+  opacity: 0.7;
+}
+#attentional-ex3 .pointer {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  top: 36px;
+  left: -48px;
+}
+#attentional-ex3 svg {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+}
+#attentional-ex3 svg .labels {
+  font-size: 12px;
+  fill-opacity: 0.5;
+}
+#attentional-ex3 figcaption {
+  text-align: center;
+}
+#attentional-ex3 .background {
+  fill: rgb(240, 240, 245);
+  fill-opacity: 0.8;
+}
+#attentional-ex3 .audio-background {
+  fill: none;
+  stroke: black;
+  stroke-opacity: 0.3;
+}
+#attentional-ex3 .cell .node {
+  fill: white;
+  fill-opacity: 0.9;
+  stroke: black;
+  stroke-width: 1px;
+  stroke-opacity: 0.15;
+}
+#attentional-ex3 .cell:hover .node {
+  stroke-opacity: 1;
+}
+#attentional-ex3 .cell .shadow {
+  fill: black;
+  fill-opacity: 0.07;
+}
+#attentional-ex3 .cell text {
+  font-size: 13px;
+  fill-opacity: 0.5;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
+#attentional-ex3 .cell text.label {
+  font-size: 15px;
+  /*fill-opacity: 0.8;*/
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
+#attentional-ex3 .cell:last-child text.label {
+  font-size: 10px;
+}
+#attentional-ex3 .link-group {
+  transition: opacity, 0.3s, linear;
+}
+#attentional-ex3 .link-group .node-highlight {
+  transition: stroke-opacity, 0.3s, linear;
+  stroke: black;
+  stroke-opacity: 0;
+  fill: none;
+}
+#attentional-ex3 .link-group:hover .node-highlight {
+  stroke-opacity: 1;
+}
+#attentional-ex3 .link {
+  fill: none;
+  stroke: rgb(131, 89, 178);
+  stroke-width: 2px;
+  pointer-events: none;
+}
+#attentional-ex3 .arrow {
+  stroke: black;
+  stroke-opacity: 0.3;
+}
+#attentional-ex3 .cell:last-child .arrow:first-of-type {
+  display: none;
+}
+#attentional-ex3 .tick {
+  stroke: black;
+  stroke-opacity: 0.2;
+}
+</style>
+
+<script>
+(function() {
+
+var data = d3.csvParseRows(d3.select("#attentional-ex3-data").text());
+var labelsB = ["h","o","w","_","m","u","c","h","_","w","o","u","l","d","_","a","_","w","o","o","d","c","h","u","c","k","_","c","h","u","c","k","<end>"];
+var labelsA = d3.range(data.length);
+
+var linkData = [];
+data.forEach(function(a, ai) {
+  a.forEach(function(b, bi) {
+    linkData.push({
+      ai: +ai,
+      bi: +bi,
+      v: +data[ai][bi]
+    });
+  });
+});
+
+var nodeMargin = 8;
+var networkMargin = 140;
+var audioHeight = 60;
+
+var html = d3.select("#attentional-ex3");
+var outerWidth = 984; //Math.max(700, html.node().getBoundingClientRect().width);
+var outerHeight = 280;
+var margin = {top: 36, right: nodeMargin + 80, bottom: 24, left: nodeMargin};
+var width = outerWidth - margin.left - margin.right;
+var height = outerHeight - margin.top - margin.bottom;
+
+var xa = d3.scaleBand()
+    .domain(d3.range(labelsA.length))
+    .paddingInner(0.5)
+    .range([nodeMargin, width - nodeMargin]);
+
+var xb = d3.scaleBand()
+    .domain(d3.range(labelsB.length))
+    .paddingInner(0.5)
+    .range([nodeMargin, width - nodeMargin]);
+
+var nodeSizeA = xa.bandwidth();
+var nodeSizeB = xb.bandwidth();
+
+var networkHeightA = nodeSizeA + nodeMargin * 2;
+var networkHeightB = nodeSizeB + nodeMargin * 2;
+
+var link = function(d) {
+  return "M" + (xb(d.bi) + nodeSizeB / 2) + "," + (nodeSizeB + nodeMargin)
+      + "C" + (xb(d.bi) + nodeSizeB / 2) + "," + (nodeSizeB + networkMargin / 3 + nodeMargin)
+      + " " + (xa(d.ai) + nodeSizeA / 2) + "," + (networkMargin - networkMargin / 3 + nodeMargin)
+      + " " + (xa(d.ai) + nodeSizeA / 2) + "," + (networkMargin + nodeMargin);
+};
+
+var svg = html.select("svg")
+    .attr("viewBox", "0 0 " + outerWidth + " " + outerHeight)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+html.select("svg .labels")
+    .attr("transform", "translate(" + (width + nodeMargin * 3) + ", 0)");
+
+var audio = svg.append("g")
+    .attr("class", "audio")
+    .attr("transform", "translate(0, " + (nodeMargin * 4 + nodeSizeA + networkMargin) + ")");
+
+//
+// Network A
+//
+
+var networkA = svg.append("g")
+    .attr("transform", "translate(0, " + networkMargin + ")");
+
+networkA.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", nodeSizeA + 2 * nodeMargin)
+    .attr("rx", nodeMargin * 0.7)
+    .attr("ry", nodeMargin * 0.7);
+
+var cellA = networkA.selectAll(".cell")
+    .data(labelsA)
+  .enter().append("g")
+    .attr("class", "cell")
+    .attr("transform", function(d, i) { return "translate(" + xa(i) + ", " + nodeMargin + ")"; })
+    .on("mouseover", function(d, i) {
+      link.style("display", function(ld) {
+        return ld.ai === i ? "" : "none";
+      });
+    })
+    .on("mouseout", function() { link.style("display", ""); });
+
+cellA.append("rect")
+    .attr("class", "shadow")
+    .attr("transform", "translate(1, 3)")
+    .attr("width", nodeSizeA)
+    .attr("height", nodeSizeA)
+    .attr("rx", 4)
+    .attr("ry", 4);
+
+cellA.append("rect")
+    .attr("class", "node")
+    .attr("width", nodeSizeA)
+    .attr("height", nodeSizeA)
+    .attr("rx", 2)
+    .attr("ry", 2);
+
+cellA.append("line")
+    .attr("class", "arrow")
+    .attr("marker-end", "url(#edgeArrowhead)")
+    .attr("x1", nodeSizeA)
+    .attr("x2", nodeSizeA + nodeMargin)
+    .attr("y1", nodeSizeA / 2)
+    .attr("y2", nodeSizeA / 2);
+
+cellA.append("line")
+    .attr("class", "arrow")
+    .attr("marker-end", "url(#edgeArrowhead)")
+    .attr("transform", "translate(" + nodeSizeA / 2 + ", " + nodeSizeA + ")")
+    .attr("y1",  nodeMargin * 3)
+    .attr("y2",  4);
+
+cellA.append("rect")
+    .style("opacity", 0)
+    .attr("transform", "translate(-" + ((xa.step() - nodeSizeA) / 2) + ",-" + (nodeMargin + (networkMargin - networkHeightB) / 2) + ")")
+    .attr("width", xa.step())
+    .attr("height", networkHeightA + (networkMargin - networkHeightA) / 2 + audioHeight + nodeMargin * 2);
+
+
+//
+// Network B
+//
+
+var networkB = svg.append("g");
+
+networkB.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", nodeSizeB + 2 * nodeMargin)
+    .attr("rx", nodeMargin * 0.7)
+    .attr("ry", nodeMargin * 0.7);
+
+var cellB = networkB.selectAll(".cell")
+    .data(labelsB)
+  .enter().append("g")
+    .attr("class", "cell")
+    .attr("transform", function(d, i) { return "translate(" + xb(i) + ", " + nodeMargin + ")"; })
+    .on("mouseover", function(d, i) {
+      link.style("display", function(ld) {
+        return ld.bi === i ? "" : "none";
+      });
+    })
+    .on("mouseout", function() { link.style("display", ""); });
+
+cellB.append("rect")
+    .attr("class", "shadow")
+    .attr("transform", "translate(1, 3)")
+    .attr("width", nodeSizeB)
+    .attr("height", nodeSizeB)
+    .attr("rx", 4)
+    .attr("ry", 4);
+
+cellB.append("rect")
+    .attr("class", "node")
+    .attr("width", nodeSizeB)
+    .attr("height", nodeSizeB)
+    .attr("rx", 2)
+    .attr("ry", 2);
+
+cellB.append("line")
+    .attr("class", "arrow")
+    .attr("marker-end", "url(#edgeArrowhead)")
+    .attr("x1", nodeSizeB)
+    .attr("x2", nodeSizeB + nodeMargin)
+    .attr("y1", nodeSizeB / 2)
+    .attr("y2", nodeSizeB / 2);
+
+cellB.append("line")
+    .attr("class", "arrow")
+    .attr("marker-end", "url(#edgeArrowhead)")
+    .attr("transform", "translate(" + nodeSizeB / 2 + ", 0)")
+    .attr("y1", 0)
+    .attr("y2", -nodeMargin * 2);
+
+cellB.append("text")
+    .attr("class", "label")
+    .attr("dx", nodeSizeB / 2)
+    .attr("dy", - nodeMargin * 2 - 15)
+    .text(function(d) { return d; });
+
+cellB.append("rect")
+    .style("opacity", 0)
+    .attr("transform", "translate(-" + ((xb.step() - nodeSizeB) / 2) + ",-" + nodeMargin + ")")
+    .attr("width", xb.step())
+    .attr("height", networkHeightB + (networkMargin - networkHeightB) / 2);
+//
+// Links
+//
+
+var linkGroup = svg.append("g").attr("class", ".link-group")
+
+var link = linkGroup.selectAll(".link")
+    .data(linkData)
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", link)
+    .style("opacity", function(d) { return d.v; });
+
+//
+// Audio
+//
+
+html.select(".waveform")
+    .style("left", "1%")
+    .style("top", "76%")
+    .style("width", "90%")
+    .style("height", "20%")
+
+audio.append("rect")
+    .attr("class", "audio-background")
+    .attr("width", width)
+    .attr("height", audioHeight)
+    .attr("rx", nodeMargin * 0.7)
+    .attr("ry", nodeMargin * 0.7);
+
+audio.selectAll(".tick")
+    .data(labelsA)
+  .enter().append("line")
+    .style("display", function(d) { return d == 0 ? "none" : ""; })
+    .attr("class", "tick")
+    .attr("transform", "translate(-" + (xa.step() - xa.bandwidth()) / 2 + ", " + 0 + ")")
+    .attr("x1", function(d) { return xa(d); })
+    .attr("x2", function(d) { return xa(d); })
+    .attr("y2", audioHeight)
+
+audio.selectAll(".segment")
+    .data(labelsA)
+  .enter().append("rect")
+    .style("opacity", 0)
+    .attr("class", "segment")
+    .attr("transform", function(d) {
+      return "translate(" + ((-xa.step() + xa.bandwidth()) / 2 + xa(d)) + ", " + nodeMargin + ")";
+    })
+    .attr("width", xa.step())
+    .attr("height", audioHeight)
+
+})();
+</script>

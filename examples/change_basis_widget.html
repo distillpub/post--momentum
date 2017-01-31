@@ -1,0 +1,61 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/lib/contour_plot.js"></script>  
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/iterates.js"></script>  
+</head> 
+<body>
+  <div style = "width:1000px; height:400px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
+  <div id = "mom2" style="width:400px; position:absolute; left:400px; top:0px"></div>
+  </div>
+  <script>
+
+  var U = givens(Math.PI/4)
+  var Ut = numeric.transpose(U)
+  // Render Foreground
+  var left = d3.select("#mom1")
+  var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
+            .width(340)
+            .height(340)
+            .iters(300)
+            .drag(function() { 
+              c2.control(c1.alpha(), 
+                         c1.beta(), 
+                         numeric.dot(U,c1.w0())) })(left)
+  
+  var s = 150
+  left.select("svg")
+      .append("line").attr("x1", s).attr("x2",340-s).attr("y1", s).attr("y2",340-s)
+      .style("stroke", "red")
+      .style("stroke-width", 2)
+
+  s = 100
+  left.select("svg")
+      .append("line").attr("x1", 340-s).attr("y1", s).attr("x2",s).attr("y2",340-s)
+      .style("stroke", "red")
+      .style("stroke-width", 2)        
+
+  s = 100
+  left.select("svg")
+      .append("text").attr("x", 135).attr("y", 145)
+      .text("q₁")
+
+  left.select("svg")
+      .append("text").attr("x", 240).attr("y", 95)
+      .text("q₂")
+  var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
+            .width(340)
+            .height(340)
+            .iters(300)
+            .drag(function() { 
+              c1.control(c2.alpha(), 
+                         c2.beta(), 
+                         numeric.dot(Ut,c2.w0())) })
+            (d3.select("#mom2"))
+
+</script>
+</body>

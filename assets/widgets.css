@@ -11,14 +11,14 @@
 }
 
 .track {
-  stroke: #000;
-  stroke-opacity: 1;
-  stroke-width: 1px;
+  stroke: #e6e6e6;
+  stroke-opacity: 0.5;
+  stroke-width: 2px;
 }
 
 .track-inset {
-  stroke: #000;
-  stroke-width: 1px;
+  stroke: #e6e6e6;
+  stroke-width: 5px;
   
 }
 
@@ -37,9 +37,9 @@
 }
 
 path { 
-    stroke: black;
+/*    stroke: black;
     stroke-width:1;
-    fill: none;
+    fill: none;*/
 }
 
 /* Tooltip Styles */
@@ -203,10 +203,26 @@ path {
 
 
 .figtext{
-  font-size:13px;
+  font-size:12px;
   line-height:18px;
-  font-family:Open Sans  ;      
+  font-family:Helvetica;      
   text-align:right;
-  position:absolute;
+  font-weight: bold;
+}
+
+
+.ticktext{
+  font-size:12px;
+  line-height:18px;
+  font-family:Helvetica;      
+  text-align:right;
+}
+
+.mycaptiontext{
+  font-size:15px;
+  line-height:22px !important;
+  font-family:Open Sans;      
+  text-align:right;
   color:gray;
 }
+

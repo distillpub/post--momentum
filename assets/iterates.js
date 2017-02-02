@@ -28,8 +28,6 @@ function genIterDiagram(f, xstar, axis) {
     // Render the other stuff
     var intDiv = div.style("width", w + "px")
       .style("height", h + "px")
-      .style("box-shadow","0px 3px 10px rgba(0, 0, 0, 0.4)")
-      .style("border", "solid black 1px")
 
     // Render Contours 
     var plotCon = contour_plot.ContourPlot(w,h)
@@ -49,42 +47,79 @@ function genIterDiagram(f, xstar, axis) {
         .style("top", 0)
         .style("width", w)
         .style("height", h)
+        .style("border", "solid #cccccd 2px")
+        .style("border-radius", "2px")        
         .style("z-index", 2) 
 
     var X = d3.scaleLinear().domain(axis[0]).range([0, w])
     var Y = d3.scaleLinear().domain(axis[1]).range([0, h])
       
     // Rendeer Draggable dot
-    var circ = svg.append("circle")
-      .attr("cx", X(w0[0])) 
-      .attr("cy", Y(w0[1]) )
-      .attr("r", 4)
-      .style("cursor", "pointer")
-      .attr("fill", colorbrewer.OrRd[3][1])
-      .attr("opacity", 0.8)
-      .attr("stroke-width", 1)
-      .attr("stroke", colorbrewer.OrRd[3][2])
+    var circ = svg.append("g") //use xlink:href="cafe-18.svg#svg4619">
+      .attr("transform", "translate(" + X(w0[0]) + "," +  Y(w0[1]) + ")") 
       .call(d3.drag().on("drag", function() {
-        var pt = d3.mouse(this)
+        var pt = d3.mouse(svg.node())
         var x = X.invert(pt[0])
         var y = Y.invert(pt[1])
-        this.setAttribute("cx", pt[0])
-        this.setAttribute("cy", pt[1])
+        this.setAttribute("transform","translate(" + pt[0] + "," +  pt[1] + ")")
         w0 = [x,y]
         onDrag(w0)
         iter(state_alpha, state_beta, w0);
       }))
+    
+    circ.append("use")
+      .style("cursor", "pointer")
+      .attr("link:href", "#pointerThingy")
 
-    var iterColor = d3.scaleLinear().domain([0, totalIters]).range(["black", "black"])
+    circ.append("text")
+      .style("cursor", "pointer")
+      .attr("class", "figtext")
+      .attr("transform", "translate(20,3)")
+      .html("Starting Point")
 
-    var update2D = plot2dGen(X, Y, iterColor)(svg)
+    var iterColor = d3.scaleLinear().domain([0, totalIters]).range(["#ff6600", "#ff6600"])
+
+    var update2D = plot2dGen(X, Y, iterColor)
+                    .stroke("#ff6600")
+                    .pathWidth(1.5)
+                    .circleRadius(2)(svg)
+
 
     // Append x^star
-    svg.append("path")
-      .attr("transform", "translate(" + X(xstar[0]) + "," + Y(xstar[1]) + ")")
-      .attr("d", "M 0.000 2.000 L 2.939 4.045 L 1.902 0.618 L 4.755 -1.545 L 1.176 -1.618 L 0.000 -5.000 L -1.176 -1.618 L -4.755 -1.545 L -1.902 0.618 L -2.939 4.045 L 0.000 2.000")
-      .style("fill", "white")
-      .style("stroke-width",1)
+    var pxstar = ringPathGen(7,50,14)([X(xstar[0]), Y(xstar[1])], 
+                                        [X(xstar[0]), Y(xstar[1]) - 15])
+    svg.append("circle").attr("cx", X(xstar[0])).attr("cy", Y(xstar[1])).attr("r", 7).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
+    svg.append("path").attr("d", pxstar.d).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
+    svg.append("text")
+      .attr("class","figtext")  
+      .attr("transform", "translate(" + pxstar.label[0] + "," + (pxstar.label[1]+10) + ")" )
+      .html("Optimum")
+
+
+
+    var pxsol = ringPathGen(7,43.36,14)([X(0), Y(0)], 
+                                    [X(0), Y(0) + 15])
+    var solcirc = svg.append("circle").attr("cx", X(0)).attr("cy", Y(0)).attr("r", 7).attr("stroke","#ff6600").attr("stroke-width",1).attr("fill","none")
+    var solpath = svg.append("path").attr("d", pxsol.d).attr("stroke","#ff6600").attr("stroke-width",1).attr("fill","none")
+    var sollabel = svg.append("text")
+                    .attr("class","figtext")   
+                    .attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+                    .html("Solution")
+
+    function updateSol(x,y) {
+      var pxsol = ringPathGen(7,50,14)([X(x), Y(y)], [X(x), Y(y) + 15])
+      solcirc.attr("cx", X(x)).attr("cy", Y(y))
+      solpath.attr("d", pxsol.d)
+      sollabel.attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+    }
+
+    // svg.append("rect")
+    //   .attr("width", 50)
+    //   .attr("height",14)
+    //   .attr("x", pxstar.label[0] )
+    //   .attr("y", pxstar.label[1])
+
+
       
     function iter(alpha, beta, w0) {
 
@@ -97,7 +132,7 @@ function genIterDiagram(f, xstar, axis) {
       var W = OW[1]
 
       update2D(W)
-
+      updateSol(OW[1][150][0], OW[1][150][1])
       circ.attr("cx",  X(w0[0]) ).attr("cy", Y(w0[1]) )
       circ.moveToFront()
 

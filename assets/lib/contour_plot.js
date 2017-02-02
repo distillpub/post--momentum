@@ -288,14 +288,14 @@
 
   function ContourPlot(width, height) {
 
-
       var drawAxis = false,
           f = function (x, y) { return (1 - x) * (1 - x) + 100 * (y - x * x) * ( y - x * x); },
           yDomain = [3, -3],
           xDomain = [-2, 2],
           minima = null,
           contourCount = 14,
-          colourScale = d3.scaleLinear().domain([0, contourCount]).range(["white", d3.schemeCategory10[0]]),
+          colourScale = d3.scaleLinear().domain([1, contourCount/3, contourCount-1]).range(["rgb(240,244,246)", "rgb(217,225,232)", "#aec0ce"]),
+          colourScaleBorder = d3.scaleLinear().domain([0, contourCount]).range(["lightgray", "darkgray"]),
           aspect_ratio = 0.4;
 
       // todo: resolution independent (sample say 200x200)
@@ -351,9 +351,11 @@
           pathGroup.selectAll("path").data(paths).enter()
               .append("path")
               .attr("d", line)
-              .style("fill", "rgba(0,0,0,0)")
+              .style("fill", function(d, i) { return colourScale(i); })
               .style("stroke-width", 0.8)
-              .style("stroke", function(d, i) { return colourScale(i); })
+              .style("stroke", "#225577")
+              .style("stroke-opacity","0.2")
+              .attr("transform", "translate(4,4)")
               .on("mouseover", function() {
                   //d3.select(this).style("stroke-width", "4");
               })

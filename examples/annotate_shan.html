@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style type="text/css">
+  .graphic {
+    font-family: Helvetica;
+    padding: 10px 0;
+    margin: 0 auto;
+  }
+
+  svg {
+    display: block;
+    margin: 10px auto;
+    background: white;
+  }
+
+  circle {
+    fill: white;
+    stroke: black;
+    
+  }
+
+  path {
+    fill: none;
+    stroke: black;
+  }
+
+</style>
+
+  <div>Radius</div>
+  <input type="range" min="0" max="100" step="1" value="10"></input>
+
+<div class="graphic" >
+</div>
+
+
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+
+<script>
+
+var width = 500,
+    height = 500;
+
+var padding = 10
+
+var html = d3.select(".graphic")
+    .style("width", width + "px")
+    .style("height", height + "px")
+    .style("position", "relative")
+    .style("padding", "0px")
+
+var svg = html.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var radius = 25
+
+var group = svg.append("g")
+
+var path = group.append("path");
+
+var p1 = [10,10]
+var p2 = [200,200]
+
+var width = 200
+var height = 30
+
+var ringPath = ringPathGen(7, width, height)
+
+var circlePointer = svg.append("circle")
+            .attr("cx", p1[0])
+            .attr("cy", p1[1])
+            .attr("r", radius)
+            .call(d3.drag().on("drag", function() { 
+                var x = d3.mouse(this)[0]
+                var y = d3.mouse(this)[1]
+                p1 = [x,y]
+                var d = ringPath(p1, p2)
+                path.attr("d", d.d)
+                circlePointer.attr("cx",x).attr("cy",y)
+            }));
+
+var circleDragger = svg.append("circle")
+            .attr("cx", p2[0])
+            .attr("cy", p2[1])
+            .attr("r", 4)
+            .call(d3.drag().on("drag", function() { 
+                var x = d3.mouse(this)[0]
+                var y = d3.mouse(this)[1]
+                p2 = [x,y]
+                var d = ringPath(p1, p2)
+                path.attr("d", d.d)
+                label.style("top", d.label[0] + "px")
+                label.style("left", d.label[1] + "px")
+                circleDragger.attr("cx",x).attr("cy",y)
+            }));
+
+var label = html.append("span")
+    .style("position", "absolute")
+    .style("top", (p2[0] + height) + "px")
+    .style("left", (p2[1] + width/2) + "px")
+    .style("width", width + "px")
+    .style("height", height + "px")
+    .style("border-radius", "3px")
+    .style("text-align", "center")
+    .style("padding-top", "5px")
+    .style("font-size", "12px")    
+    .html("Some text here! Eigenvalues blah blah blah Gradient blah blah")
+
+function updateRadius() {
+  radius = this.value;
+  circlePointer.attr("r", radius);
+}
+
+function ringPathGen(radius, width, height) {
+
+  var padding = 1
+
+  function ringPath(p1, p2) {
+
+    // Generate Paths
+    var x = -(p1[0] - p2[0])  
+        y = -(p1[1] - p2[1]) 
+        xSign = (x > 0) - (x < 0),
+        ySign = (y > 0) - (y < 0),
+        r = radius,
+        d = "",
+        a = Math.sqrt(r * r / 2),
+        b = Math.sqrt(r * r - Math.min(y * y, x * x)),
+        c = Math.sqrt(2 * Math.min(x * x, y * y));
+        dir = ""
+    if (x * x + y * y < r * r) {
+      d = "";
+    } else if (c < r) {
+      if (Math.abs(x) > Math.abs(y)) {
+        dir = xSign > 0 ? "E" : "W"
+        d = "M" + (p1[0] + xSign * b) + "," + (p1[1] + y) 
+          + ",L" + (p1[0] + x) + "," + (p1[1] + y)
+      } else {
+        dir = ySign > 0 ? "S" : "N"
+        d = "M" + (p1[0] + x) + "," + (p1[1] + ySign * b) 
+         + ",L" + (p1[0] + x) + "," + (p1[1] + y)
+      }
+    } else if (Math.abs(x) > Math.abs(y)){
+      dir = xSign > 0 ? "E" : "W"
+      d = "M"  + (p1[0] + xSign * a)           + "," + (p1[1] + ySign * a) + 
+          ",L" + (p1[0] + xSign * Math.abs(y)) + "," + (p1[1] + y) + 
+          "L"  + (p1[0] + x)                   + "," + (p1[1] + y);
+    } else {
+      dir = ySign > 0 ? "S" : "N"
+      d = "M"  + (p1[0] + xSign * a) + "," + (p1[1] + ySign * a) + 
+          ",L" + (p1[0] + x)         + "," + (p1[1] + ySign * Math.abs(x)) + 
+          "L"  + (p1[0] + x)         + "," + (p1[1] + y);
+    }
+
+    var top = 0
+    var left = 0
+
+    // Generate Paths
+    if (dir == "S") { top  = (p2[1] + padding); left = (p2[0] - width/2) } 
+    if (dir == "N") { top  = (p2[1] - height - padding); left = (p2[0] - width/2) }
+    if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
+    if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }    
+    console.log(top, left, dir)
+    return {d:d, label:[top, left]} 
+
+  }
+
+  return ringPath
+
+}
+
+
+</script>

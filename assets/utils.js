@@ -22,9 +22,10 @@ function sliderGen(dims) {
   var curr_xval = 0
   var tooltipcallback = undefined
   var cr = 9
-  var tickwidth = 1
-  var tickheight = 5
+  var tickwidth = 2
+  var tickheight = 7
   var ticksym = false // |---|-- vs |____|__
+  var shifty = -10
 
   function renderSlider(divin) {
 
@@ -41,6 +42,8 @@ function sliderGen(dims) {
                   .attr("width", dims[0])
                   .attr("height",dims[1])
                   .style("position", "relative")
+                  .append("g")
+                  .attr("transform", "translate(0," + shifty + ")")
 
     var x = d3.scaleLinear()
         .domain([0, maxLambda])
@@ -76,10 +79,20 @@ function sliderGen(dims) {
       .data(ticks, function(d,i) {return i})
       .enter().append("rect")
       .attr("x", function(i) { return isNaN(i) ? -100: x(i) - tickwidth/2})
-      .attr("y", -tickheight)
+      .attr("y", 5)
       .attr("width", tickwidth  )
       .attr("height", function(d, i) { return (isNaN(i)) ? 0: ticksym ? tickheight*2: tickheight;} )
-      .attr("opacity",1 )
+      .attr("opacity",0.2 )
+
+
+    ticksvg.selectAll("text")
+      .data(ticks, function(d,i) {return i})
+      .enter().append("text")
+	  .attr("class", "ticktext")
+	  .attr("opacity", 0.3)
+	  .attr("text-anchor", "middle")
+      .attr("transform", function(i) { return "translate(" + (isNaN(i) ? -100: x(i) - tickwidth/2 + 1) + "," + (tickwidth*2 + 20) + ")" })
+      .html(function(d,i) { return d})
 
     ticksvg.selectAll("circle")
       .data(ticks,function(d,i) {return i})
@@ -87,7 +100,7 @@ function sliderGen(dims) {
       .append("circle", ".track-overlay")
       .attr("cx", function(i) { return isNaN(i) ? -100: x(i);})
       .attr("cy", 0)
-      .attr("r", 5)
+      .attr("r", 3)
       .attr("opacity", 0.0)
       .on("mouseover", function(i,k) { 
         this.setAttribute("opacity", "0.2"); 
@@ -135,8 +148,9 @@ function sliderGen(dims) {
     handle.insert("circle")
         .attr("class", "handle")
         .attr("r", cr)
-        .style("fill", "white")
-        .style("fill-opacity", 0.7)
+        .style("fill", "#ff6600")
+        .style("fill-opacity", 1)
+        .style("stroke", "white")
         .call(d3.drag()
           .on("start.interrupt", function() { slidersvg.interrupt(); })
           .on("start drag", function() { 
@@ -206,6 +220,10 @@ function sliderGen(dims) {
     tickheight = _2
     ticksym = _3 // |---|-- vs |____|__
     return renderSlider
+  }
+
+  renderSlider.shifty = function(_) {
+  	shifty = _; return renderSlider
   }
   return renderSlider
 }
@@ -482,6 +500,7 @@ function plot2dGen(X, Y, iterColor) {
 
       var svgpath = svg.append("path")
         .attr("opacity", pathopacity)
+        .style("fill", "none")
         .style("stroke", strokecolor)
         .style("stroke-width",pathwidth)
         .style("stroke-linecap","round")
@@ -529,6 +548,10 @@ function plot2dGen(X, Y, iterColor) {
   plot2d.circleRadius = function(_) {
     cradius = _; return plot2d
   }
+
+  plot2d.stroke = function(_) {
+    strokecolor = _; return plot2d
+  }  
 
   plot2d.circleOpacity = function(_) {
     copacity = _; return plot2d
@@ -715,6 +738,63 @@ function geniterMomentum(U, Lambda, b, alpha, beta) {
   }
 }
 
+/* Returns the path and coordinates of annotation for a circle-annotation */
+function ringPathGen(radius, width, height) {
+
+  var padding = 3
+
+  function ringPath(p1, p2) {
+
+    // Generate Paths
+    var x = -(p1[0] - p2[0])  
+        y = -(p1[1] - p2[1]) 
+        xSign = (x > 0) - (x < 0),
+        ySign = (y > 0) - (y < 0),
+        r = radius,
+        d = "",
+        a = Math.sqrt(r * r / 2),
+        b = Math.sqrt(r * r - Math.min(y * y, x * x)),
+        c = Math.sqrt(2 * Math.min(x * x, y * y));
+        dir = ""
+    if (x * x + y * y < r * r) {
+      d = "";
+    } else if (c < r) {
+      if (Math.abs(x) > Math.abs(y)) {
+        dir = xSign > 0 ? "E" : "W"
+        d = "M" + (p1[0] + xSign * b) + "," + (p1[1] + y) 
+          + ",L" + (p1[0] + x) + "," + (p1[1] + y)
+      } else {
+        dir = ySign > 0 ? "S" : "N"
+        d = "M" + (p1[0] + x) + "," + (p1[1] + ySign * b) 
+         + ",L" + (p1[0] + x) + "," + (p1[1] + y)
+      }
+    } else if (Math.abs(x) > Math.abs(y)){
+      dir = xSign > 0 ? "E" : "W"
+      d = "M"  + (p1[0] + xSign * a)           + "," + (p1[1] + ySign * a) + 
+          ",L" + (p1[0] + xSign * Math.abs(y)) + "," + (p1[1] + y) + 
+          "L"  + (p1[0] + x)                   + "," + (p1[1] + y);
+    } else {
+      dir = ySign > 0 ? "S" : "N"
+      d = "M"  + (p1[0] + xSign * a) + "," + (p1[1] + ySign * a) + 
+          ",L" + (p1[0] + x)         + "," + (p1[1] + ySign * Math.abs(x)) + 
+          "L"  + (p1[0] + x)         + "," + (p1[1] + y);
+    }
+
+    var top = 0
+    var left = 0
+
+    // Generate Paths
+    if (dir == "S") { top  = (p2[1] + padding); left = (p2[0] - width/2) } 
+    if (dir == "N") { top  = (p2[1] - height - padding); left = (p2[0] - width/2) }
+    if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
+    if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }    
+    return {d:d, label:[left, top]} 
+
+  }
+
+  return ringPath
+
+}
 
 
 /****************************************************************************

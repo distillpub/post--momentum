@@ -165,16 +165,16 @@
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k)$$
 
-  where $\alpha$ is the step-size. Momentum<dt-fn> also known by it's older names, the Heavy Ball Method or the Chebychev Method</dt-fn> makes a tiny tweak to our updates:
+  where $\alpha$ is the step-size. Momentum <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite> <dt-fn> also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> gives gradient descent a short term memory:
 
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\
-  w^{k+1}&=w^{k}-\alpha z^{k+1}
+  w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
   $$
 
-  and now instead of making a step in the gradient, we make a step in a geometrically weighted sum of all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
 
   <!-- there is a simple tweak to gradient descent which makes things work much better. Add an auxiliary sequence, $z^k$, and an extra parameter $\beta$, the <a href = "https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/training_ops.cc#L129">momentum</a> parameter, -->
 <!-- 
@@ -1199,6 +1199,15 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   booktitle={Advances in Neural Information Processing Systems},
   pages={657--665},
   year={2011}
+}
+
+@article{sutskever2013importance,
+  title={On the importance of initialization and momentum in deep learning.},
+  author={Sutskever, Ilya and Martens, James and Dahl, George E and Hinton, Geoffrey E},
+  journal={ICML (3)},
+  volume={28},
+  pages={1139--1147},
+  year={2013}
 }
 </script>
 

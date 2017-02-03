@@ -355,7 +355,7 @@
               .style("stroke-width", 0.8)
               .style("stroke", "#225577")
               .style("stroke-opacity","0.2")
-              .attr("transform", "translate(4,4)")
+              // .attr("transform", "translate(4,4)")
               .on("mouseover", function() {
                   //d3.select(this).style("stroke-width", "4");
               })

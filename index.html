@@ -10,16 +10,16 @@
 <script src = "assets/flow.js"></script>
 <script src = "assets/momentum.js"></script>
 <script src = "assets/poly.js"></script>
-<script src = "assets/data/Sigma.json"></script> 
+<script src = "assets/data/Sigma.json"></script>
 <script src = "assets/data/matrix.json"></script>
 <script src = "assets/data/Uval.json"></script>
 <script src = "assets/flow.js"></script>
-<script src = "assets/milestones.js"></script>  
+<script src = "assets/milestones.js"></script>
 <script src = "assets/lib/contour_plot.js"></script>
-<script src = "assets/lib/tooltip.js"></script>  
-<script src = "assets/iterates.js"></script> 
-<script src = "assets/data/Urosen.json"></script>    
-<script src = "assets/phasediagram.js"></script>  
+<script src = "assets/lib/tooltip.js"></script>
+<script src = "assets/iterates.js"></script>
+<script src = "assets/data/Urosen.json"></script>
+<script src = "assets/phasediagram.js"></script>
 <script src = "assets/eigenfeatures.js"></script>
 
 <link rel="stylesheet" type="text/css" href="assets/widgets.css">
@@ -33,7 +33,7 @@
     - UC Davis: http://math.ucdavis.edu
 </script>
 
-  <svg>
+  <svg style="display: none;">
   <g id="pointerThingy">
   <circle fill="none" stroke="#FF6C00" stroke-linecap="round" cx="0" cy="0" r="14"/>
 <circle fill="#FF6C00" cx="0" cy="0" r="11"/>
@@ -84,28 +84,22 @@
 
 <dt-article class="centered">
   <h1>A Guide to Momentum [DRAFT]</h1>
-  <h2></h2>
-  <dt-byline>
-  </dt-byline>
-  <div style = "position:relative; width:920px; height:400px">
+  <h2>A concise overview of the article and main point.</h2>
 
-  <div id="banana" style="position:relative"> </div>
-
+  <figure style = "position:relative; width:920px; height:400px">
+    <div id="banana" style="position:relative"></div>
     <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:0px; top: 320px;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step size α = 0.02</text>
     </div>
-
     <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 240px; top: 320px;;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
     </div>
+    <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 50px; left: 520px; top: 320px;">
+      Find something to put here. Find something to put here. Gradient Descent (β = 0), Momentum (β = 0.99). Find something to put here. Find something to put here.
+    </figcaption>
+  </figure>
 
-    <div id="Bananacaption" style="position:absolute; width: 360px; height: 50px; left: 520px; top: 320px;;">
-      <div style="font-size: 15px; line-height: 1.7; font-family: Open Sans; color: grey;">
-      Find something to put here. Find something to put here. Gradient Descent (β = 0), Momentum (β = 0.99). Find something to put here. Find something to put here. 
-      </div>
-    </div> 
-
-  </div>
+  <dt-byline class="l-page"></dt-byline>
 
   <script>
 
@@ -114,7 +108,7 @@
                     .alpha(0.003)
                     .beta(0)
                     (d3.select("#banana").style("position","relative"))
-  
+
   var iterChange = iterControl.control
   var getw0 = iterControl.w0
 
@@ -122,28 +116,28 @@
   var MomentumRange = d3.scaleLinear().domain([0,100]).range([0,0.98])
 
   var update = function (i,j) { iterChange(i, 0, getw0()) }
-  
+
   var slidera = sliderGen([230, 40])
               .ticks([0,0.0015,0.003])
-              .change( function (i) { 
+              .change( function (i) {
                 console.log(i)
                 d3.select("#sliderAlpha").selectAll(".figtext").html("Step size α = " + getalpha().toPrecision(2) )
-                iterChange(getalpha(), getbeta(), getw0() ) 
+                iterChange(getalpha(), getbeta(), getw0() )
               } )
-              .startxval(0.003)              
+              .startxval(0.003)
               .cRadius(7)
-              .shifty(-12)              
+              .shifty(-12)
               .margins(20,20)
 
   var sliderb = sliderGen([230, 40])
               .ticks([0,0.5,0.99])
-              .change( function (i) { 
+              .change( function (i) {
                 d3.select("#sliderBeta").selectAll(".figtext").html("Momentum β = " + getbeta().toPrecision(2) )
-                iterChange(getalpha(), getbeta(), getw0() ) 
+                iterChange(getalpha(), getbeta(), getw0() )
               } )
               .cRadius(7)
               .shifty(-12)
-              .startxval(0.74)              
+              .startxval(0.74)
               .margins(20,20)
 
   var getalpha = slidera( d3.select("#sliderAlpha")).xval
@@ -157,9 +151,9 @@
   </p>
 
   <p>
-  The problem could be pathological curvature. We've all seen a certain picture, in 2D, of what this looks like. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps. 
-  </p> 
-  
+  The problem could be pathological curvature. We've all seen a certain picture, in 2D, of what this looks like. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps.
+  </p>
+
   <p>
   In gradient descent, we start with an initial guess, $w^0$, and iteratively improve it using the update rule:
 
@@ -177,7 +171,7 @@
   Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
 
   <!-- there is a simple tweak to gradient descent which makes things work much better. Add an auxiliary sequence, $z^k$, and an extra parameter $\beta$, the <a href = "https://github.com/tensorflow/tensorflow/blob/master/tensorflow/core/kernels/training_ops.cc#L129">momentum</a> parameter, -->
-<!-- 
+<!--
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\
@@ -196,10 +190,10 @@
   </p> -->
 
   <p>
-  This tiny modification may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention. 
+  This tiny modification may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
-  <p>  
+  <p>
   But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now - momentum is an algorithm for the book.
   </p>
 
@@ -231,15 +225,15 @@
   var Ut = numeric.transpose(U)
   // Render Foreground
   var left = d3.select("#mom1")
-  
+
   var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
             .width(340)
             .height(340)
             .iters(300)
             .alpha(0.018)
-            .drag(function() { 
-              c2.control(c1.alpha(), 
-                         c1.beta(), 
+            .drag(function() {
+              c2.control(c1.alpha(),
+                         c1.beta(),
                          numeric.dot(U,c1.w0())) })
             (left)
 
@@ -253,7 +247,7 @@
   left.select("svg")
       .append("line").attr("x1", 340-s).attr("y1", s).attr("x2",s).attr("y2",340-s)
       .style("stroke", "red")
-      .style("stroke-width", 1)        
+      .style("stroke-width", 1)
 
   s = 100
   left.select("svg")
@@ -263,17 +257,17 @@
 
   left.select("svg")
       .append("text").attr("x", 240).attr("y", 95)
-      .style("font-size", "13px")      
+      .style("font-size", "13px")
       .text("q₂")
 
   var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
             .width(340)
             .height(340)
             .iters(300)
-            .alpha(0.018)            
-            .drag(function() { 
-              c1.control(c2.alpha(), 
-                         c2.beta(), 
+            .alpha(0.018)
+            .drag(function() {
+              c1.control(c2.alpha(),
+                         c2.beta(),
                          numeric.dot(Ut,c2.w0())) })
             (d3.select("#mom2"))
 
@@ -318,16 +312,16 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
   <div id = "sliderStepAlpha" style="width:920px; height:20px">
   <text style="font-size: 15px; top: -9px; left: 10px; position: relative;">  α</text>
   </div>
-  <div id = "obj"></div>  
-  <div id = "milestonesSlider" style="width:920px; height:20px"> </div> 
+  <div id = "obj"></div>
+  <div id = "milestonesSlider" style="width:920px; height:20px"> </div>
   <script>
   var controlmilestones = sliderGen([917, 25])
               .ticks([0,100,150])
               .tooltip(function(i) {return ["a","b","c","d","e"][i]})
               .mouseover(function(i) {console.log("Mouseover", i)})
               .cRadius(0)
-              .tooltip(function(d) { return "λ<sub>"+(d+1)+"</sub> = " + [1,10,100][d] + "<br>x<sub>" + (d+1) + "</sub><sup style=\"position:relative; left:-5px\">0</sup> = 1"})              
-              .tickConfig(1.5,5,true)              
+              .tooltip(function(d) { return "λ<sub>"+(d+1)+"</sub> = " + [1,10,100][d] + "<br>x<sub>" + (d+1) + "</sub><sup style=\"position:relative; left:-5px\">0</sup> = 1"})
+              .tickConfig(1.5,5,true)
               .margins(10,15)(d3.select("#milestonesSlider"))
 
   var updateSliderAlpha = renderMilestones(d3.select("#obj"), controlmilestones.tick)
@@ -339,8 +333,8 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
               .margins(20,20)
               .tooltip( function(i) { return ["zero",false,"optimal stepsize","upper limit"][i] })
 
-  slider( d3.select("#sliderStepAlpha") )  
-  
+  slider( d3.select("#sliderStepAlpha") )
+
   </script>
   <p>
   The loss, $f(w^k)$ is a superposition of exponentially decaying curves. For the quadratic function $f$ with $A = \text{diag}([1,10,100])$ and $b = [1,1/\sqrt{10}, 1/\sqrt{100}]$, we see three curves, each with its own rate of decay, depending on the step-length $\alpha$. The timeline beneath the plot visualizes the milestones of descent - with a tick every time error in one eigenspace as it dips below a certain tolerance. Our iterates thus move through 3 stages of convergence, and when the $k$ passes the final milestone, convergence is achieved. The rate at which the slowest error goes down is referred to as the convergence rate.
@@ -360,7 +354,7 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
   \text{convergence rate = }{\min_\alpha}\{\max_{i}\{1-\alpha\lambda_{i}\}\} & =\frac{\lambda_{n}/\lambda_{1}-1}{\lambda_{n}/\lambda_{1}+1}.,
   \end{aligned}
   $$
-  For ill conditioned problems, the optimal $\alpha$ gets uncomfortably close to limit of divergence. This, however, justifies the heuristic of choosing the largest stepsize you can get away with. 
+  For ill conditioned problems, the optimal $\alpha$ gets uncomfortably close to limit of divergence. This, however, justifies the heuristic of choosing the largest stepsize you can get away with.
   </p>
   <p>
   Notice the ratio $\lambda_n/\lambda_1$ determines the convergence rate of the problem. In fact, this ratio appears often enough that we give it a name, and a symbol - the condition number.
@@ -417,7 +411,7 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
   Ze_i = Ze_j \Rightarrow Z^TZ(e_i-e_j) = 0
   $$
 
-  and the condition number is infinite. If the two columns were close, but not equal (height and weight, say), the matrix would be close to singular, but ill conditioned. 
+  and the condition number is infinite. If the two columns were close, but not equal (height and weight, say), the matrix would be close to singular, but ill conditioned.
   </p>
 
   <h3>Eigenfeatures</h3>
@@ -444,10 +438,10 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
   \end{array}\right).
   $$
 
-  and look at the eigenvectors of $Z^TZ$. 
+  and look at the eigenvectors of $Z^TZ$.
   </p>
   <p>
-  The eigenvectors, $Q$, if you will recall represent a rotation of $w$ space into $x$ space, which has the very special property that gradient descent acts independently on the features there. But $Q$ can also be interpreted as a data preprocessing operator. $Q$ decorrelates the data, since $(ZQ)^T(ZQ)$ is diagonal. Therefore it is seems sensible to visualize this rotation by performing the same transformation on the feature map, giving our data decorrelated features, 
+  The eigenvectors, $Q$, if you will recall represent a rotation of $w$ space into $x$ space, which has the very special property that gradient descent acts independently on the features there. But $Q$ can also be interpreted as a data preprocessing operator. $Q$ decorrelates the data, since $(ZQ)^T(ZQ)$ is diagonal. Therefore it is seems sensible to visualize this rotation by performing the same transformation on the feature map, giving our data decorrelated features,
 
   $$
   \xi\mapsto Q[\xi^{0},\xi^{1}\ldots,\xi^{n}].
@@ -465,7 +459,7 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
 </div>
 
 <script>
-var control = renderEigenFeatures(d3.select("#poly2")) 
+var control = renderEigenFeatures(d3.select("#poly2"))
 renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 </script>
 
@@ -487,13 +481,13 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   A completely different source of pathological curvature comes from a quadratics defined on graphs - the graph Laplacian. Imagine a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. This is too, a manifestation of pathological curvature, and can be seen vividly in Laplacian Systems.
   </p>
   <p>
-  Given a graph $G=(V,E)$, the quadratic form induced by the graph is. 
+  Given a graph $G=(V,E)$, the quadratic form induced by the graph is.
   $$
   f(w) =  \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
   $$
   The matrix $L_G$ is the Laplacian matrix, and can be written explicitly as
   $$
-  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases} 
+  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   $$
   The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph. Small world graphs, like expanders and dense graphs, have excellent conditioning. Long, wiry graphs, like paths and grids, condition poorly. The reason for this will be clear in a moment.
   </p>
@@ -506,7 +500,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   $$
 
   This is the colorization problem. The two sums in the function serve distinct purposes. The first is the <span style="color:#7570b3">colorizer</span> - making the distinguished pixels closer to $1$ (our target color). And the second is a <span style="color:#d95f02">smoother</span>, spreading out these colors in the pixels of the image. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
-  
+
   $$
   w_{i}^{k+1}=\begin{cases}
   w_{i}^{k}-\alpha(w_{i}^{k}-1)-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k}) & i\in D\\
@@ -521,14 +515,14 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   <p>
   This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
 
-  </p>  
+  </p>
   <p>
   <i>
   In graph Laplacians, gradient descent makes good progress in directions corresponding to high frequency errors, and bad progress low frequency errors.
   </i>
   </p>
   <p>
-  This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph. 
+  This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph.
   </p>
 
   <h2>The Dynamics of Momentum</h2>
@@ -580,7 +574,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   y_{i}^{k}\\
   x_{i}^{k}
   \end{array}\!\!\right)
-  
+
   $$
   which implies, by inverting the matrix on the left,
   $$
@@ -608,14 +602,14 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   y_{i}^{0}\\
   x_{i}^{0}
   \end{array}\!\!\right)
-  \qquad 
+  \qquad
   R = \left(\!\!\begin{array}{cc}
   \beta & \lambda_{i}\\
   -\alpha\beta & 1-\alpha\lambda_{i}
   \end{array}\!\!\right).
   $$
-<!-- 
-  Where 
+<!--
+  Where
 
   $$
   R = \left(\!\!\begin{array}{cc}
@@ -624,7 +618,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   \end{array}\!\!\right)
   $$
  -->
-  We are almost there. We need a second trick. There are many ways of taking a matrix to the $k^{th}$ power. But for the $2 \times 2$ case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvectors of $R$, $\sigma_1$ and $\sigma_2$. 
+  We are almost there. We need a second trick. There are many ways of taking a matrix to the $k^{th}$ power. But for the $2 \times 2$ case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvectors of $R$, $\sigma_1$ and $\sigma_2$.
 
   $$
 \color{#AAA}{\color{black}{R^{k}}=\begin{cases}
@@ -633,18 +627,18 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
   $$
 
-   This formula may be a lot to take in, but I've highlighted the important bits. This formula plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two, which may have real or complex values. And since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now 
+   This formula may be a lot to take in, but I've highlighted the important bits. This formula plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two, which may have real or complex values. And since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now
 
    $$\max \{|\sigma_1|, |\sigma_2|\} < 1.$$
 
-   The exact values of $\alpha$ and $\beta$ needed to achieve this is complicated. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior 
+   The exact values of $\alpha$ and $\beta$ needed to achieve this is complicated. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior
   </p>
   <div id = "momentum2D"></div>
-  <script>renderMomentum(d3.select("#momentum2D"))</script> 
+  <script>renderMomentum(d3.select("#momentum2D"))</script>
 
   <p>
 
-  Notice an immediate boon we get. Momentum allows us to use a crank up the step-length up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$. 
+  Notice an immediate boon we get. Momentum allows us to use a crank up the step-length up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
   </p>
   <h3>The Critical Damping Coefficient</h3>
 
@@ -653,7 +647,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 
   $$x_i^{k+1} = x_i^k - \alpha y_i^{k+1}.$$
 
-  Since $\alpha$ is small, we can think of $x_i$ as position of a particle (in 1D), and $y_i$ as its velocity (since at each iteration, we move in a small step along $y$). The update on $y_i$, our velocity, is 
+  Since $\alpha$ is small, we can think of $x_i$ as position of a particle (in 1D), and $y_i$ as its velocity (since at each iteration, we move in a small step along $y$). The update on $y_i$, our velocity, is
 
   $$y_{i}^{k+1}=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}.$$
 
@@ -680,13 +674,13 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 
   </p>
   <p>
-  The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of 
+  The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of
 
   $$
   1 - \sqrt{\alpha\lambda_i}.
   $$
 
-  A square root improvement over gradient descent, $1-\alpha\lambda_i$! This is our first quadratic speedup. Alas, this only applies to the error in the $i^{th}$ eigenspace. 
+  A square root improvement over gradient descent, $1-\alpha\lambda_i$! This is our first quadratic speedup. Alas, this only applies to the error in the $i^{th}$ eigenspace.
   </p>
 
   <p>
@@ -725,7 +719,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   </div>
   </div>
 
-  <div id = "objectiveAlphaBeta"></div>  
+  <div id = "objectiveAlphaBeta"></div>
 
   <script>
 
@@ -746,14 +740,14 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
                 .margins(20,20)
 
   var getalpha1 = slidera( d3.select("#sliderAlpha1")).xval
-  var getbeta1  = sliderb( d3.select("#sliderBeta1")).xval 
+  var getbeta1  = sliderb( d3.select("#sliderBeta1")).xval
 
   var StepRange2 = d3.scaleLinear().domain([0,100]).range([0,1])
   var MomentumRange2 = d3.scaleLinear().domain([0,100]).range([0,1])
 
   var updatem2 = renderMilestones(d3.select("#objectiveAlphaBeta"), function() {})
   updatem2(1.9, 0.98)
-  
+
   </script>
   <p>
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
@@ -804,17 +798,17 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   </p>
   <h3>The Worst Function in the World</h3>
   <p>
-  Here it is. 
+  Here it is.
 
   $$
   f^n(w) = \frac{(\kappa-1)}{8}\left(\left(w_{1}-1\right)^{2}+\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}\right)+\frac{1}{2}\|w\|^{2}
   $$
 
-  The function looks rather innocent. It is a quadratic. It is simple to express. And it is surprisingly explicable. In fact, we've seen it once before already. This is just a variation on the colorization problem, one with a small regularization term which determines how well behaved it is. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function. 
+  The function looks rather innocent. It is a quadratic. It is simple to express. And it is surprisingly explicable. In fact, we've seen it once before already. This is just a variation on the colorization problem, one with a small regularization term which determines how well behaved it is. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function.
   </p>
 
   <p>
-  The optimal solution of this problem is 
+  The optimal solution of this problem is
 
   $$
   w_{i}^{\star}=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}
@@ -835,7 +829,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 
   <div style="position:relative; width:920px; height:220px">
   <div id = "iterates" style="position:relative;"></div>
-  <div id = "sliderz" style="position:relative; top:175px"></div>  
+  <div id = "sliderz" style="position:relative; top:175px"></div>
   </div>
   <script>
 
@@ -844,7 +838,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
                 .axis([-0.05,1.05])(d3.select("#iterates"))
 
   var b = zeros(200); b[0] = 2499.75
-  var iter = geniterMomentum(RU, RLambda, b, 0.00038, 0.995) 
+  var iter = geniterMomentum(RU, RLambda, b, 0.00038, 0.995)
   i = 140
   var wstar = iter(10000000)[1]
   update(iter(i)[1], wstar)
@@ -859,10 +853,10 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
             .margin({right: 3, left: 15})
             .change(function(i,handle) {
               update(iter(Math.floor(i))[1], wstar)
-              handle.select("text").text("k = " + Math.floor(i) ) 
+              handle.select("text").text("k = " + Math.floor(i) )
             })
             .cRadius(5)(d3.select("#sliderz")).xval
-  
+
   var alpha = sliderGen([400, 25])
             .ticks([0,optAlphaRosen,0.0004])
             .tooltip(function(i) { return [false, "Optimal Stepsize", false][i]})
@@ -872,25 +866,25 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
               update(iter(Math.floor(slider()))[1], wstar)
             })
             .cRadius(5)(d3.select("#sliderAlphaR")).xval
-  
+
   var beta = sliderGen([200, 25])
             .ticks([0,optBetaRosen,1])
             .margins(20,20)
-            .tooltip(function(i) { return [false, "Optimal Momentum", false][i]})           
+            .tooltip(function(i) { return [false, "Optimal Momentum", false][i]})
             .change(function(i) {
               iter = geniterMomentum(RU, RLambda, b, alpha(), i)
               update(iter(Math.floor(slider()))[1], wstar)
             })
             .cRadius(5)(d3.select("#sliderBetaR")).xval
 
-  </script> 
+  </script>
   <p>
   Momentum does shockingly well on this problem. For the optimal choice of $\alpha$ and $\beta$, it converges in exactly $n$ steps. But notice that no matter what the choice of $\alpha$ and $\beta$, the iterates all have a dead zone of zeros for $i\geq k$. This is true, in fact, for every possible linear first order algorithm. First observe that each component of the gradient depends only on the values directly before and after it:
-  
+
   $$
 \nabla f(x)_{i}=\frac{\kappa-1}{4}(2w_{i}-w_{i-1}-w_{i+1})+w_{i}, \qquad i \neq 1.
   $$
-  
+
   Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
 
   $$
@@ -902,8 +896,8 @@ w^{2} & =[w_{1}^{1},w_{2}^{2},0,\ldots,0]\\
  & \vdots\\
 w^{k} & =[w_{1}^{k},w_{2}^{k},\ldots,w_{k}^{k},0,\ldots,0]
 \end{aligned}
-  $$  
-  
+  $$
+
   Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ can propagate to $w_k$. We can therefore sum up the errors which can not have changed yet
 
   $$
@@ -914,10 +908,10 @@ w^{k} & =[w_{1}^{k},w_{2}^{k},\ldots,w_{k}^{k},0,\ldots,0]
 \end{aligned}
   $$
 
-  With the final term going to 0 as $n$ gets large. And there we have it - the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than. 
+  With the final term going to 0 as $n$ gets large. And there we have it - the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than.
   </p>
   <p>
-  Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favourite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum. 
+  Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favourite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum.
   </p>
 
   <h2>Onwards and Downwards</h2>
@@ -958,10 +952,10 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
 
   As we brush up against the limits of first order methods, a whole new vista emerges. For starters, second order methods are plentiful. Newton's Method, the Natural Gradient methods. In a sense, the study of optimization is the study of problem structure. It is the detailed analysis of a problem class, it's symmmetries, its bottlenecks and its statistical', from which new and beautiful algorithms emerge.
   </p>-->
-    
-<!-- 
+
+<!--
   <dt-fn>
-    The demo above suggests that $\beta$ is optimized when the eigenvalues of $R$, 
+    The demo above suggests that $\beta$ is optimized when the eigenvalues of $R$,
 
     $$
   \begin{aligned}
@@ -970,7 +964,7 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   \end{aligned}
     $$
 
-    are repeated, $\sigma_{1} = \sigma_{2}$. So setting the discriminant to 0, we get, for any choice of stepsize $\alpha$, 
+    are repeated, $\sigma_{1} = \sigma_{2}$. So setting the discriminant to 0, we get, for any choice of stepsize $\alpha$,
 
     $$
     (1+\beta+\alpha\lambda_i)^{2}-4\beta=0 \iff \beta = 1-\alpha\lambda_i-\sqrt{\alpha\lambda_i}
@@ -1002,11 +996,11 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   \end{array}\right)
   $$-->
 
-<!--     You probably now have in your mind the image of a spring bouncing up and down, with oscillations of decreasing amplitude. But the rate in which these movements decay depends strongly the amount it is damped. Is the spring immersed in water? Or is it in a frictionless vacuum? In our analogy, the damping coefficient is controlled by our momentum parameter, $\beta$. Gradient descent ($\beta = 0$) corresponds to over-damping. There's no oscillation, but the spring is immersed in a viscous fluid which is restricting its movement just a little too much. When $\beta = 1$, we're under-damping. Here's there's no resistance at all, and spring oscillates up and down forever, missing the optimal value over and over. The best value of $\beta$ must lie somewhere in the middle. This sweet spot, the "critical damping rate", happens exactly when the eigenvalues of $R$ are repeated, which happens when (work this out!) 
-  <dt-fn> Hint : the eigenvalues are $\frac{1}{2} \left(-\sqrt{(-\alpha  \lambda +\beta +1)^2-4 \beta }-\alpha 
+<!--     You probably now have in your mind the image of a spring bouncing up and down, with oscillations of decreasing amplitude. But the rate in which these movements decay depends strongly the amount it is damped. Is the spring immersed in water? Or is it in a frictionless vacuum? In our analogy, the damping coefficient is controlled by our momentum parameter, $\beta$. Gradient descent ($\beta = 0$) corresponds to over-damping. There's no oscillation, but the spring is immersed in a viscous fluid which is restricting its movement just a little too much. When $\beta = 1$, we're under-damping. Here's there's no resistance at all, and spring oscillates up and down forever, missing the optimal value over and over. The best value of $\beta$ must lie somewhere in the middle. This sweet spot, the "critical damping rate", happens exactly when the eigenvalues of $R$ are repeated, which happens when (work this out!)
+  <dt-fn> Hint : the eigenvalues are $\frac{1}{2} \left(-\sqrt{(-\alpha  \lambda +\beta +1)^2-4 \beta }-\alpha
    \lambda +\beta +1\right)$</dt-fn> -->
-  
-  
+
+
 <dt-appendix></dt-appendix>
 <script type="text/bibliography">
 @article{o2015adaptive,
@@ -1019,7 +1013,7 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   year={2015},
   publisher={Springer},
   url={https://arxiv.org/abs/1204.3982}
-}  
+}
 
 @article{flammarion2015averaging,
   title={From averaging to acceleration, there is only a step-size},
@@ -1028,7 +1022,7 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   year={2015},
   url={https://arxiv.org/abs/1504.01577}
 }
-  
+
 @article{ioffe2015batch,
   title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
   author={Ioffe, Sergey and Szegedy, Christian},

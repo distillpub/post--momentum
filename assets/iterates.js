@@ -4,7 +4,7 @@
 
   Takes in : f, the objective function
              Name of div where the graphic is rendered
-             update, which gets passed in the objective 
+             update, which gets passed in the objective
              values at every iteration
 
   Returns : callback `changeParams` to change alpha, beta
@@ -29,7 +29,7 @@ function genIterDiagram(f, xstar, axis) {
     var intDiv = div.style("width", w + "px")
       .style("height", h + "px")
 
-    // Render Contours 
+    // Render Contours
     var plotCon = contour_plot.ContourPlot(w,h)
         .f(function(x,y) { return f([x,y])[0] })
         .drawAxis(false)
@@ -47,16 +47,14 @@ function genIterDiagram(f, xstar, axis) {
         .style("top", 0)
         .style("width", w)
         .style("height", h)
-        .style("border", "solid #cccccd 2px")
-        .style("border-radius", "2px")        
-        .style("z-index", 2) 
+        .style("z-index", 2)
 
     var X = d3.scaleLinear().domain(axis[0]).range([0, w])
     var Y = d3.scaleLinear().domain(axis[1]).range([0, h])
-      
+
     // Rendeer Draggable dot
     var circ = svg.append("g") //use xlink:href="cafe-18.svg#svg4619">
-      .attr("transform", "translate(" + X(w0[0]) + "," +  Y(w0[1]) + ")") 
+      .attr("transform", "translate(" + X(w0[0]) + "," +  Y(w0[1]) + ")")
       .call(d3.drag().on("drag", function() {
         var pt = d3.mouse(svg.node())
         var x = X.invert(pt[0])
@@ -66,7 +64,7 @@ function genIterDiagram(f, xstar, axis) {
         onDrag(w0)
         iter(state_alpha, state_beta, w0);
       }))
-    
+
     circ.append("use")
       .style("cursor", "pointer")
       .attr("link:href", "#pointerThingy")
@@ -86,23 +84,23 @@ function genIterDiagram(f, xstar, axis) {
 
 
     // Append x^star
-    var pxstar = ringPathGen(7,50,14)([X(xstar[0]), Y(xstar[1])], 
+    var pxstar = ringPathGen(7,50,14)([X(xstar[0]), Y(xstar[1])],
                                         [X(xstar[0]), Y(xstar[1]) - 15])
     svg.append("circle").attr("cx", X(xstar[0])).attr("cy", Y(xstar[1])).attr("r", 7).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
     svg.append("path").attr("d", pxstar.d).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
     svg.append("text")
-      .attr("class","figtext")  
+      .attr("class","figtext")
       .attr("transform", "translate(" + pxstar.label[0] + "," + (pxstar.label[1]+10) + ")" )
       .html("Optimum")
 
 
 
-    var pxsol = ringPathGen(7,43.36,14)([X(0), Y(0)], 
+    var pxsol = ringPathGen(7,43.36,14)([X(0), Y(0)],
                                     [X(0), Y(0) + 15])
     var solcirc = svg.append("circle").attr("cx", X(0)).attr("cy", Y(0)).attr("r", 7).attr("stroke","#ff6600").attr("stroke-width",1).attr("fill","none")
     var solpath = svg.append("path").attr("d", pxsol.d).attr("stroke","#ff6600").attr("stroke-width",1).attr("fill","none")
     var sollabel = svg.append("text")
-                    .attr("class","figtext")   
+                    .attr("class","figtext")
                     .attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
                     .html("Solution")
 
@@ -120,14 +118,14 @@ function genIterDiagram(f, xstar, axis) {
     //   .attr("y", pxstar.label[1])
 
 
-      
+
     function iter(alpha, beta, w0) {
 
       // Update Internal state of alpha and beta
       state_alpha = alpha
       state_beta  = beta
 
-      // Generate iterates 
+      // Generate iterates
       var OW = runMomentum(f, w0, alpha, beta, totalIters)
       var W = OW[1]
 
@@ -139,10 +137,10 @@ function genIterDiagram(f, xstar, axis) {
     }
 
     iter(state_alpha, state_beta, w0);
-    
-    return { control:iter, 
-             w0:function() { return w0 }, 
-             alpha:function() { return state_alpha }, 
+
+    return { control:iter,
+             w0:function() { return w0 },
+             alpha:function() { return state_alpha },
              beta:function() {return state_beta} }
 
   }

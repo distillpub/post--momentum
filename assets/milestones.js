@@ -1,6 +1,6 @@
 function renderMilestones(div, updateTick) {
   var lambda = [1,10,100]
-  var totalIters = 150
+  var totalIters = 151
 
   var f = function(x) { 
     var fx = 0.5*(lambda[0]*x[0]*x[0] + lambda[1]*x[1]*x[1] + lambda[2]*x[2]*x[2])
@@ -43,7 +43,7 @@ function renderMilestones(div, updateTick) {
     updateTick(milestones) 
   }
 
-  updateStep(0.5, 0)
+  updateStep(1.95, 0)
 
   return updateStep
 }

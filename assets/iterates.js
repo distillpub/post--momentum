@@ -131,7 +131,7 @@ function genIterDiagram(f, xstar, axis) {
 
       update2D(W)
       updateSol(OW[1][150][0], OW[1][150][1])
-      circ.attr("cx",  X(w0[0]) ).attr("cy", Y(w0[1]) )
+      circ.attr("transform", "translate(" +  X(w0[0]) + "," + Y(w0[1]) + ")" )
       circ.moveToFront()
 
     }

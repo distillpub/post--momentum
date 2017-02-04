@@ -357,130 +357,122 @@ function stemGraphGen(graphWidth, graphHeight, n) {
 /* Render a stacked graph. D*/
 function stackedBarchartGen(n, m) {
 
-	var axis = [0,1.6]
+  var axis = [0,1.53]
 
-  function renderStackedGraph(divin) {
+  function renderStackedGraph(svg) {
 
-	  var dwidth  = 920
-	  var dheight = 180
+	var dwidth  = 920
+	var dheight = 170
 
-	  var graphDiv = divin
-	    .style("width",  dwidth + "px")
-	    .style("height", dheight + "px")
-	    .style("position", "relative")
-	    .attr("width", dwidth)
-	    .attr("height", dheight)
+	var margin = {right: 23, left: 10, top: 10, bottom: 10}
+	var width  = dwidth - margin.left - margin.right
+	var height = dheight - margin.top - margin.bottom;
 
-	  var margin = {right: 10, left: 10, top: 10, bottom: 10}
-	  var width  = graphDiv.attr("width") - margin.left - margin.right
-	  var height = graphDiv.attr("height") - margin.top - margin.bottom;
+	var graphsvg = svg.append("g").attr("transform", "translate(30,10)")
 
-	  graphDiv.append("span")
-	    .style("top", (dheight/2 - margin.top) + "px")
-	    .style("left", (-dheight/2 - margin.top) + "px" )
-	    .style("position", "absolute")
-	    .style("width", (dheight - margin.top) + "px")
-	    .style("height", "20px")
-	    .style("position", "absolute")
-	    .style("transform", "rotate(-90deg)")
-	    .style("text-align", "center")
-	    .style("font-size", "13px")
-	    .html("$f(w^k) - f(x^*)$")
+	// graphDiv.append("span")
+	//   .style("top", (dheight/2 - margin.top) + "px")
+	//   .style("left", (-dheight/2 - margin.top) + "px" )
+	//   .style("position", "absolute")
+	//   .style("width", (dheight - margin.top) + "px")
+	//   .style("height", "20px")
+	//   .style("position", "absolute")
+	//   .style("transform", "rotate(-90deg)")
+	//   .style("text-align", "center")
+	//   .style("font-size", "13px")
+	//   .html("$f(w^k) - f(x^*)$")
 
-	  // graphDiv.append("text")
-	  //         .style("position", "absolute")
-	  //         .style("top", (height/2) + "px")
-	  //         .style("left", "-5px")
-	  //         .style("transform", "rotate(270deg)")
-	  //         .style("font-size", "12px")          
-	  //         .text("loss")
+	// graphDiv.append("text")
+	//         .style("position", "absolute")
+	//         .style("top", (height/2) + "px")
+	//         .style("left", "-5px")
+	//         .style("transform", "rotate(270deg)")
+	//         .style("font-size", "12px")          
+	//         .text("loss")
 
-	  var stack = zeros2D(n,m)
-	  var axisheight = 10
-	  var X = d3.scaleLinear().domain([0,stack.length]).range([5,width-5])
-	  var Y = d3.scaleLinear().domain([axis[1],axis[0]]).range([0,height-axisheight])
+	var stack = zeros2D(n,m)
+	var axisheight = 10
+	var X = d3.scaleLinear().domain([0,stack.length]).range([margin.right,margin.right + width])
+	var Y = d3.scaleLinear().domain([axis[1],axis[0]]).range([0,height])
 
-	  var graphsvg = graphDiv.append("svg")
-	    .attr("width", width)
-	    .attr("height", height-axisheight)
-	    .style("position", "absolute")
-	    .style("left", margin.right)
-	    .style("top", margin.top)
-	    .style("border", "solid 1.5px rgba(0,0,0,1)")
-	    .style("border-radius", "2px")
-	    .style("box-shadow","0px 0px 10px rgba(0, 0, 0, 0.2)")
+	function add(a, b) { return a + b; }
 
-	  function add(a, b) { return a + b; }
+	var col = colorbrewer.RdPu
 
-		var col = colorbrewer.RdPu
+	var s = []
+	for (var j = 0; j < m; j ++) {
 
-		var s = []
-	  for (var j = 0; j < m; j ++) {
+	  var si = graphsvg.append("g")
 
-		  var si = graphsvg.append("g")
+	  si.selectAll("line")
+	    .data(stack)
+	    .enter()
+	    .append("line")
+	    .attr("x1", function (d,i) { return X(i) } )
+	    .attr("x2", function (d,i) { return X(i) } )
+	    .attr("y1", function (d,i) { return Y(0) } )
+	    .attr("y2", function (d,i) { return Y(d[0]) } )
+	    .attr("stroke-width",2)
+	    .attr("stroke", col[3][j])
 
-		  si.selectAll("line")
-		    .data(stack)
-		    .enter()
-		    .append("line")
-		    .attr("x1", function (d,i) { return X(i) } )
-		    .attr("x2", function (d,i) { return X(i) } )
-		    .attr("y1", function (d,i) { return Y(0) } )
-		    .attr("y2", function (d,i) { return Y(d[0]) } )
-		    .attr("stroke-width",2)
-		    .attr("stroke", col[3][j])
+	  s.push(si)
 
-		  s.push(si)
+	}
+
+	graphsvg.append("g").selectAll("circle")
+	.data(stack)
+	.enter()
+	.append("circle")
+	.attr("cx", function (d,i) { return X(i) } )
+	.attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
+	.attr("r", 2)
+
+	function updateGraph(stacknew) {
+
+		var svgdata = graphsvg.selectAll("circle").data(stacknew)
+	svgdata.enter().append("circle")
+	svgdata.merge(svgdata)
+	  .attr("cx", function (d,i) { return X(i) } )
+	  .attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
+	  .attr("r", 2)
+	svgdata.exit().remove()
+
+	for (var j = 0; j < 3; j++) {
+
+	    var svgdatai = s[j].selectAll("line").data(stacknew)
+	    svgdatai.enter().append("line")
+	    svgdatai.merge(svgdatai)
+	    .attr("x1", function (d,i) { return X(i) } )
+	    .attr("x2", function (d,i) { return X(i) } )
+	    .attr("y1", function (d,i) { return Y(d.slice(0,j).reduce(add, 0)) } )
+	    .attr("y2", function (d,i) { return Y(d.slice(0,j+1).reduce(add, 0)) } )
+	    .attr("stroke-width",2)
+	    .attr("stroke", col[3][j])
+	    svgdatai.exit().remove()
 
 		}
 
-	  graphsvg.append("g").selectAll("circle")
-	    .data(stack)
-	    .enter()
-	    .append("circle")
-	    .attr("cx", function (d,i) { return X(i) } )
-	    .attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
-	    .attr("r", 2)
+	}
 
-	  function updateGraph(stacknew) {
+	graphsvg
+	.append("g")     
+	.attr("class", "grid")
+	.attr("transform", "translate(0," + (height+10) + ")")
+	.attr("opacity", 0.4)
+	.call(d3.axisBottom(X)
+	  .ticks(5)
+	  .tickSize(2))
 
-	  	var svgdata = graphsvg.selectAll("circle").data(stacknew)
-	    svgdata.enter().append("circle")
-	    svgdata.merge(svgdata)
-	      .attr("cx", function (d,i) { return X(i) } )
-	      .attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
-	      .attr("r", 2)
-	    svgdata.exit().remove()
+	graphsvg
+	.append("g")     
+	.attr("class", "grid")
+	.attr("transform", "translate(12,0)")
+	.attr("opacity", 0.4)
+	.call(d3.axisLeft(Y)
+	  .ticks(0)
+	  .tickSize(2))
 
-	    for (var j = 0; j < 3; j++) {
-
-		    var svgdatai = s[j].selectAll("line").data(stacknew)
-		    svgdatai.enter().append("line")
-		    svgdatai.merge(svgdatai)
-		    .attr("x1", function (d,i) { return X(i) } )
-		    .attr("x2", function (d,i) { return X(i) } )
-		    .attr("y1", function (d,i) { return Y(d.slice(0,j).reduce(add, 0)) } )
-		    .attr("y2", function (d,i) { return Y(d.slice(0,j+1).reduce(add, 0)) } )
-		    .attr("stroke-width",2)
-		    .attr("stroke", col[3][j])
-		    svgdatai.exit().remove()
-
-	  	}
-
-	  }
-	  
-	  divin.append("svg")
-	    .style("position", "absolute")
-	    .style("top", (height - axisheight + 20) + "px")
-	    .style("width", width + "px")
-	    .style("left", "10px")
-	    .append("g")     
-	    .attr("class", "grid")
-	    .call(d3.axisBottom(X)
-	      .ticks(3)
-	      .tickSize(2))
-
-	  return updateGraph
+	return updateGraph
 
 	}
 

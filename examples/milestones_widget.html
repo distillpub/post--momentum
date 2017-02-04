@@ -13,14 +13,16 @@
   <div id = "sliderStep" style="position:relative; top:0px"></div>
   <script>
 
-var slider = sliderGen([917, 25])
-            .ticks([0,10,150])
-            .tooltip(function(i) {return ["a","b","c","d","e"][i]})
-            .cRadius(5)
-            .margins(10,15)
-var control = slider(d3.select("#sliderStep"))
+  var graphDiv = d3.select("#obj")
+    .style("width",  940 + "px")
+    .style("height", 500 + "px")
+    .style("position", "relative")
+    .attr("width", 920)
+    .attr("height", 500)
 
-var update = renderMilestones(d3.select("#obj"), control.tick)
+  var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+
+  var update = renderMilestones(svg, function() {})
 
 </script>
 </body>

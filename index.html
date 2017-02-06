@@ -195,6 +195,7 @@
   But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now - momentum is an algorithm for the book.
   </p>
 
+<hr>
   <h2>First Steps: Gradient Descent</h2>
   <p>
   We begin by studying gradient descent on simplest model possible which isn't trivial. I choose the convex quadratic,
@@ -381,6 +382,7 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
   The condition number means many things. It is a measure of how singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context - the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $1$ is ideal, giving convergence in one step (of course, the function is trivial). And larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological curvature.
   </p>
 
+<hr>
   <h2>
   The Path of Descent
   </h2>
@@ -542,6 +544,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph.
   </p>
 
+<hr>
   <h2>The Dynamics of Momentum</h2>
 
   <p>
@@ -839,6 +842,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
   </p>
 
+<hr>
   <h2>
   The Resisting Oracle
   </h2>
@@ -1000,6 +1004,7 @@ w^{k} & =[w_{1}^{k},w_{2}^{k},\ldots,w_{k}^{k},0,\ldots,0]
   Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favourite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum.
   </p>
 
+<hr>
   <h2>Onwards and Downwards</h2>
   <p>
   The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But Like the proverbial blind men feeling elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will unify into a satisfying whole.
@@ -1027,6 +1032,7 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
 
 
 <!--
+<hr>
   <h2>
   Thinking Outside the Box
   </h2>

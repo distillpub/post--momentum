@@ -22,10 +22,11 @@ function sliderGen(dims) {
   var curr_xval = 0
   var tooltipcallback = undefined
   var cr = 9
-  var tickwidth = 2
+  var tickwidth = 1.5
   var tickheight = 7
   var ticksym = false // |---|-- vs |____|__
   var shifty = -10
+  var ticktitles = function(d,i) { return round(d) }
 
   function renderSlider(divin) {
 
@@ -39,11 +40,11 @@ function sliderGen(dims) {
     var height = dims[1]
 
     var svg = divin.append("svg")
-                  .attr("width", dims[0])
-                  .attr("height",dims[1])
-                  .style("position", "relative")
-                  .append("g")
-                  .attr("transform", "translate(0," + shifty + ")")
+	                  .attr("width", dims[0])
+	                  .attr("height",dims[1])
+	                  .style("position", "relative")
+	                  .append("g")
+	                  .attr("transform", "translate(0," + shifty + ")")
 
     var x = d3.scaleLinear()
         .domain([0, maxLambda])
@@ -79,20 +80,19 @@ function sliderGen(dims) {
       .data(ticks, function(d,i) {return i})
       .enter().append("rect")
       .attr("x", function(i) { return isNaN(i) ? -100: x(i) - tickwidth/2})
-      .attr("y", 5)
-      .attr("width", tickwidth  )
+      .attr("y", 9)
+      .attr("width", tickwidth )
       .attr("height", function(d, i) { return (isNaN(i)) ? 0: ticksym ? tickheight*2: tickheight;} )
       .attr("opacity",0.2 )
-
 
     ticksvg.selectAll("text")
       .data(ticks, function(d,i) {return i})
       .enter().append("text")
-	  .attr("class", "ticktext")
-	  .attr("opacity", 0.3)
-	  .attr("text-anchor", "middle")
-      .attr("transform", function(i) { return "translate(" + (isNaN(i) ? -100: x(i) - tickwidth/2 + 1) + "," + (tickwidth*2 + 20) + ")" })
-      .html(function(d,i) { return d})
+			  .attr("class", "ticktext")
+			  .attr("opacity", 0.3)
+			  .attr("text-anchor", "middle")
+		      .attr("transform", function(i) { return "translate(" + (isNaN(i) ? -100: x(i) - tickwidth/2 + 1) + "," + (tickwidth*2 + 24) + ")" })
+		      .html(ticktitles)
 
     ticksvg.selectAll("circle")
       .data(ticks,function(d,i) {return i})
@@ -170,6 +170,12 @@ function sliderGen(dims) {
 
   }
 
+
+  renderSlider.ticktitles = function(f) {
+    ticktitles = f
+    return renderSlider
+  }
+
   renderSlider.mouseover = function(f) {
     onMouseover = f
     return renderSlider
@@ -240,7 +246,6 @@ function stemGraphGen(graphWidth, graphHeight, n) {
   var r2 = 0
   var ticks = 10;
 
-
   function renderGraph(outdiv) {
 
     outdiv.append("span")
@@ -258,8 +263,8 @@ function stemGraphGen(graphWidth, graphHeight, n) {
     var svg = outdiv.append("svg")
           .attr("width", graphWidth)
           .attr("height", graphHeight)
-          .style("border", "black solid 1px")
-          .style("box-shadow","0px 0px 10px rgba(0, 0, 0, 0.2)")
+          // .style("border", "black solid 1px")
+          // .style("box-shadow","0px 0px 10px rgba(0, 0, 0, 0.2)")
           .style("position", "absolute")
           .style("top", borderTop)
           .style("left", borderLeft)
@@ -298,7 +303,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
       return dots;
     }
 
-    var dots1 = initData(colorbrewer.RdPu[5][4],r1)
+    var dots1 = initData("black",r1)
     var dots2 = initData(colorbrewer.RdPu[5][2],r2)
 
     function updateData(dots, data) {
@@ -326,6 +331,11 @@ function stemGraphGen(graphWidth, graphHeight, n) {
     return updatePath
   }
 
+  renderGraph.borderTop = function(_) {
+  	borderTop = _; 
+  	return renderGraph;
+  }
+  
   renderGraph.axis = function(a) {
     axis = a;
     return renderGraph
@@ -361,118 +371,116 @@ function stackedBarchartGen(n, m) {
 
   function renderStackedGraph(svg) {
 
-	var dwidth  = 920
-	var dheight = 170
+		var dwidth  = 800
+		var dheight = 170
 
-	var margin = {right: 23, left: 10, top: 10, bottom: 10}
-	var width  = dwidth - margin.left - margin.right
-	var height = dheight - margin.top - margin.bottom;
+		var margin = {right: 23, left: 10, top: 10, bottom: 10}
+		var width  = dwidth - margin.left - margin.right
+		var height = dheight - margin.top - margin.bottom;
 
-	var graphsvg = svg.append("g").attr("transform", "translate(30,10)")
+		var graphsvg = svg.append("g").attr("transform", "translate(110,10)")
 
-	// graphDiv.append("span")
-	//   .style("top", (dheight/2 - margin.top) + "px")
-	//   .style("left", (-dheight/2 - margin.top) + "px" )
-	//   .style("position", "absolute")
-	//   .style("width", (dheight - margin.top) + "px")
-	//   .style("height", "20px")
-	//   .style("position", "absolute")
-	//   .style("transform", "rotate(-90deg)")
-	//   .style("text-align", "center")
-	//   .style("font-size", "13px")
-	//   .html("$f(w^k) - f(x^*)$")
+		// graphDiv.append("span")
+		//   .style("top", (dheight/2 - margin.top) + "px")
+		//   .style("left", (-dheight/2 - margin.top) + "px" )
+		//   .style("position", "absolute")
+		//   .style("width", (dheight - margin.top) + "px")
+		//   .style("height", "20px")
+		//   .style("position", "absolute")
+		//   .style("transform", "rotate(-90deg)")
+		//   .style("text-align", "center")
+		//   .style("font-size", "13px")
+		//   .html("$f(w^k) - f(x^*)$")
 
-	// graphDiv.append("text")
-	//         .style("position", "absolute")
-	//         .style("top", (height/2) + "px")
-	//         .style("left", "-5px")
-	//         .style("transform", "rotate(270deg)")
-	//         .style("font-size", "12px")          
-	//         .text("loss")
+		// graphDiv.append("text")
+		//         .style("position", "absolute")
+		//         .style("top", (height/2) + "px")
+		//         .style("left", "-5px")
+		//         .style("transform", "rotate(270deg)")
+		//         .style("font-size", "12px")          
+		//         .text("loss")
 
-	var stack = zeros2D(n,m)
-	var axisheight = 10
-	var X = d3.scaleLinear().domain([0,stack.length]).range([margin.right,margin.right + width])
-	var Y = d3.scaleLinear().domain([axis[1],axis[0]]).range([0,height])
+		var stack = zeros2D(n,m)
+		var axisheight = 10
+		var X = d3.scaleLinear().domain([0,stack.length]).range([margin.right,margin.right + width])
+		var Y = d3.scaleLinear().domain([axis[1],axis[0]]).range([0,height])
 
-	function add(a, b) { return a + b; }
+		function add(a, b) { return a + b; }
 
-	var col = colorbrewer.RdPu
+		var col = colorbrewer.RdPu
 
-	var s = []
-	for (var j = 0; j < m; j ++) {
+		var s = []
+		for (var j = 0; j < m; j ++) {
 
-	  var si = graphsvg.append("g")
+		  var si = graphsvg.append("g")
 
-	  si.selectAll("line")
-	    .data(stack)
-	    .enter()
-	    .append("line")
-	    .attr("x1", function (d,i) { return X(i) } )
-	    .attr("x2", function (d,i) { return X(i) } )
-	    .attr("y1", function (d,i) { return Y(0) } )
-	    .attr("y2", function (d,i) { return Y(d[0]) } )
-	    .attr("stroke-width",2)
-	    .attr("stroke", col[3][j])
+		  si.selectAll("line")
+		    .data(stack)
+		    .enter()
+		    .append("line")
+		    .attr("x1", function (d,i) { return X(i) } )
+		    .attr("x2", function (d,i) { return X(i) } )
+		    .attr("y1", function (d,i) { return Y(0) } )
+		    .attr("y2", function (d,i) { return Y(d[0]) } )
+		    .attr("stroke-width",2)
+		    .attr("stroke", col[3][j])
 
-	  s.push(si)
-
-	}
-
-	graphsvg.append("g").selectAll("circle")
-	.data(stack)
-	.enter()
-	.append("circle")
-	.attr("cx", function (d,i) { return X(i) } )
-	.attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
-	.attr("r", 2)
-
-	function updateGraph(stacknew) {
-
-		var svgdata = graphsvg.selectAll("circle").data(stacknew)
-	svgdata.enter().append("circle")
-	svgdata.merge(svgdata)
-	  .attr("cx", function (d,i) { return X(i) } )
-	  .attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
-	  .attr("r", 2)
-	svgdata.exit().remove()
-
-	for (var j = 0; j < 3; j++) {
-
-	    var svgdatai = s[j].selectAll("line").data(stacknew)
-	    svgdatai.enter().append("line")
-	    svgdatai.merge(svgdatai)
-	    .attr("x1", function (d,i) { return X(i) } )
-	    .attr("x2", function (d,i) { return X(i) } )
-	    .attr("y1", function (d,i) { return Y(d.slice(0,j).reduce(add, 0)) } )
-	    .attr("y2", function (d,i) { return Y(d.slice(0,j+1).reduce(add, 0)) } )
-	    .attr("stroke-width",2)
-	    .attr("stroke", col[3][j])
-	    svgdatai.exit().remove()
+		  s.push(si)
 
 		}
 
-	}
+		graphsvg.append("g").selectAll("circle")
+		.data(stack)
+		.enter()
+		.append("circle")
+		.attr("cx", function (d,i) { return X(i) } )
+		.attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
+		.attr("r", 2)
 
-	graphsvg
-	.append("g")     
-	.attr("class", "grid")
-	.attr("transform", "translate(0," + (height+10) + ")")
-	.attr("opacity", 0.4)
-	.call(d3.axisBottom(X)
-	  .ticks(5)
-	  .tickSize(2))
+		function updateGraph(stacknew, highlight) {
 
-	graphsvg
-	.append("g")     
-	.attr("class", "grid")
-	.attr("transform", "translate(12,0)")
-	.attr("opacity", 0.4)
-	.call(d3.axisLeft(Y)
-	  .ticks(0)
-	  .tickSize(2))
+			var svgdata = graphsvg.selectAll("circle").data(stacknew)
+			svgdata.enter().append("circle")
+			svgdata.merge(svgdata)
+			  .attr("cx", function (d,i) { return X(i) } )
+			  .attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
+			  .attr("r",  function (d,i) { return highlight.includes(i) ? 2 : 1.75 })
+			  .transition().delay(20)
+			  .attr("fill", function (d,i) { return highlight.includes(i) ? "darkred" : "black" })
+			svgdata.exit().remove()
 
-	return updateGraph
+			for (var j = 0; j < 3; j++) {
+		    var svgdatai = s[j].selectAll("line").data(stacknew)
+		    svgdatai.enter().append("line")
+		    svgdatai.merge(svgdatai)
+			    .attr("x1", function (d,i) { return X(i) } )
+			    .attr("x2", function (d,i) { return X(i) } )
+			    .attr("y1", function (d,i) { return Y(d.slice(0,j).reduce(add, 0)) } )
+			    .attr("y2", function (d,i) { return Y(d.slice(0,j+1).reduce(add, 0)) } )
+			    .attr("stroke-width",2)
+			    .attr("stroke", col[3][j])
+		    svgdatai.exit().remove()
+			}
+
+		}
+
+		graphsvg.append("g")     
+			.attr("class", "grid")
+			.attr("transform", "translate(0," + (height+10) + ")")
+			.attr("opacity", 0.25)
+			.call(d3.axisBottom(X)
+			  .ticks(5)
+			  .tickSize(2))
+
+		graphsvg.append("g")     
+			.attr("class", "grid")
+			.attr("transform", "translate(12,0)")
+			.attr("opacity", 0.25)
+			.call(d3.axisLeft(Y)
+			  .ticks(0)
+			  .tickSize(2))
+
+		return {update: updateGraph, stack: s, X:X}
 
 	}
 
@@ -733,7 +741,7 @@ function geniterMomentum(U, Lambda, b, alpha, beta) {
 /* Returns the path and coordinates of annotation for a circle-annotation */
 function ringPathGen(radius, width, height) {
 
-  var padding = 3
+  var padding = 4
 
   function ringPath(p1, p2) {
 
@@ -776,10 +784,16 @@ function ringPathGen(radius, width, height) {
     var left = 0
 
     // Generate Paths
-    if (dir == "S") { top  = (p2[1] + padding); left = (p2[0] - width/2) } 
-    if (dir == "N") { top  = (p2[1] - height - padding); left = (p2[0] - width/2) }
-    if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
-    if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }    
+    // if (dir == "S") { top  = (p2[1] + padding); left = (p2[0] - width/2) } 
+    // if (dir == "N") { top  = (p2[1] - height - padding); left = (p2[0] - width/2) }
+    // if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
+    // if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }    
+
+    if (dir == "S") { top  = (p2[1] + height/2 + padding); left = (p2[0] - width/2) } 
+    if (dir == "N") { top  = (p2[1] - padding); left = (p2[0] - width/2) }
+    if (dir == "W") { top  = (p2[1] + height/4); left = (p2[0] - width - padding) }
+    if (dir == "E") { top  = (p2[1] + height/4); left = (p2[0] + padding) }    
+
     return {d:d, label:[left, top]} 
 
   }
@@ -788,6 +802,97 @@ function ringPathGen(radius, width, height) {
 
 }
 
+function colorMap(root) {
+
+  var margin = { top: 0, right: 12, bottom: 30, left: 12 };
+  var width = 180,
+      height = 10;
+
+  root.style("width", (width + margin.right + margin.left)  + "px")
+  root.style("height", (height + margin.top + margin.bottom) + "px")
+  var canvas = root.append("canvas")
+      .attr("width", width+1)
+      .attr("height", height)
+      .style("position", "relative")
+      .style("left", margin.left + "px");
+  var svg = root.append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", 40)
+      .style("left", -margin.left + "px")
+    .append("g")
+      .attr("transform", "translate(" + margin.left + ", 2)")
+      .attr("opacity", 0.5)
+      .attr("class", "figtext")
+  var colorScale = d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Blues[5].concat(["black"]))
+  var axisScale = d3.scaleLinear().domain([0,1.2001]).range([0, width]);
+  var axis = d3.axisBottom(axisScale).ticks(5);
+  svg.call(axis);
+  root.select(".label").text("Activation value")
+  var context = canvas.node().getContext("2d");
+  console.log(colorScale, axisScale)
+  for (var i = 0; i < width + 1; i++) {
+    context.fillStyle = colorScale(axisScale.invert(i));
+    context.fillRect(i, 0, 1, height)
+  }
+
+}
+
+
+function renderDraggable(svg, p1, p2, radius, text) {
+
+  var group = svg.append("g")
+  var path = group.append("path").attr("fill", "none").attr("stroke","black").attr("stroke-width", 1);
+  var circlePointer = svg.append("circle")
+              .attr("cx", p1[0])
+              .attr("cy", p1[1])
+              .attr("r", radius)
+              .attr("fill", "white").attr("fill-opacity",0).attr("stroke","black").attr("stroke-width", 1)
+              .call(d3.drag().on("drag", function() { 
+                  var x = d3.mouse(this)[0]
+                  var y = d3.mouse(this)[1]
+                  p1 = [x,y]
+                  var d = ringPath(p1, p2)
+                  path.attr("d", d.d)
+                  circlePointer.attr("cx",x).attr("cy",y)
+              }));
+  var circleDragger = svg.append("circle")
+              .attr("cx", p2[0])
+              .attr("cy", p2[1])
+              .attr("r", 4)
+              .attr("fill", "white").attr("fill-opacity",0).attr("stroke","black").attr("stroke-width", 0)
+              .call(d3.drag().on("drag", function() { 
+                  var x = d3.mouse(this)[0]
+                  var y = d3.mouse(this)[1]
+                  p2 = [x,y]
+                  var d = ringPath(p1, p2)
+                  path.attr("d", d.d)
+                  label.attr("transform", "translate(" + d.label[0] + "," + d.label[1]  + ")")
+                  circleDragger.attr("cx",x).attr("cy",y)
+                  console.log("P1", p1, "P2", p2)
+              }));
+
+  var label = svg.append("text")
+      .style("position", "absolute")
+      .style("border-radius", "3px")
+      .style("text-align", "start")
+      .style("padding-top", "5px")
+      .attr("class", "figtext")
+      .attr("x", 0)
+      .attr("y",0)
+      .attr("width", 100)
+      .attr("height", 10)
+      .attr("r", 4)
+      .html(text)
+
+  var ringPath = ringPathGen(radius, label.node().getBBox().width, label.node().getBBox().height)
+
+  var d = ringPath(p1, p2)
+  path.attr("d", d.d)
+  label.attr("transform", "translate(" + d.label[0] + "," + d.label[1]  + ")")
+  circleDragger.attr("cx",p2[0]).attr("cy",p2[1])
+
+
+}
 
 /****************************************************************************
   MISC MATH AND JAVASCRIPT HELPERS
@@ -914,4 +1019,34 @@ function evalPoly(w) {
 	  data.push([i/800, 1*poly(w, i/800)])
 	}
 	return data
+}
+
+
+function setTM(element, m) {
+	return element.transform.baseVal.initialize(element.ownerSVGElement.createSVGTransformFromMatrix(m))
+}
+
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
 }

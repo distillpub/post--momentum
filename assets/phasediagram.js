@@ -1,6 +1,8 @@
 function phaseDiagram(divin) {
 
-  var totalIters = 200
+  var totalIters = 100
+  var default_underdamp = 0.97
+  var default_overdamp = 0.05
 
   function getTrace(alpha, beta, coord, sign) {
     var m = []
@@ -16,55 +18,105 @@ function phaseDiagram(divin) {
     return m
   }
 
-  var textCaptions = ["<b>Overdamping</b><br> When $\\beta$ is too small (e.g. in Gradient Descent, $\\beta = 0$), we're over-damping. The particle is immersed in a viscous fluid which saps it of its kinetic energy at every timestep.","<b>Critical Damping</b><br> The best value of $\\beta$ must lie somewhere in the middle. This sweet spot, the critical damping rate, happens exactly when the eigenvalues of $R$ are repeated, which happens when $\\beta = (1 - \\sqrt{\\alpha \\lambda_i})^2$ ","<b>Underdamping</b><br> When $\\beta$, is too large, we're under-damping. Here's there's no resistance at all, and spring oscillates up and down forever, missing the optimal value over and over. "]
+  var textCaptions = ["<center><b style=\"color:black\">Overdamping</b></center><div style=\"margin:5px\"></div> When $\\beta$ is too small (e.g. in Gradient Descent, $\\beta = 0$), we're over-damping. The particle is immersed in a viscous fluid which saps it of its kinetic energy at every timestep.","<b style=\"color:black\"><center>Critical Damping</center></b> <div style=\"margin:5px\"></div>The best value of $\\beta$ lies in the middle of the two extremes. This sweet spot happens when the eigenvalues of $R$ are repeated, when $\\beta = (1 - \\sqrt{\\alpha \\lambda_i})^2$ ","<b style=\"color:black\"><center>Underdamping</center></b><div style=\"margin:5px\"></div> When $\\beta$, is too large, we're under-damping. Here's there's no resistance at all, and spring oscillates up and down forever, missing the optimal value over and over. "]
 
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
 
-  var w = 220;
-  var h = 220
+  var w = 170;
+  var h = 170
   var a = 1.0
-  axis = [[-a*5,a*5],[-a,a]]
+
+  var axis = [[-a*5,a*5],[-a,a]]
+  var width_bar = 620
+  var X = d3.scaleLinear().domain([0,1]).range([0, width_bar])
 
   var valueline = d3.line()
     .x(function(d) { return d[0]; })
     .y(function(d) { return d[1]; });
 
+  var overlay = divin.append("svg")
+       .style("position", "absolute")
+       .attr("width", 648)
+       .attr("height", 520)
+       .style("z-index", 10)
+       .style("pointer-events", "none")
+  renderDraggable(overlay, [320.5, 361+35], [346.5, 378+35], 6, "Optimum<tspan x=\"0\" dy=\"1.2em\">Reached</tspan>")
+
+  renderDraggable(overlay, [100.5, 277+35], [121.5, 267+35], 6, "Initial point: x = 1, y = 0")
+
+  renderDraggable(overlay, [581.5, 360+35], [597.5, 321+35], 6, "Misses Optimum")
+
+  // Draw the three phases
   var updateCallbacks = []
+  var ringPath = ringPathGen(5, 0, 0)
+  var paths = []
   for (var i = 0; i < 3; i ++ ) {
 
     var div = divin.append("div")
       .style("position","absolute")
       .style("width",w + "px")
       .style("height",h + "px")
-      .style("left", [200, 550, 700][i] + "px")
-      .style("top", [10, 285, 10][i] + "px")
+      .style("left", [15, 235, 455][i] + "px")
+      .style("top", [110, 110, 110][i] + "px")
 
-    div.append("span")
+    var z = div.node()
+
+    var divx = z.offsetLeft + z.offsetWidth/2
+    var divy = z.offsetTop
+
+    var path = overlay.append("path")
+                  .style("stroke", "grey")
+                  .style("stroke-width", "1px")
+                  .style("fill", "none")
+                  .attr("stroke-dasharray", "5,3")
+                  .attr("opacity", 0.7)
+
+    if (i == 0) {
+      
+      var updateAnnotationOverDamp = (function(pathin, divxin, divyin) {
+        return function(x,y,d) {
+          pathin.transition().duration(d).attr("d", ringPath([x+10,y],[divxin,divyin]).d) 
+        }
+      })(path, divx, divy)
+      updateAnnotationOverDamp(X(default_overdamp), 30, 0)
+    }
+
+    if (i == 1) {
+      path.attr("d", ringPath([X(0.8)+15,30],[divx + 40,divy -40]).d + "L" + divx + "," + divy + " ") 
+    }
+
+    if (i == 2) {
+
+      var updateAnnotationUnderDamp = (function(pathin, divxin, divyin) {
+        return function(x,y,d) {
+          pathin.transition().duration(d).attr("d", ringPath([x+10,y],[divxin,divyin]).d) 
+        }
+      })(path, divx, divy)
+      updateAnnotationUnderDamp(X(default_underdamp), 30, 0)
+
+    }
+
+    paths.push(path)
+
+    div.append("figcaption")
       .style("position","absolute")
       .style("width", "180px")
       .style("height", "200px")
-      .style("font-size", "13px")
-      .style("line-height", "18px")
-      .style("font-family", "Open Sans")        
-      .style("text-align", "right")
-      .style("top", [10, 40, 75][i] + "px")
-      .style("left", "-200px")
+      .attr("class", "figtext2")      
+      .style("text-align", "left")
+      .style("top", [10, 10, 10][i] + "px")
+      .style("left", "00px")
       .style("color", "gray")  
       .html(textCaptions[i])
 
     var svg = div.append("svg")
                 .style("position", 'absolute')
                 .style("left", 0)
-                .style("top", "0px")
+                .style("top", "200px")
                 .style("width", w)
                 .style("height", h)
-      .style("box-shadow","rgba(0, 0, 0, 0.4) 0px 3px 10px")
-      .style("border","1px solid black")
       .style("border-radius", "5px")
-
-    var X = d3.scaleLinear().domain(axis[0]).range([0, w])
-    var Y = d3.scaleLinear().domain(axis[1]).range([0, h])
 
     svg.append("g").attr("class", "grid")
       .attr("transform", "translate(0," + h/2 +")")
@@ -77,122 +129,67 @@ function phaseDiagram(divin) {
       .call(d3.axisLeft(X).ticks(0).tickSize(4))
 
     var colorRange = d3.scaleLinear().domain([0, totalIters/16, totalIters/2]).range(colorbrewer.OrRd[3])
-    var update = plot2dGen(X, Y, colorRange)
+    
+    var Xaxis = d3.scaleLinear().domain(axis[0]).range([0, w])
+    var Yaxis = d3.scaleLinear().domain(axis[1]).range([0, h])
+
+    var update = plot2dGen(Xaxis, Yaxis, colorRange)
                   .pathOpacity(1)
                   .pathWidth(1.5)
                   .circleRadius(1.5) 
                   .stroke(colorbrewer.OrRd[3][0])(svg)
 
-    update(getTrace(al, [0.01, optbeta + 0.0001 , 0.999][i], 1,1))
+    update(getTrace(al, [0.01, optbeta + 0.0001 , default_underdamp][i], 1,1))
     updateCallbacks.push(update)
-
-    div.append("span")
-      .style("position", "absolute")
-      .style("text-align", "center")
-      .style("width", w + "px")
-      .style("top", function(d) { return [-15, h + 15, -20][i] + "px"} )
-      .style("font-size", "12px")
-      .html(["$y_i$",
-             "$y_i$", 
-             "$y_i$"][i])
-
-    div.append("span")
-      .style("position", "absolute")
-      .style("text-align", "center")
-      .style("width", (2*w + 80) + "px")
-      .style("top", (h - 5)/2 + "px")
-      .style("font-size", "12px")
-      .style("left", "-20px")
-      .html("$x_i$")
 
   }
 
   var linesvg = d3.select("#phasediagram")
     .append("svg")
 
-  var w = 910
-  var X = d3.scaleLinear().domain([0,1]).range([0, w])
-
   linesvg.style("position","absolute")
     .style("width", "920px")
     .style("height", "570px")
     .style("left", "10px")
-    .on("mousemove", function () { console.log (d3.mouse(this))})
     .append("line")
-    .attr("x1", 5)
-    .attr("y1", 260)
-    .attr("x2", 5 + w)
-    .attr("y2", 260)    
+    .attr("x1", 0)
+    .attr("y1", 30)
+    .attr("x2", 0 + width_bar)
+    .attr("y2", 30)    
     .style("border", "solid 2px black")
-    .style("stroke", "black")
+    .style("stroke", "#CCC")
     .style("fill", "white")
-    .style("stroke-width", "1px")
-
-  function genPath(s1, s2, e1, e2) {
-    if (s2 < e2) {
-      return valueline([ [s1,s2], 
-                         [s1,s2 + 10], 
-                         [e1,e2 - 5],
-                         [e1,e2]] )
-    } else {
-      return valueline([ [s1,s2], 
-                         [s1,s2 - 10], 
-                         [e1,e2 + 5],
-                         [e1,e2]] )      
-    }
-  }
-
-  var connectLines = []
-  for (var i = 0; i < 3; i++ ){
-
-    var connectLine = linesvg.append("path")
-      .attr("opacity", 1)
-      .style("stroke", "black")
-      .style("stroke-width", "1px")
-      .style("stroke-linecap","round")
-      .attr("d", genPath([X(0.1), X(optbeta), X(0.999)][i], 260, 
-                          [302, 652, 802][i], [232,285,232][i] ))
-
-    connectLines.push(connectLine)
-  }
+    .style("stroke-width", "3px")
 
   var underdamp = linesvg
         .append("circle")
-        .attr("cx", X(0.1))
-        .attr("cy", 260)
-        .attr("r", 4)
-        .style("fill", "white")
-        .style("stroke", "black")
-        .style("stroke-width", "1px")
-
+        .attr("cx", X(default_overdamp))
+        .attr("cy", 30)
+        .attr("r", 6)
+        .style("fill", "#ff6600")
 
   var criticaldamp = linesvg
         .append("circle")
         .attr("cx", X(optbeta))
-        .attr("cy", 260)
-        .attr("r", 2)
-        .style("fill", "white")
-        .style("stroke", "black")
-        .style("stroke-width", "1px")
-
+        .attr("cy", 30)
+        .attr("r", 6)
+        .style("fill", "#ff6600")
 
   var overdamp = linesvg
         .append("circle")
-        .attr("cx", X(0.99))
-        .attr("cy", 260)
-        .attr("r", 4)
-        .style("fill", "white")
-        .style("stroke", "black")
-        .style("stroke-width", "1px")
+        .attr("cx", X(default_underdamp))
+        .attr("cy", 30)
+        .attr("r", 6)
+        .style("fill", "#ff6600")
 
   linesvg.style("position","absolute")
     .style("width", "920px")
     .style("height", "570px")
     .append("line")
-    .attr("x1", 5)
-    .attr("y1", 260)
-    .attr("x2", 5 + w)
-    .attr("y2", 260)    
+    .attr("x1", 0)
+    .attr("y1", 30)
+    .attr("x2", 0 + width_bar)
+    .attr("y2", 30)    
     .style("border", "solid 2px black")
     .style("stroke", "black")
     .style("fill", "white")
@@ -204,77 +201,42 @@ function phaseDiagram(divin) {
       var pt = d3.mouse(this)
       var beta = X.invert(pt[0])
       if (beta < optbeta) {
-        underdamp.transition().duration(20).attr("cx", pt[0])
+        underdamp.attr("cx", pt[0])
         updateCallbacks[0](getTrace(al, X.invert(pt[0]), 1,1)) 
-        connectLines[0].transition().duration(20).attr("d", genPath(pt[0], 260, 302, 232 ))
 
-        overdamp.transition().duration(100).attr("cx", X(0.999))
-        updateCallbacks[2](getTrace(al, 0.999, 1,1)) 
-        connectLines[2].transition().duration(20).attr("d", genPath(X(0.999), 260, 802, 232 ))
+        overdamp.transition().duration(20).attr("cx", X(default_underdamp))
+        updateCallbacks[2](getTrace(al, default_underdamp, 1,1)) 
+
+        updateAnnotationOverDamp(pt[0], 30, 0)
+        updateAnnotationUnderDamp(X(default_underdamp), 30, 20)
 
       } 
       if (beta > optbeta) {
-        overdamp.transition().duration(20).attr("cx", pt[0])        
+        overdamp.attr("cx", pt[0])        
         updateCallbacks[2](getTrace(al, Math.min(X.invert(pt[0]),1), 1,1))      
-        connectLines[2].transition().duration(20).attr("d", genPath(pt[0], 260, 802, 232 ))
 
-        underdamp.transition().duration(100).attr("cx", X(0.1))
-        updateCallbacks[0](getTrace(al, 0.1, 1,1))      
-        connectLines[0].transition().duration(20).attr("d", genPath(X(0.1), 260, 302, 232 ))
+        underdamp.transition().duration(20).attr("cx", X(default_overdamp))
+        updateCallbacks[0](getTrace(al, default_overdamp, 1,1))      
 
+        updateAnnotationUnderDamp(pt[0], 30, 0)
+        updateAnnotationOverDamp(X(default_overdamp), 30, 20)
       } 
 
     })
     .on("mouseout", function () { 
 
-      underdamp.transition().duration(300).attr("cx", X(0.1))
-      updateCallbacks[0](getTrace(al, 0.1, 1,1))      
-      connectLines[0].transition().duration(300).attr("d", genPath(X(0.1), 260, 302, 232 ))
+      underdamp.transition().duration(50).attr("cx", X(default_overdamp))
+      updateCallbacks[0](getTrace(al, default_overdamp, 1,1))      
 
-      overdamp.transition().duration(300).attr("cx", X(0.999))
-      updateCallbacks[2](getTrace(al, 0.999, 1,1))      
-      connectLines[2].transition().duration(300).attr("d", genPath(X(0.999), 260, 802, 232 ))
+      overdamp.transition().duration(50).attr("cx", X(default_underdamp))
+      updateCallbacks[2](getTrace(al, default_underdamp, 1,1))   
+
+      updateAnnotationUnderDamp(X(default_underdamp), 30, 50)
+      updateAnnotationOverDamp(X(default_overdamp), 30, 50)
+   
     })
 
-  divin.append("span")
-    .style("position","absolute")
-    .style("width", "10px")
-    .style("height", "10px")
-    .style("font-size", "20px")
-    .style("line-height", "18px")
-    .style("font-family", "Open Sans")        
-    .style("text-align", "right")
-    .style("top", "250px")
-    .style("left", "-3px")
-    .style("color", "gray")  
-    .html("$\\beta$")
 
 
-  divin.append("span")
-    .style("position","absolute")
-    .style("width", "10px")
-    .style("height", "10px")
-    .style("font-size", "15px")
-    .style("line-height", "18px")
-    .style("font-family", "Open Sans")        
-    .style("text-align", "right")
-    .style("top", "266px")
-    .style("left", "12px")
-    .style("color", "gray")  
-    .html("$0$")
-
-
-  divin.append("span")
-    .style("position","absolute")
-    .style("width", "10px")
-    .style("height", "10px")
-    .style("font-size", "15px")
-    .style("line-height", "18px")
-    .style("font-family", "Open Sans")        
-    .style("text-align", "right")
-    .style("top", "266px")
-    .style("left", "916px")
-    .style("color", "gray")  
-    .html("$1$")
 
 }

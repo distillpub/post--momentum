@@ -119,7 +119,6 @@
   var slidera = sliderGen([230, 40])
               .ticks([0,0.0015,0.003])
               .change( function (i) {
-                console.log(i)
                 d3.select("#sliderAlpha").selectAll(".figtext").html("Step size α = " + getalpha().toPrecision(2) )
                 iterChange(getalpha(), getbeta(), getw0() )
               } )
@@ -308,36 +307,55 @@ c1.control(0.018,0,numeric.dot(Ut,[1.7,2.1]))
   $$
   we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
   </p>
-  <div id = "sliderStepAlpha" style="width:920px; height:20px">
-  <text style="font-size: 15px; top: -9px; left: 10px; position: relative;">  α</text>
+  <figure style="position:relative; width:920px; height:350px">
+  <figcaption style="position:absolute; text-align:left; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
+
+<!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
+ -->  
+  <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px">
+    <div id="stepSizeMilestones" class="figtext" style="position:absolute; left:15px; top:15px">Step Size </div>
+    <div class="figtext2" style="position:absolute; font-size:11px; left:152px; top:18px">Optimal Step Size </div>
+    <svg style="position:absolute; font-size:10px; left:224px; top:34px">
+<line marker-end="url(#arrowhead)" style="stroke: black; stroke-width: 1.5; visibility: visible;" x2="5" y2="10" x1="5" y1="0"></line>
+    </svg>
+
   </div>
-  <div id = "obj"></div>
-  <div id = "milestonesSlider" style="width:920px; height:20px"> </div>
+  <div id = "obj"></div>  
+  </figure>  
   <script>
-  var controlmilestones = sliderGen([917, 25])
-              .ticks([0,100,150])
-              .tooltip(function(i) {return ["a","b","c","d","e"][i]})
-              .mouseover(function(i) {console.log("Mouseover", i)})
-              .cRadius(0)
-              .tooltip(function(d) { return "λ<sub>"+(d+1)+"</sub> = " + [1,10,100][d] + "<br>x<sub>" + (d+1) + "</sub><sup style=\"position:relative; left:-5px\">0</sup> = 1"})
-              .tickConfig(1.5,5,true)
-              .margins(10,15)(d3.select("#milestonesSlider"))
+  var graphDiv = d3.select("#obj")
+                   .style("width",  920 + "px")
+                   .style("height", 300 + "px")
+                   .style("top", "90px")
+                   .style("position", "relative")
+                   .style("margin-left", "auto")
+                   .style("margin-right", "auto")
+                   .attr("width", 920)
+                   .attr("height", 500)
+  
+  var svg = graphDiv.append("svg").attr("width", 920).attr("height", 500)
 
-  var updateSliderAlpha = renderMilestones(d3.select("#obj"), controlmilestones.tick)
+  var updateSliderGD = renderMilestones(svg, function() {})
 
-  var slider = sliderGen([300, 25])
-              .ticks([0,1,(2*100)/(101),2])
-              .change( function (i) { updateSliderAlpha(i,0)} )
-              .cRadius(5)
-              .margins(20,20)
-              .tooltip( function(i) { return ["zero",false,"optimal stepsize","upper limit"][i] })
-
-  slider( d3.select("#sliderStepAlpha") )
-
+  var slidera = sliderGen([250, 80])
+              .ticks([0,1,200/(101),2])
+              .change( function (i) {
+                var html = katex.renderToString("\\alpha = " + i.toPrecision(4) )
+                d3.select("#stepSizeMilestones")
+                  .html("Stepsize " + html )
+                updateSliderGD(i,0.7)
+              } )
+              .ticktitles(function(d,i) { return [0,1,"",2][i] })
+              .startxval(0.003)
+              .cRadius(7)
+              .shifty(-12)
+              .shifty(10)
+              .margins(20,20)(d3.select("#sliderStep"))
   </script>
   <p>
-  The loss, $f(w^k)$ is a superposition of exponentially decaying curves. For the quadratic function $f$ with $A = \text{diag}([1,10,100])$ and $b = [1,1/\sqrt{10}, 1/\sqrt{100}]$, we see three curves, each with its own rate of decay, depending on the step-length $\alpha$. The timeline beneath the plot visualizes the milestones of descent - with a tick every time error in one eigenspace as it dips below a certain tolerance. Our iterates thus move through 3 stages of convergence, and when the $k$ passes the final milestone, convergence is achieved. The rate at which the slowest error goes down is referred to as the convergence rate.
-  <h3>Choosing A Step-size</h3>
+<!--   The loss, $f(w^k)$ is a superposition of exponentially decaying curves. For the quadratic function $f$ with $A = \text{diag}([1,10,100])$ and $b = [1,1/\sqrt{10}, 1/\sqrt{100}]$, we see three curves, each with its own rate of decay, depending on the step-length $\alpha$. The timeline beneath the plot visualizes the milestones of descent - with a tick every time error in one eigenspace as it dips below a certain tolerance. Our iterates thus move through 3 stages of convergence, and when the $k$ passes the final milestone, convergence is achieved. The rate at which the slowest error goes down is referred to as the convergence rate.
+ -->  
+ <h3>Choosing A Step-size</h3>
   <p>
   The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, $|1-\alpha \lambda_i|$ must be strictly less than 1 for all $i$. All workable step-sizes, therefore, fall in the interval
 
@@ -632,9 +650,78 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 
    The exact values of $\alpha$ and $\beta$ needed to achieve this is complicated. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior
   </p>
-  <div id = "momentum2D"></div>
-  <script>renderMomentum(d3.select("#momentum2D"))</script>
 
+  <figure id = "momentum2D" style="width:984px; height:540px">
+    <div class = "l-body" style="display:block">
+      <div id = "momentumCanvas" style="position:absolute; left:45px"></div>
+      <div id = "momentumAnnotation" style="position:absolute; width: 204px; height: 80px; left: 630px; top: 20px;"></div>
+      <div style="position:absolute; width: 204px; height: 80px; left: 543px; top: 10px;" class ="figtext" >
+        Convergence Rate
+
+      </div>
+
+      <figcaption style="position:absolute; width: 204px; height: 80px; left: 630px; top: 86px;">
+      A plot of $\max{\sigma_1, \sigma_2}$ reveals distinct regions, each with its own style of convergence.
+      </figcaption>
+
+    </div>
+    <div id = "taxonomy"></div>
+    <svg id="momentumOverlay" style="position:absolute; width:984px; height:540px; z-index:4; pointer-events:none"></svg>
+  </figure>  
+  <script>
+
+  var defaults = [[0.0015, 0.9],
+                  [0.0015, 0.125],
+                  [0.01, 0.00001],
+                  [0.02, 0.05   ],
+                  [0.025, 0.235 ]]
+
+  coor = render2DSliderGen(
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[0](xy[0], xy[1],bold)
+      updateStemGraphs[0](a,b)
+    }, 
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[1](xy[0], xy[1],bold)
+      updateStemGraphs[1](a,b)
+    },  
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[2](xy[0], xy[1],bold)
+      updateStemGraphs[2](a,b)
+    }, 
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[3](xy[0], xy[1],bold)
+      updateStemGraphs[3](a,b)
+    },
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[4](xy[0], xy[1],bold)
+      updateStemGraphs[4](a,b)
+    }, defaults)(d3.select("#momentumCanvas"))
+
+  var tax = renderTaxonomy(d3.select("#momentum2D"))
+
+  var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
+  var updateStemGraphs = tax.update
+
+  colorMap(d3.select("#momentumAnnotation"))
+
+  var up = function (i, alpha, beta) {
+             var xy = coor(alpha, beta)
+             updatePaths[i](xy[0], xy[1])
+             updateStemGraphs[i](alpha,beta)
+           }
+
+  for (var i = 0; i<5; i++) {
+    up(i,defaults[i][0], defaults[i][1])
+  }
+
+
+  </script> 
   <p>
 
   Notice an immediate boon we get. Momentum allows us to use a crank up the step-length up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
@@ -664,7 +751,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   <p>
   And if you don't recall your high school physics, the damped harmonic oscillator is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. We can understand this visually in a phase portrait.
   </p>
-  <div id = "phasediagram" style="display: block;position:relative;width:920px;height: 520px;margin-left: auto;margin-right: auto;"></div>
+  <figure id = "phasediagram" style="position:relative; width:648px; height:490px"></figure>
   </div>
   <script>
   phaseDiagram(d3.select("#phasediagram"))
@@ -707,7 +794,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   $$
   With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. For ill conditioned problems, set $\beta$ as close to $1$ as you can, and make the $\alpha$ as high as possible. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
-
+<!-- 
   <div style = "width:920px; height:20px">
   <div id="sliderAlpha1" style="display:inline">
     <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">α</text>
@@ -747,7 +834,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   var updatem2 = renderMilestones(d3.select("#objectiveAlphaBeta"), function() {})
   updatem2(1.9, 0.98)
 
-  </script>
+  </script> -->
   <p>
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
   </p>

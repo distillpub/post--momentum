@@ -1,0 +1,93 @@
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="../assets/lib/d3-ring-note.js"></script>
+<style>
+
+html {
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+label {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.annotation circle {
+  fill: none;
+  stroke: black;
+}
+
+.annotation path {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.annotation .shaded {
+  fill: grey;
+  fill-opacity: 0.2;
+}
+
+</style>
+
+<div id = "annotate"></div>
+
+<script>
+var annotations = [
+  {
+    "cx": 40,
+    "cy": 100,
+    "r": 25,
+    "text": "Something important you should know",
+    "textWidth": 150,
+    "textOffset": [35, 40] 
+  },
+ {
+    "cx": 40,
+    "cy": 100,
+    "r": 25,
+    "text": "Something important you should know",
+    "textWidth": 150,
+    "textOffset": [35, 40] 
+  },
+  {
+    "cx": 40,
+    "cy": 100,
+    "r": 25,
+    "text": "Something important you should know",
+    "textWidth": 150,
+    "textOffset": [35, 40] 
+  },
+  {
+    "cx": 40,
+    "cy": 100,
+    "r": 25,
+    "text": "Something important you should know",
+    "textWidth": 150,
+    "textOffset": [35, 40] 
+  },
+  {
+    "cx": 40,
+    "cy": 100,
+    "r": 25,
+    "text": "Something important you should know",
+    "textWidth": 150,
+    "textOffset": [35, 40] 
+  }  
+
+];
+
+var svg = d3.selectAll("#annotate").append("svg")
+  .attr("width", "1000px")
+  .attr("height","1000px")
+
+var ringNote = d3.ringNote()
+  .draggable(true);
+
+ringNote(svg.append("g").attr("class", "annotations"),annotations)
+
+svg.selectAll(".ring-note")
+
+
+</script>

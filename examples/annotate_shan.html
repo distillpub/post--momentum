@@ -55,62 +55,59 @@ var svg = html.append("svg")
 
 var radius = 25
 
-var group = svg.append("g")
-
-var path = group.append("path");
-
 var p1 = [10,10]
 var p2 = [200,200]
 
 var width = 200
 var height = 30
 
-var ringPath = ringPathGen(7, width, height)
+function renderDraggable(p1, p2, radius, width, height) {
 
-var circlePointer = svg.append("circle")
-            .attr("cx", p1[0])
-            .attr("cy", p1[1])
-            .attr("r", radius)
-            .call(d3.drag().on("drag", function() { 
-                var x = d3.mouse(this)[0]
-                var y = d3.mouse(this)[1]
-                p1 = [x,y]
-                var d = ringPath(p1, p2)
-                path.attr("d", d.d)
-                circlePointer.attr("cx",x).attr("cy",y)
-            }));
+  var group = svg.append("g")
+  var path = group.append("path");
+  var ringPath = ringPathGen(radius, width, height)
+  var circlePointer = svg.append("circle")
+              .attr("cx", p1[0])
+              .attr("cy", p1[1])
+              .attr("r", radius)
+              .call(d3.drag().on("drag", function() { 
+                  var x = d3.mouse(this)[0]
+                  var y = d3.mouse(this)[1]
+                  p1 = [x,y]
+                  var d = ringPath(p1, p2)
+                  path.attr("d", d.d)
+                  circlePointer.attr("cx",x).attr("cy",y)
+              }));
+  var circleDragger = svg.append("circle")
+              .attr("cx", p2[0])
+              .attr("cy", p2[1])
+              .attr("r", 4)
+              .call(d3.drag().on("drag", function() { 
+                  var x = d3.mouse(this)[0]
+                  var y = d3.mouse(this)[1]
+                  p2 = [x,y]
+                  var d = ringPath(p1, p2)
+                  path.attr("d", d.d)
+                  label.style("top", d.label[0] + "px")
+                  label.style("left", d.label[1] + "px")
+                  circleDragger.attr("cx",x).attr("cy",y)
+              }));
 
-var circleDragger = svg.append("circle")
-            .attr("cx", p2[0])
-            .attr("cy", p2[1])
-            .attr("r", 4)
-            .call(d3.drag().on("drag", function() { 
-                var x = d3.mouse(this)[0]
-                var y = d3.mouse(this)[1]
-                p2 = [x,y]
-                var d = ringPath(p1, p2)
-                path.attr("d", d.d)
-                label.style("top", d.label[0] + "px")
-                label.style("left", d.label[1] + "px")
-                circleDragger.attr("cx",x).attr("cy",y)
-            }));
+  var label = html.append("span")
+      .style("position", "absolute")
+      .style("top", (p2[0] + height) + "px")
+      .style("left", (p2[1] + width/2) + "px")
+      .style("width", width + "px")
+      .style("height", height + "px")
+      .style("border-radius", "3px")
+      .style("text-align", "center")
+      .style("padding-top", "5px")
+      .style("font-size", "12px")    
+      .html("Some text here! Eigenvalues blah blah blah Gradient blah blah")
 
-var label = html.append("span")
-    .style("position", "absolute")
-    .style("top", (p2[0] + height) + "px")
-    .style("left", (p2[1] + width/2) + "px")
-    .style("width", width + "px")
-    .style("height", height + "px")
-    .style("border-radius", "3px")
-    .style("text-align", "center")
-    .style("padding-top", "5px")
-    .style("font-size", "12px")    
-    .html("Some text here! Eigenvalues blah blah blah Gradient blah blah")
-
-function updateRadius() {
-  radius = this.value;
-  circlePointer.attr("r", radius);
 }
+
+renderDraggable(p1, p2, 7, 100, 100)
 
 function ringPathGen(radius, width, height) {
 

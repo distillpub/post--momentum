@@ -2,29 +2,90 @@
 <head>
   <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
   <script src = "../assets/lib/d3.v4.min.js"></script>
-  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>  
   <script src="http://distill.pub/template.js"></script>  
   <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
   <script src = "../assets/utils.js"></script>  
   <script src = "../assets/momentum.js"></script>  
-  <script>
-  function mathjax() {
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [['$','$'], ['\$','\$']],
-      processEscapes: true
-    }
-  });
-  }
-  </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+
 </head> 
-<body onload = "mathjax()">
+<body>
   <dt-article class="centered">
   <p>
   Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
   </p>
-  <div id = "momentum2D"></div>
-  <script>renderMomentum(d3.select("#momentum2D"))</script> 
+  <figure id = "momentum2D" style="width:984px; height:540px">
+    <div class = "l-body" style="display:block">
+      <div id = "momentumCanvas" style="position:absolute; left:45px"></div>
+      <div id = "momentumAnnotation" style="position:absolute; width: 204px; height: 80px; left: 630px; top: 20px;"></div>
+      <div style="position:absolute; width: 204px; height: 80px; left: 543px; top: 0px;" class ="figtext" >
+        Convergence Rate
+
+      </div>
+
+      <figcaption style="position:absolute; width: 204px; height: 80px; left: 630px; top: 70px;">
+      A plot of $\max{\sigma_1, \sigma_2}$ reveals distinct regions, each with its own style of convergence.
+      </figcaption>
+
+    </div>
+    <div id = "taxonomy"></div>
+    <svg id="momentumOverlay" style="position:absolute; width:984px; height:540px; z-index:4; pointer-events:none"></svg>
+  </figure>  
+  <script>
+
+  var defaults = [[0.0015, 0.9],
+                  [0.0015, 0.125],
+                  [0.01, 0.00001],
+                  [0.02, 0.05   ],
+                  [0.025, 0.235 ]]
+
+  coor = render2DSliderGen(
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[0](xy[0], xy[1],bold)
+      updateStemGraphs[0](a,b)
+    }, 
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[1](xy[0], xy[1],bold)
+      updateStemGraphs[1](a,b)
+    },  
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[2](xy[0], xy[1],bold)
+      updateStemGraphs[2](a,b)
+    }, 
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[3](xy[0], xy[1],bold)
+      updateStemGraphs[3](a,b)
+    },
+    function(a,b,bold) { 
+      var xy = coor(a,b)
+      updatePaths[4](xy[0], xy[1],bold)
+      updateStemGraphs[4](a,b)
+    }, defaults)(d3.select("#momentumCanvas"))
+
+  var tax = renderTaxonomy(d3.select("#momentum2D"))
+
+  var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
+  var updateStemGraphs = tax.update
+
+  colorMap(d3.select("#momentumAnnotation"))
+
+  var up = function (i, alpha, beta) {
+             var xy = coor(alpha, beta)
+             updatePaths[i](xy[0], xy[1])
+             updateStemGraphs[i](alpha,beta)
+           }
+
+  for (var i = 0; i<5; i++) {
+    up(i,defaults[i][0], defaults[i][1])
+  }
+
+
+  </script> 
   <p>
   Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
  </p>

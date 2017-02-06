@@ -1,28 +1,59 @@
 <html>
 <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>  
   <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
   <script src = "../assets/lib/d3.v4.min.js"></script>
   <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
   <script src = "../assets/lib/tooltip.js"></script>  
   <script src = "../assets/utils.js"></script>  
   <script src = "../assets/milestones.js"></script>  
+  <script src="http://distill.pub/template.js"></script>
 </head> 
 <body>
+<dt-article class="centered">
+<p>
+  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+
+</p>
   <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <figure style="position:relative; width:920px; height:350px">
+  <figcaption style="position:absolute; text-align:left; top:15px; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as a b c</figcaption>
+
+  <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px"></div>
   <div id = "obj"></div>  
-  <div id = "sliderStep" style="position:relative; top:0px"></div>
+  </figure>  
   <script>
-
   var graphDiv = d3.select("#obj")
-    .style("width",  940 + "px")
-    .style("height", 500 + "px")
-    .style("position", "relative")
-    .attr("width", 920)
-    .attr("height", 500)
-
+                   .style("width",  920 + "px")
+                   .style("height", 300 + "px")
+                   .style("top", "90px")
+                   .style("position", "relative")
+                   .style("margin-left", "auto")
+                   .style("margin-right", "auto")
+                   .attr("width", 920)
+                   .attr("height", 500)
+  
   var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
   var update = renderMilestones(svg, function() {})
 
-</script>
+  var slidera = sliderGen([250, 80])
+              .ticks([0,1,200/(101),2])
+              .change( function (i) {
+                console.log(i)
+                update(i,0)
+              } )
+              .ticktitles(function(d,i) { return [0,1,"",2][i] })
+              .startxval(0.003)
+              .cRadius(7)
+              .shifty(-12)
+              .shifty(10)
+              .margins(20,20)(d3.select("#sliderStep"))
+  </script>
+<p>
+  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+
+</p>  
+</dt-article>
 </body>

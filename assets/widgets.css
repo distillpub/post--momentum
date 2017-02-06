@@ -211,6 +211,15 @@ path {
 }
 
 
+.figtext2{
+  font-size:13px;
+  line-height:18px;
+  font-family:Helvetica;      
+  text-align:left;
+  color:gray;  
+}
+
+
 .ticktext{
   font-size:12px;
   line-height:18px;

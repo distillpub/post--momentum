@@ -1088,7 +1088,7 @@ function sliderBarGen(barlengths) {
 	     .attr("opacity", 0.01)
 	     .style("fill", "gray")
 	     .on("mouseover", mouseover)
-	     .on("mouseout", function(i) { console.log("Hi"); updateEverything(slidera.xval()) })
+	     .on("mouseout", function(i) { update(slidera.xval()) })
 
 	  var bars = chart.selectAll("line").data(barlengths)
 	     .enter()

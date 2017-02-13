@@ -114,9 +114,15 @@ var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(color
     display(FlowU[i], divergent)
   }
 
+  var cacheval  = -1
+  var cacheiter = null
   var onDragSlider = function (i) {
     var i = Math.floor(Math.exp(i)) 
-    display(iter(i), jetc)
+    if (cacheval != i) {
+      cacheiter = iter(i)
+      cacheval = i
+    }
+    display(cacheiter, jetc)
   }
 
   display(iter(100), jetc) // Set it up to a nice looking default

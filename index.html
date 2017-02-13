@@ -747,12 +747,12 @@ $$
   renderDraggable(svgannotate, [139.88888549804688, 243.77951049804688], [121.88888549804688, 200.77951049804688], 5, "We begin at x=w=0")})()
 
   </script>
-  <p>
+<!--   <p>
   The behavior is exactly as you might expect. Gradient descent produces a decent result just under 50 iterations, and starts overfitting data only at the $k=100$ mark. Things then slow down for a rather long time, only reaching final convergence in about about $k=1241709$. And the iterates are exactly as we expect it to be - we see structurally simple iterates first, and complex ones only later.
-  </p>
+  </p> -->
 
   <p>
-  Its worth noting that the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both try to suppress the components of the smallest eigenvalues, though both through different means. But early stopping has a distinct advantage. After our steplength is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This seemingly free gift, it seems, doesn't come at a price. And thus it is a beautiful free lunch indeed.
+  It's worth noting that the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay [TODO: Derivation]. But early stopping has a distinct advantage. After our steplength is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This seemingly free gift, it seems, doesn't come at a price. And thus it is a beautiful free lunch indeed.
   
 <!--   The behavior is exactly as you might expect. Our model has more than enough expressive power to overfit any dataset. And yet, for all reasonable runtimes, it does not. Gradient descent produces a decent result in a few minutes, and starts overfitting data only at the $k=10^8$ mark (a year and a half of runtime). And the whole thing reaches final convergence in about about 10 billion years, assuming your computer's still running then! That seems like a lot of work for polynomial regression in 25 variables. But the directions of slowest progress are also the directions which overfit the data. And thus pathological curvature here, is a surprising friend, putting into check our model's worst instincts. -->
   </p>

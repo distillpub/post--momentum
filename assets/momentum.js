@@ -381,11 +381,11 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
     divin
       .append("text")
       .style("position","absolute")
-      .style("left", "440px")
+      .style("left", "450px")
       .style("width", "90px")
       .style("top", slider2Dtop + 208 + "px")
       .attr("class", "figtext")
-      .html("Steplength " + html)
+      .html("Step-size " + html)
 
     // Returns a function which converts alpha, beta into the parents
     // coordinate space

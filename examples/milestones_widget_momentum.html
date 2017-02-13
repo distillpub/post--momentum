@@ -4,6 +4,7 @@
   <script src="../assets/lib/template.js"></script>
   <script src="../assets/lib/auto-render.min.js"></script>
   <script src="../assets/lib/katex.min.js"></script>
+  <script src="../assets/lib/swoopy-drag.js"></script>
   <link   rel="stylesheet" href="../assets/lib/katex.min.css">
   <link   rel="stylesheet" type="text/css" href="../assets/widgets.css">  
   <script src = "../assets/lib/d3.v4.min.js"></script>
@@ -58,6 +59,42 @@
   var update = renderMilestones(svg, function() {})
 
   var slidera = slider2D(d3.select("#sliderStep"), function(x,y) { update(x,y) })
+
+  // Swoopy Annotator
+  var annotations = [
+    {
+      "x": 0,
+      "y": 0,
+      "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+      "text": "Optimal parameters",
+      "textOffset": [
+        188,
+        109
+      ]
+    }
+  ]
+
+  var swoopy = d3.swoopyDrag()
+    .x(function(d){ return (d.x) })
+    .y(function(d){ return (d.y) })
+      .draggable(false)
+      .annotations(annotations)
+
+  var svg = d3.select("#sliderStep").selectAll("svg")
+  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+
+  svg.append('marker')
+      .attr('id', 'arrow')
+      .attr('viewBox', '-10 -10 20 20')
+      .attr('markerWidth', 20)
+      .attr('markerHeight', 20)
+      .attr('orient', 'auto')
+    .append('path')
+      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+      .attr("transform", "scale(0.5)")
+
+  swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+
 
   </script>
 <p>

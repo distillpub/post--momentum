@@ -31,6 +31,8 @@
 <script src="assets/data/Urosen.json"></script>
 <script src="assets/phasediagram.js"></script>
 <script src="assets/eigensum.js"></script>
+<script src="assets/lib/swoopy-drag.js"></script>
+
 
 <link rel="stylesheet" type="text/css" href="assets/widgets.css">
 
@@ -660,13 +662,61 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   .style("padding", "10px")    
   .html("Finally, jagged polynomials which differ wildly on neighboring points. ")})()
 
+
+  var figwidth = d3.select("#eigendisplay").style("width")
+  var figheight = d3.select("#eigendisplay").style("height")
+  var svg = d3.select("#eigendisplay")
+                      .append("svg")
+                      .style("width", figwidth)
+                      .style("height", figheight)
+                      .style("position", "absolute")
+                      .style("top","0px")
+                      .style("left","0px")
+                      //.style("pointer-events","none")
+
+  // Swoopy Annotator
+  var annotations = [
+  {
+    "x": 0,
+    "y": 0,
+    "path": "M 807,198 A 26.661 26.661 0 0 1 838,159",
+    "text": "drag points to fit data",
+    "textOffset": [
+      799,
+      214
+    ]
+  }
+  ]
+
+  var swoopy = d3.swoopyDrag()
+    .x(function(d){ return (d.x) })
+    .y(function(d){ return (d.y) })
+      .draggable(true)
+      .annotations(annotations)
+
+  var svg = d3.select("#eigendisplay").selectAll("svg")
+  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+
+  svg.append('marker')
+      .attr('id', 'arrow')
+      .attr('viewBox', '-10 -10 20 20')
+      .attr('markerWidth', 20)
+      .attr('markerHeight', 20)
+      .attr('orient', 'auto')
+    .append('path')
+      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+      .attr("transform", "scale(0.5)")
+
+  swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+
+
   </script>
   <p>
   The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And thus, it would be useful if there were a decomposition of our model into the parts which fit the data, and the parts which fit the noise. The eigenfeatures are in a sense are exactly such a decomposition. In the eigenfeature basis, the most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues). And with a small perturbation to the observations, it is the smallest eigenvalues which jump around the most, while the largest eigenvalues remain stable.
   </p>
 
   <p>
-  Now this measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates on the test set till we hit that turning point. Lets see how this plays out in gradient descent.
+  Now this measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Lets see how this plays out in gradient descent.
   <!--  This qualitative observation can be justified by thinking in terms of perturbation theory. Indeed, a simple derivation <dt-fn>
 
    we can justify this by thinking of what happens when we inject our observations with a bit of isotropic, $N(0,I)$ noise $\nu$. If we view our solution, $w^\star$ in the space of $U$.
@@ -752,7 +802,22 @@ $$
   </p> -->
 
   <p>
-  It's worth noting that the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay [TODO: Derivation]. But early stopping has a distinct advantage. After our steplength is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This seemingly free gift, it seems, doesn't come at a price. And thus it is a beautiful free lunch indeed.
+  The effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+$$
+\text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\eta\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
+$$
+Recall that $Z^{T}Z=Q\text{diag}(\Lambda_{1},\ldots,\Lambda_{n})Q^T$. The solution to Tikhonov Regression is therefore
+$$
+(Z^{T}Z+\eta I)^{-1}(Zd)=Q\text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
+$$
+Rewrite the eigenvalues of $(Z^{T}Z+\eta I)^{-1}$ as 
+$$
+\frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
+$$
+Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize. For stepsizes
+close to the upper limit of convergence, the smallest eigenvalue may converge faster (or at the same rate) as the largest. These stepsizes,
+however, occupy a minuscule fraction of the set of acceptable stepsizes, and are almost never encountered in practice. 
+</dt-fn>. And both improve convergence - augmenting or ignoring the pathological directions of curvature. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This seemingly free gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   
 <!--   The behavior is exactly as you might expect. Our model has more than enough expressive power to overfit any dataset. And yet, for all reasonable runtimes, it does not. Gradient descent produces a decent result in a few minutes, and starts overfitting data only at the $k=10^8$ mark (a year and a half of runtime). And the whole thing reaches final convergence in about about 10 billion years, assuming your computer's still running then! That seems like a lot of work for polynomial regression in 25 variables. But the directions of slowest progress are also the directions which overfit the data. And thus pathological curvature here, is a surprising friend, putting into check our model's worst instincts. -->
   </p>
@@ -921,7 +986,7 @@ $$
     <div class = "l-body" style="display:block">
       <div id = "momentumCanvas" style="position:absolute; left:45px"></div>
       <div id = "momentumAnnotation" style="position:absolute; width: 204px; height: 80px; left: 630px; top: 20px;"></div>
-      <div style="position:absolute; width: 204px; height: 80px; left: 543px; top: 10px;" class ="figtext" >
+      <div style="position:absolute; width: 204px; height: 80px; left: 643px; top: 10px;" class ="figtext" >
         Convergence Rate
 
       </div>
@@ -988,7 +1053,7 @@ $$
   </script> 
   <p>
 
-  Notice an immediate boon we get. Momentum allows us to use a crank up the step-length up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
+  Notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
   </p>
   <h3>The Critical Damping Coefficient</h3>
 
@@ -1061,7 +1126,7 @@ $$
 
   <figure style="position:relative; width:920px; height:460px">
   <figcaption style="position:absolute; text-align:left; top:30px; left:140px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:20px; width:280px; height:120px"> $f(w) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:5px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:120px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
@@ -1085,7 +1150,46 @@ $$
 
   var update = renderMilestones(svg, function() {})
 
-  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) })})()
+  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) })
+
+  // Swoopy Annotator
+  var annotations = [
+    {
+      "x": 0,
+      "y": 0,
+      "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+      "text": "Optimal parameters",
+      "textOffset": [
+        188,
+        109
+      ]
+    }
+  ]
+
+  var swoopy = d3.swoopyDrag()
+    .x(function(d){ return (d.x) })
+    .y(function(d){ return (d.y) })
+      .draggable(false)
+      .annotations(annotations)
+
+  var svg = d3.select("#sliderStep2D").selectAll("svg")
+  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+
+  svg.append('marker')
+      .attr('id', 'arrow')
+      .attr('viewBox', '-10 -10 20 20')
+      .attr('markerWidth', 20)
+      .attr('markerHeight', 20)
+      .attr('orient', 'auto')
+    .append('path')
+      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+      .attr("transform", "scale(0.5)")
+
+  swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+
+  }
+
+  )()
 
   </script>
   <p>
@@ -1574,6 +1678,17 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   pages={1139--1147},
   year={2013}
 }
+
+
+@article{hintonNIPS,
+  title={Deep Learning, NIPS'2015 Tutorial},
+  author={Hinton, Geoff and Bengio, Yoshua and LeCun, Yann},
+  year={2015},
+  url={http://www.iro.umontreal.ca/~bengioy/talks/DL-Tutorial-NIPS2015.pdf}
+}
+
+
+
 </script>
 
 <script>

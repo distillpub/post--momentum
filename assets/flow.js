@@ -1,5 +1,28 @@
 function renderFlowWidget(divin) {
 
+
+  divin.append("figcaption")
+       .style("position", "absolute")
+       .style("left", "500px")
+       .style("width", "300px")
+       .html("Each square in the graph below represents a node (and a weight $w_i$), and edges connect neighboring squares. Drag the slider to see the progress of gradient descent.")
+  
+
+  var stepCaption = divin.append("figcaption")
+       .style("position", "absolute")
+       .style("left", "153px")
+       .style("width", "300px")
+       .attr("class", "figtext")
+       .html("Step size α = 0.02")
+  
+
+  sliderGen([320, 100])
+      .ticks([0,2/FlowSigma[1119]])
+      .cRadius(5)
+      .startxval(4)
+      .shifty(-20)
+      .change(changeStep)(divin.append("div").style("position","relative").style("left", "100px"))
+
   /*
   Generate coordinates for 2D Laplacian based on input matrix
   V[i] = (x,y) coordinate of node in 2D space.
@@ -11,7 +34,8 @@ function renderFlowWidget(divin) {
 
   /* Generate b in optimization problem x'Ax - b'x */
   var b = zeros(FlowU[0].length); b[448] = 10;  b[560] = 10
-  var iter = geniter(FlowU, FlowSigma, b, 2/8)
+  var step = 1.9/(FlowSigma[1119])
+  var iter = geniter(FlowU, FlowSigma, b, step)
   var Ub = numeric.dot(FlowU, b)
 
   // We can also run this on momentum. 
@@ -36,8 +60,6 @@ function renderFlowWidget(divin) {
         .append("svg")
         .attr("width", 920)
         .attr("height", 150)   
-        .style("border", "black solid 1px")
-        .style("box-shadow","0px 3px 10px rgba(0, 0, 0, 0.4)")
 
     /* Render discretization of 2D Laplacian*/
     sampleSVG.selectAll("rect")
@@ -70,53 +92,43 @@ function renderFlowWidget(divin) {
 
   // Callbacks
   var showEigen = function (d,i) {
-    display2(FlowU[i], divergent)
+    display(FlowU[i], divergent)
   }
 
-  var onDragSlider = function (i, handle) {
+  var onDragSlider = function (i) {
     var i = Math.floor(Math.exp(i)) 
     display(iter(i), jetc)
-    handle.select("text").text("k=" + i )
-    //+ Math.round(100*((0.4*i)/100)/60)/100
   }
-
-  // Generate Slider in the middle
-
-  var slider = sliderGen([920, 60])
-            .ticks(getStepsConvergence(FlowSigma,2/8).map(function(i) {return Math.log(i) + 1}))
-            .change(onDragSlider)
-            .mouseover(showEigen)
-            .startxval(2)
-            .tickConfig(1.5,5,true)           
-            .tooltip( function(d) { return "λ<sub>"+(d+1)+"</sub> = " + round(FlowSigma[d]) + "<br>x<sub>" + (d+1) + "</sub><sup style=\"position:relative; left:-5px\">0</sup> = " + round(Ub[d]) })
-
-  slider(divin)
 
   display(iter(100), jetc) // Set it up to a nice looking default
 
-  // Generate Display at the bottom
+  var barLengths = getStepsConvergence(FlowSigma,step)
+    .map( function(i) {return Math.log(i+1)} ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
 
-  var display2 = renderGrid(divin, 100)
+  var slideControl = sliderBarGen(barLengths)
+                    .height(281)
+                    .linewidth(1.3)
+                    .maxX(13.3)
+                    .mouseover( function(d,i) { console.log(i); display(FlowU[i], divergent) })
+                    .labelFunc(function (d,i) { 
+                      if (i < 50) {
+                        return ((i == 0) ? "Eigenvalue 1" : "") + (( (i+1) % 25 == 0 ) ? (i + 1) : "") 
+                      } else {
+                        return (( (i+1) % 25 == 0 ) ? 20*(i + 1) : "") 
+                      }
+                    })
+                    .update(onDragSlider)(divin)
 
-  display2(FlowU[21], divergent) // Set it up to a nice looking default
+  slideControl.slidera.init()
 
-  // Display labels!
-
-  divin.append("span")
-    .style("position","absolute")
-    .style("top", "202px")
-    .style("left", "0px")
-    .style("font-size", "12px")
-    .style("text-align", "center")
-    .html("Eigenvectors")
-
-  divin.append("span")
-    .style("position","absolute")
-    .style("top", "-25px")
-    .style("left", "0px")
-    .style("font-size", "12px")
-    .style("text-align", "center")
-    .html("w<sub>i</sub>")
+  function changeStep(step) {
+    var barLengths = getStepsConvergence(FlowSigma,Math.max(step,0.000001))
+      .map( function(i) {return Math.log(Math.max(i,1))} ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
+    slideControl.update(barLengths)
+    iter = geniter(FlowU, FlowSigma, b, Math.max(step, 0.000001))
+    slideControl.slidera.init()
+    stepCaption.html("Step size α = " + step.toPrecision(3))
+  }
     
 }
 

@@ -41,7 +41,6 @@
   var slidera = sliderGen([250, 80])
               .ticks([0,1,200/(101),2])
               .change( function (i) {
-                console.log(i)
                 update(i,0)
               } )
               .ticktitles(function(d,i) { return [0,1,"",2][i] })

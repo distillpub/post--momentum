@@ -23,7 +23,7 @@ function phaseDiagram(divin) {
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
 
-  var w = 170;
+  var w = 170
   var h = 170
   var a = 1.0
 
@@ -41,14 +41,13 @@ function phaseDiagram(divin) {
        .attr("height", 520)
        .style("z-index", 10)
        .style("pointer-events", "none")
-  renderDraggable(overlay, [320.5, 361+35], [346.5, 378+35], 6, "Optimum<tspan x=\"0\" dy=\"1.2em\">Reached</tspan>")
-
-  renderDraggable(overlay, [100.5, 277+35], [121.5, 267+35], 6, "Initial point: x = 1, y = 0")
-
+  renderDraggable(overlay, [320.5, 361+35], [346.5, 378+35], 6, "Reaches<tspan x=\"0\" dy=\"1.2em\">Optimum</tspan>")
+  renderDraggable(overlay, [100.5, 277+35], [121.5, 267+35], 6, "Initial point:<tspan x=\"0\" dy=\"1.2em\">x = 1, y = 0</tspan>")
   renderDraggable(overlay, [581.5, 360+35], [597.5, 321+35], 6, "Misses Optimum")
 
   // Draw the three phases
   var updateCallbacks = []
+  var divs = []
   var ringPath = ringPathGen(5, 0, 0)
   var paths = []
   for (var i = 0; i < 3; i ++ ) {
@@ -59,12 +58,13 @@ function phaseDiagram(divin) {
       .style("height",h + "px")
       .style("left", [15, 235, 455][i] + "px")
       .style("top", [110, 110, 110][i] + "px")
+      .style("border-top", "solid 1px gray")
 
+    divs.push(div)
     var z = div.node()
 
     var divx = z.offsetLeft + z.offsetWidth/2
     var divy = z.offsetTop
-
     var path = overlay.append("path")
                   .style("stroke", "grey")
                   .style("stroke-width", "1px")
@@ -103,11 +103,9 @@ function phaseDiagram(divin) {
       .style("position","absolute")
       .style("width", "180px")
       .style("height", "200px")
-      .attr("class", "figtext2")      
       .style("text-align", "left")
       .style("top", [10, 10, 10][i] + "px")
       .style("left", "00px")
-      .style("color", "gray")  
       .html(textCaptions[i])
 
     var svg = div.append("svg")
@@ -147,6 +145,25 @@ function phaseDiagram(divin) {
   var linesvg = d3.select("#phasediagram")
     .append("svg")
 
+  // Axis
+  var axis = linesvg.append("g")     
+    .attr("class", "figtext")
+    .attr("opacity", 0.3)
+    .attr("transform", "translate(0,32)")
+    .call(d3.axisBottom(X)
+      .ticks(5)
+      .tickSize(5))
+
+  axis.selectAll("path").remove()
+
+  var html = katex.renderToString("\\beta")
+  // Axis
+  linesvg.append("text")     
+    .attr("class", "figtext")
+    .attr("opacity", 1)
+    .attr("transform", "translate(0,12)")
+    .html("Momentum  β")
+
   linesvg.style("position","absolute")
     .style("width", "920px")
     .style("height", "570px")
@@ -159,7 +176,7 @@ function phaseDiagram(divin) {
     .style("border", "solid 2px black")
     .style("stroke", "#CCC")
     .style("fill", "white")
-    .style("stroke-width", "3px")
+    .style("stroke-width", "1.5px")
 
   var underdamp = linesvg
         .append("circle")
@@ -181,6 +198,8 @@ function phaseDiagram(divin) {
         .attr("cy", 30)
         .attr("r", 6)
         .style("fill", "#ff6600")
+
+  var prevState = ""
 
   linesvg.style("position","absolute")
     .style("width", "920px")
@@ -204,26 +223,42 @@ function phaseDiagram(divin) {
         underdamp.attr("cx", pt[0])
         updateCallbacks[0](getTrace(al, X.invert(pt[0]), 1,1)) 
 
-        overdamp.transition().duration(20).attr("cx", X(default_underdamp))
-        updateCallbacks[2](getTrace(al, default_underdamp, 1,1)) 
-
+        overdamp.attr("cx", X(default_underdamp))
         updateAnnotationOverDamp(pt[0], 30, 0)
-        updateAnnotationUnderDamp(X(default_underdamp), 30, 20)
 
+        if (prevState != "Over"){
+          divs[0].style("opacity",1)
+          divs[1].style("opacity",0.2)
+          divs[2].style("opacity",0.2)
+
+          updateCallbacks[2](getTrace(al, default_underdamp, 1,1)) 
+          updateAnnotationUnderDamp(X(default_underdamp), 30, 20)
+        }
+        prevState = "Over"
       } 
       if (beta > optbeta) {
         overdamp.attr("cx", pt[0])        
+        underdamp.attr("cx", X(default_overdamp))
         updateCallbacks[2](getTrace(al, Math.min(X.invert(pt[0]),1), 1,1))      
 
-        underdamp.transition().duration(20).attr("cx", X(default_overdamp))
-        updateCallbacks[0](getTrace(al, default_overdamp, 1,1))      
-
         updateAnnotationUnderDamp(pt[0], 30, 0)
-        updateAnnotationOverDamp(X(default_overdamp), 30, 20)
+
+        if (prevState != "Under") {
+          divs[0].style("opacity",0.2)
+          divs[1].style("opacity",0.2)
+          divs[2].style("opacity",1)
+
+          updateCallbacks[0](getTrace(al, default_overdamp, 1,1))                
+          updateAnnotationOverDamp(X(default_overdamp), 30, 20)
+        }
+        prevState = "Under"
       } 
 
     })
     .on("mouseout", function () { 
+        divs[0].style("opacity",1)
+        divs[1].style("opacity",1)
+        divs[2].style("opacity",1)
 
       underdamp.transition().duration(50).attr("cx", X(default_overdamp))
       updateCallbacks[0](getTrace(al, default_overdamp, 1,1))      
@@ -233,9 +268,9 @@ function phaseDiagram(divin) {
 
       updateAnnotationUnderDamp(X(default_underdamp), 30, 50)
       updateAnnotationOverDamp(X(default_overdamp), 30, 50)
+      prevState = ""
    
     })
-
 
 
 

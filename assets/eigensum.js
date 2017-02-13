@@ -1,0 +1,282 @@
+
+function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
+  var mathdiv = eigensum.append("div")
+
+  var xrange = d3.scaleLinear().domain([-10,10]).range([-1,1])
+  var startpoint = 0
+  var witemp = 0
+
+  console.log("wi", wi)
+
+  var equations = []
+
+  if (!(renderStars === undefined)) {
+    for (var i = 0; i < 7; i++) {
+
+      mathdiv
+        .append("span")
+        .style("text-align","center")
+        .style("display","inline-block")
+        .style("width", "110px")
+        .style("height", "25px")
+        .style("font-size", "16px")
+        .html(katex.renderToString("\\star"))
+
+
+      // Add pluses and equal signs
+      if (i < 5) {
+        mathdiv.append("span").style("text-align","center")
+        .style("display","inline-block")
+        .style("width", "25px")
+        .style("height", "25px")
+        .style("opacity", 0)
+        .html(".")  
+      } else{
+      if (i == 5) {
+        mathdiv.append("span").style("text-align","center")
+        .style("display","inline-block")
+        .style("width", "26px")
+        .style("height", "25px")
+        .style("opacity", 0)
+        .html(".")  
+        }
+      }
+
+    }
+  }
+  // Render Equations
+  for (var i =0; i < 7; i++) {
+
+    if (i != 6) {
+      var html = katex.renderToString(wi[i].toPrecision(3) + (hat ? " \\bar{p}_" : " p_")+(i+1))
+    } else{
+      var html = katex.renderToString("\\text{model}")  
+    }
+      
+    var equation = mathdiv
+      .append("span")
+      .style("text-align","center")
+      .style("display","inline-block")
+      .style("width", "110px")
+      .style("height", "50px")
+      .style("font-size", "16px")
+      .style("cursor", "ew-resize")
+      .html(html)
+      .call( 
+      d3.drag()
+        .on("start", function() { startpoint = d3.mouse(this)[0] } )
+        .on("drag", (function(i) { return function() { 
+          var xi = xrange(d3.mouse(this)[0] - startpoint) + wi[i]
+          witemp = wi.slice(0); witemp[i] = xi
+          var str = (witemp[i]).toPrecision(3) + (hat ? " \\bar{p}_" : "p_")+(i+1)
+          d3.select(this).html(katex.renderToString(str))
+          var w = zeros(6); w[i] = xi
+          updates[i](numeric.dot(numeric.transpose(U),w))
+          updatesum(numeric.dot(numeric.transpose(U),witemp))
+        }} )(i) )
+        .on("end", function() { wi = witemp })
+           )
+      
+    equations.push(equation)
+
+    // Add pluses and equal signs
+    if (i < 5) {
+      var html = katex.renderToString("+")
+      mathdiv.append("span").style("text-align","center")
+      .style("display","inline-block")
+      .style("width", "25px")
+      .style("height", "50px")
+      .style("font-size", "16px")
+      .html(html)  
+    } else{
+    if (i == 5) {
+      var html = katex.renderToString("=")
+         mathdiv.append("span").style("text-align","center")
+      .style("display","inline-block")
+      .style("width", "26px")
+      .style("height", "50px")
+      .style("font-size", "16px")
+      .html(html)  
+      }
+    }
+
+  }
+
+  var div = eigensum
+    .style("display", "block")
+    .style("margin-left","auto")
+    .style("margin-right","auto")
+    .style("width", 940+"px")
+    .style("position", "relative")
+    .append("div")
+
+  // Render Polynomials
+  var updates = []
+  for (var i = 0; i < 6; i++ ){
+    var w = zeros(6)
+    w[i] = 2
+    var update = renderEigenSum(div.append("svg"), x, undefined, function() {}, [colorbrewer.Dark2[6][1], colorbrewer.Dark2[6][1]])
+    updates.push(update.poly)
+    if (i != 5) {
+      div.append("span").html("+").style("position", "relative").style("top", "-51px")
+    }
+  }
+  
+  div.append("span").html("=").style("position", "relative").style("top", "-51px")  
+  
+  var updatesum = renderEigenSum(div.append("svg"),x, b, 
+    refit, 
+    ["black", "black"]).poly
+
+  function updateweights(win) {
+    wi = win
+    for (var i = 0; i < 6; i++ ){
+      var html = katex.renderToString(win[i].toPrecision(3) + (hat ? " \\bar{p}_" : " p_")+(i+1))
+      equations[i].html(html)
+      var w = zeros(6); w[i] = win[i]
+      updates[i](numeric.dot(w,U))
+    }
+    updatesum(numeric.dot(win,U))
+
+  }
+
+  updateweights(wi)
+
+  return {updates:updates, updatesum:updatesum, updateweights:updateweights}
+}
+
+/*
+
+Render the Polynomial fitting widget
+
+*/
+function renderEigenSum(svg, xv, b, dragCallback, colors) {
+
+  /* 
+    Data on eigenvectors 
+
+    xv - x values (\xi in paper)
+    U - eigenvectors
+    Lambda - eigenvalues
+  */
+
+  // Linear regression - minimize ||Ax - b||^2. Notation is different in article.
+  var A = vandermonde(xv, 25)
+  var w = zeros(xv.length)
+  /**************************************************************************
+    START VISUALIZATION 
+  ***************************************************************************/
+
+  var width = 110
+  var height = 110
+
+  var x = d3.scaleLinear().domain([-1.5,1.5]).range([0, width]);
+  var y = d3.scaleLinear().domain([-3,3]).range([height, 0]);
+
+  var valueline = d3.line()
+      .x(function(d) { return x(d[0]); })
+      .y(function(d) { return y(d[1]); });
+
+  var display_poly = function (weights) {
+
+    w = weights
+
+    eigenpath
+      .attr("d", valueline(evalPoly(w) ))
+      .style("opacity",1)
+
+    var pd = polyC.selectAll("circle").data(xv).merge(polyC)
+
+    pd.attr("cy", function (d) {
+      return y(poly(w, d))
+    })
+
+    if (!(datalines === undefined)) {
+    datalines
+      .attr("x1", function(d,i) { return x(d[0]) })
+      .attr("y1", function(d,i) { return y(d[1]) })
+      .attr("x2", function(d,i) { return x(d[0]) })
+      .attr("y2", function(d,i) { return y(poly(w, d[0])) })
+    }
+  }  
+
+  /*
+   * Add eigenvalue plot at the bottom.
+   * Some copy and pasted code here, but its only a 1-time thing.
+   */
+
+  svg.attr("width", width)
+      .attr("height", height)
+      .style("padding", "6px")
+
+
+  var eigensvg = svg.append("svg")
+        .attr("width", width)
+        .attr("height", height)
+
+  var eigenpath = eigensvg.append("path")
+                  .style("stroke-width", "2px")
+                  .style("stroke", colors[1])
+                  .style("fill","none")
+
+  var polyC = svg.append("g").selectAll("circle").data(xv)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d,i) { return x(d) })
+    .attr("cy", function(d,i) { return y(1) })
+    .attr("r", 2)
+    .style("stroke-width", "1px")
+    .style("stroke", colors[1])
+    .style("fill", "white")
+
+  if (!(b === undefined)) {
+
+    var data = svg.append("g").selectAll("circle").data(d3.zip(xv,b))
+      .enter()
+      .append("circle")
+      .attr("cx", function(d,i) { return x(d[0]) })
+      .attr("cy", function(d,i) { return y(d[1]) })
+      .attr("r", 2)
+      .style("stroke-width", "8px")
+      .style("stroke", "rgba(255,255,255,0.1)")
+      .style("fill", colors[0])
+      .call(d3.drag()
+            .on("drag", function(d,i) {
+              var ypos = d3.event.y 
+              var yval = y.invert(ypos)
+              this.setAttribute("cy", ypos)
+              b[i] = yval
+              dragCallback(b)
+              datalines.data(d3.zip(xv,b)).merge(datalines)
+                .attr("x1", function(d,i) { return x(d[0]) })
+                .attr("y1", function(d,i) { return y(d[1]) })
+                .attr("x2", function(d,i) { return x(d[0]) })
+                .attr("y2", function(d,i) { return y(poly(w, d[0])) })
+
+            })
+          )      
+
+    var datalines = svg.append("g").selectAll("line").data(d3.zip(xv,b))
+      .enter()
+      .append("line")
+      .attr("x1", function(d,i) { return x(d[0]) })
+      .attr("y1", function(d,i) { return y(d[1])+2 })
+      .attr("x2", function(d,i) { return x(d[0]) })
+      .attr("y2", function(d,i) { return y(0) })
+      .style("stroke-width", "0px")
+      .style("stroke", colors[0])
+  }
+
+  eigensvg.append("g")     
+    .attr("class", "grid")
+    .attr("transform", "translate(0," + (height/2) + ")")
+    .call(d3.axisBottom(x)
+        .ticks(1)
+        .tickSize(2))
+
+  // Start at some nice looking defaults.
+  display_poly(w)
+
+  return {poly:display_poly};
+}
+

@@ -1,6 +1,8 @@
 /*
   Render an overlay layer
 */
+
+var colorscheme = colorbrewer.Set1
 function renderOverlay(svg, nodes) {
 
 //    console.log(outdiv.node().offsetLeft, outdiv.node().offsetTop)
@@ -18,7 +20,7 @@ function renderOverlay(svg, nodes) {
     var line = svg.append("line")
       .style("stroke", "grey")
       .style("stroke-width", "1px")
-      .attr("stroke-dasharray", "5,3")
+      .attr("stroke-dasharray", "5,2")
       .attr("opacity", 0.7)    
       .attr("x1", x1)
       .attr("y1", y1)
@@ -30,21 +32,40 @@ function renderOverlay(svg, nodes) {
                   .style("stroke", "grey")
                   .style("stroke-width", "1px")
                   .style("fill", "none")
-                  .attr("stroke-dasharray", "5,3")
+                  .attr("stroke-dasharray", "5,2")
                   .attr("opacity", 0.7)
 
     var circ = svg.append("circle")
-     .attr("r", 5).attr("cx", x1).attr("cy",y1).attr("fill","none").attr("stroke", "black").attr("stroke-width", "1px")
+                   .attr("r", 5)
+                   .attr("cx", x1)
+                   .attr("cy",y1)
+                   .attr("fill","none")
+                   .attr("stroke", "black")
+                   .attr("stroke-width", "1px")
     
+    n = nodes
     var updatePath =  (function(xin, yin, pathin, circin,i, aline) {
       return function(x2, y2, bold) {
-        circin.attr("cx", x2).attr("cy", y2).attr("stroke-width", bold? 2 : 1).attr("stroke", colorbrewer.Dark2[5][i])
-        if (i <2) {
-          pathin.attr("d", ringPath([x2, y2],[xin, yin]).d).attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 2:1).style("stroke", colorbrewer.Dark2[5][i])
+
+        if (!bold) {
+          d3.select(nodes[i]).style("opacity", 0.1)
         } else {
-          pathin.attr("d", ringPath([xin, yin],[x2, y2]).d).attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 2:1).style("stroke", colorbrewer.Dark2[5][i])
+          d3.select(nodes[i]).style("opacity", 1)          
         }
-        aline.attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 2:1).style("stroke", colorbrewer.Dark2[5][i]) 
+        
+        circin.attr("cx", x2).attr("cy", y2).attr("stroke-width", bold? 2 : 1).attr("stroke", colorscheme[5][i])
+        if (i < 2) {
+          pathin.attr("d", ringPath([x2, y2],[xin, yin]).d)
+                .attr("opacity", bold? 1 : 0.7)
+                .style("stroke-width", bold? 1:1)
+                .style("stroke", colorscheme[5][i])
+        } else {
+          pathin.attr("d", ringPath([xin, yin],[x2, y2]).d)
+                .attr("opacity", bold? 1 : 0.7)
+                .style("stroke-width", bold? 1:1)
+                .style("stroke", colorscheme[5][i])
+        }
+        aline.attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 1:1).style("stroke", colorscheme[5][i]) 
       }
     })(x1, y1, path, circ,i,line)
 
@@ -104,7 +125,7 @@ function renderTaxonomy(div) {
                 .style("left", l +"px")
                 .style("width", "180px")
                 .style("height", "300px")
-                .style("border-top", "2px solid " + colorbrewer.Dark2[5][i])
+                .style("border-top", "2px solid " + colorscheme[5][i])
 
     divs.push(outdiv.node())
 
@@ -131,10 +152,8 @@ function renderTaxonomy(div) {
       .style("position", "absolute")
       .style("top","160px")
       .style("left", "10px")
-      .style("width", "150px")
+      .style("width", "160px")
       .style("height", "130px")
-      .attr("class", "figtext2")      
-      .style("color", "gray")
       .style("text-align", "left")                
       .html(text)
 
@@ -303,11 +322,12 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
           }
 
         }).on("mouseout", function() {
-            updateDR(defaults[0][0], defaults[0][1], false)
-            updateMC(defaults[1][0], defaults[1][1], false)
-            updateIC(defaults[2][0], defaults[2][1], false)
-            updateMO(defaults[3][0], defaults[3][1], false)
-            updateD( defaults[4][0], defaults[4][1], false)
+            updateDR(defaults[0][0], defaults[0][1], true)
+            updateMC(defaults[1][0], defaults[1][1], true)
+            updateIC(defaults[2][0], defaults[2][1], true)
+            updateMO(defaults[3][0], defaults[3][1], true)
+            updateD( defaults[4][0], defaults[4][1], true)
+            prevregime = ""
         }
 
 
@@ -322,7 +342,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
     renderHeatmap(canvas, function(i,j) { 
       var e = getEigs(4*i,1-j, 1)
       return Math.max(e.getRow(0).norm2(), e.getRow(1).norm2()); 
-    }, d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Blues[5].concat(["black"])))
+    }, d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"])))
 
     // /* Axis */
     var canvasaxis = divin.append("svg").style("z-index", 0)

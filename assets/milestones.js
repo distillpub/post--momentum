@@ -1,6 +1,6 @@
 function renderMilestones(div, updateTick) {
   var lambda = [1,10,100]
-  var totalIters = 151
+  var totalIters = 151  
 
   div.append("defs").append("marker")
       .attr("id", "arrowhead")
@@ -55,47 +55,10 @@ function renderMilestones(div, updateTick) {
 
   var stackedBar = stackedBarchartGen(totalIters, 3)(div) 
   
-
   var seperation = 14
 
   var r = []
   var lines = []
-
-
-  div.append("text")
-    .attr("class", "katex morsd mathit")
-    .style("font-size", "19px")
-    .style("font-family","KaTeX_Math")
-    .attr("x", 105)
-    .attr("y", 50)
-    .attr("text-anchor", "end")
-    .attr("fill", "gray")
-    .html("f(w<tspan baseline-shift = \"super\" font-size = \"15\">k</tspan>) - f(w<tspan baseline-shift = \"super\" font-size = \"15\">*</tspan>)")
-
-
-
-  div.append("text")
-    .style("font-size", "13px")
-    .attr("x", 0)
-    .attr("y", 80)
-    .attr("dy", 0)
-    .attr("transform", "translate(110,0)")
-    .attr("class", "caption")
-    .attr("text-anchor", "end")
-    .attr("fill", "gray")
-    .text("At the initial point, the error in each component is equal.")
-
-  div.selectAll(".caption").call(wrap, 100)
-
-
-  div.append("text")
-    .style("font-size", "13px")
-    .attr("x", 420)
-    .attr("y", 270)
-    .attr("dy", 0)
-    .attr("text-anchor", "end")
-    .attr("fill", "gray")
-    .text("At the initial point, the error in each component is equal.")
 
   var progressmeter = div.append("g")
   for (var i = 0; i < 3; i ++) {

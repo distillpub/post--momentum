@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="../assets/lib/katex.min.css">
+<script src="../assets/lib/katex.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src="http://distill.pub/template.js"></script>  
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/eigensum.js"></script>  
+  <script src = "../assets/lib/tooltip.js"></script>  
+</head> 
+<body>
+  <dt-article class="centered">
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  </p>
+
+  <figure id = "eigensum2" style="height:360px"></figure>
+
+  <script>
+  (function() { var inv = function(lambda) { return 1/lambda }
+  var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
+
+  // Preprocess x, get eigendecomposition, etc
+  var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+  var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
+
+  var D = vandermonde(x, 5)
+  var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+  var U = Eigs.U
+  var lambda = Eigs.lambda
+
+  // Preprocess y
+  var Dtb = numeric.dot(b,D)
+  var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
+
+  var step = 1.8/lambda[0]
+  var iter = geniter(U, lambda, Dtb, step)
+
+  var eigensum = d3.select("#eigensum2")
+
+  var wi = lambda.slice(0).map(scal)
+
+  function refit(b) {
+    var Dtb = numeric.dot(b,D)
+    iter = geniter(U, lambda, Dtb, step)
+    updateEverything(slidera.xval())
+  }
+
+  var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit)
+
+  var barlengths = getStepsConvergence(lambda, step).map(Math.log)
+
+  var onChange = function(i) {
+    eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) ))) 
+  }
+  var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
+
+  d3.select("#eigensum2").append("figcaption")
+        .style("width", "120px")
+        .style("position", "absolute")
+        .style("left", "820px")
+        .style("top","200px")
+        .html("When an eigenspace has converged to three significant digits, the bar greys out. Drag the observations to change fit.")
+
+  sliderControl.slidera.init()
+
+  var figwidth = d3.select("#eigensum2").style("width")
+  var figheight = d3.select("#eigensum2").style("height")
+  var svgannotate = d3.select("#eigensum2")
+                      .append("svg")
+                      .style("width", figwidth)
+                      .style("height", figheight)
+                      .style("position", "absolute")
+                      .style("top","0px")
+                      .style("left","0px")
+                      .style("pointer-events","none")
+
+  renderDraggable(svgannotate, [139.88888549804688, 243.77951049804688], [121.88888549804688, 200.77951049804688], 5, "We begin at x=w=0")})()
+
+  </script>
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+ </p>
+  </dt-article>
+</body>

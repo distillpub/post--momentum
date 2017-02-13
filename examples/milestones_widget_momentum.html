@@ -1,0 +1,68 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src="../assets/lib/template.js"></script>
+  <script src="../assets/lib/auto-render.min.js"></script>
+  <script src="../assets/lib/katex.min.js"></script>
+  <link   rel="stylesheet" href="../assets/lib/katex.min.css">
+  <link   rel="stylesheet" type="text/css" href="../assets/widgets.css">  
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/lib/tooltip.js"></script>  
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/milestones.js"></script>  
+</head> 
+<body>
+<dt-article class="centered">
+<p>
+  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+
+</p>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <figure style="position:relative; width:920px; height:460px">
+  <figcaption style="position:absolute; text-align:left; top:30px; left:140px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:0px; width:280px; height:120px"> $f(w) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:430px; left:120px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
+
+  <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
+  <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
+
+<!--   <div style="position:absolute; top:10px; left:0px">
+  <svg>
+  <defs>
+      <linearGradient id="Gradient2" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0%" stop-color="white"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+      </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="800" height="100" width="100" height="100" fill="url(#Gradient2)"/>
+  </svg>
+  </div> -->
+
+  <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
+  <div id = "obj"></div>  
+  </figure>
+  <script>
+  var graphDiv = d3.select("#obj")
+                   .style("width",  920 + "px")
+                   .style("height", 300 + "px")
+                   .style("top", "170px")
+                   .style("position", "relative")
+                   .style("margin-left", "auto")
+                   .style("margin-right", "auto")
+                   .attr("width", 920)
+                   .attr("height", 500)
+  
+  var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+
+  var update = renderMilestones(svg, function() {})
+
+  var slidera = slider2D(d3.select("#sliderStep"), function(x,y) { update(x,y) })
+
+  </script>
+<p>
+  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+
+</p>  
+</dt-article>
+</body>

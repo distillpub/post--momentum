@@ -46,8 +46,9 @@ function renderPolyFit(divin) {
   */
   function evalPoly(w) {
     var data = []
-    for (var i = -900; i < 900; i++) {
-      data.push([i/800, 1*poly(w, i/800)])
+
+    for (var i = -90; i < 90; i++) {
+      data.push([i/80, 1*poly(w, i/80)])
     }
     return data
   }
@@ -96,6 +97,8 @@ function renderPolyFit(divin) {
 
   var colors = [colorbrewer.Dark2[3][0], colorbrewer.Dark2[3][1]]
   var path = svg.append("path")
+                .style("fill", "none")
+
 
   path.style("stroke-width", 2).style("stroke", colors[0]).attr("d", valueline(evalPoly(w)));
 
@@ -208,6 +211,8 @@ function renderPolyFit(divin) {
   var eigenpath = eigensvg.append("path")
                   .style("stroke-width", "2px")
                   .style("stroke", colors[1])
+                  .style("fill", "none")
+
 
   eigensvg.append("g")     
     .attr("class", "grid")

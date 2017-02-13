@@ -27,6 +27,7 @@ function sliderGen(dims) {
   var ticksym = false // |---|-- vs |____|__
   var shifty = -10
   var ticktitles = function(d,i) { return round(d) }
+  var showticks = true
 
   function renderSlider(divin) {
 
@@ -69,31 +70,32 @@ function sliderGen(dims) {
           .on("start.interrupt", function() { slidersvg.interrupt(); })
           .on("start drag", function() { 
             var xval = x.invert(d3.event.x)
-            onChange(xval, handle)
             handle.attr("transform", "translate(" + x(xval) + ",0)" ); 
             curr_xval = xval
+            onChange(xval, handle)
           }));
 
     var ticksvg = slidersvg.append("g")
     
-    ticksvg.selectAll("rect")
-      .data(ticks, function(d,i) {return i})
-      .enter().append("rect")
-      .attr("x", function(i) { return isNaN(i) ? -100: x(i) - tickwidth/2})
-      .attr("y", 9)
-      .attr("width", tickwidth )
-      .attr("height", function(d, i) { return (isNaN(i)) ? 0: ticksym ? tickheight*2: tickheight;} )
-      .attr("opacity",0.2 )
+    if (showticks) {
+	    ticksvg.selectAll("rect")
+	      .data(ticks, function(d,i) {return i})
+	      .enter().append("rect")
+	      .attr("x", function(i) { return isNaN(i) ? -100: x(i) - tickwidth/2})
+	      .attr("y", 9)
+	      .attr("width", tickwidth )
+	      .attr("height", function(d, i) { return (isNaN(i)) ? 0: ticksym ? tickheight*2: tickheight;} )
+	      .attr("opacity",0.2 )
 
-    ticksvg.selectAll("text")
-      .data(ticks, function(d,i) {return i})
-      .enter().append("text")
-			  .attr("class", "ticktext")
-			  .attr("opacity", 0.3)
-			  .attr("text-anchor", "middle")
-		      .attr("transform", function(i) { return "translate(" + (isNaN(i) ? -100: x(i) - tickwidth/2 + 1) + "," + (tickwidth*2 + 24) + ")" })
-		      .html(ticktitles)
-
+	    ticksvg.selectAll("text")
+	      .data(ticks, function(d,i) {return i})
+	      .enter().append("text")
+				  .attr("class", "ticktext")
+				  .attr("opacity", 0.3)
+				  .attr("text-anchor", "middle")
+			      .attr("transform", function(i) { return "translate(" + (isNaN(i) ? -100: x(i) - tickwidth/2 + 1) + "," + (tickwidth*2 + 24) + ")" })
+			      .html(ticktitles)
+	}
     ticksvg.selectAll("circle")
       .data(ticks,function(d,i) {return i})
       .enter()
@@ -117,9 +119,9 @@ function sliderGen(dims) {
       })
       .on("click", function(lambda){
         var xval = lambda
-        onChange(xval, handle)
         curr_xval = xval
         handle.attr("transform", "translate(" + x(xval) + ",0)" ); 
+        onChange(xval, handle)
       })
 
     /* 
@@ -155,9 +157,9 @@ function sliderGen(dims) {
           .on("start.interrupt", function() { slidersvg.interrupt(); })
           .on("start drag", function() { 
             var xval = x.invert(d3.mouse(dragger.node())[0])
-            onChange(xval, handle)
             handle.attr("transform", "translate(" + x(xval) + ",0)" ); 
             curr_xval = xval          	
+            onChange(xval, handle)
           }));
 
     handle.insert("text")
@@ -166,10 +168,12 @@ function sliderGen(dims) {
           .style("font-size", "10px")
 
     handle.moveToFront()
-    return {xval: function() { return curr_xval }, tick:updateTicks}
+    return {xval: function() { return curr_xval }, tick:updateTicks, init:function() { 
+        handle.attr("transform", "translate(" + x(curr_xval) + ",0)" ); 
+        onChange(curr_xval, handle)}
+    }
 
   }
-
 
   renderSlider.ticktitles = function(f) {
     ticktitles = f
@@ -225,6 +229,16 @@ function sliderGen(dims) {
     tickwidth = _1
     tickheight = _2
     ticksym = _3 // |---|-- vs |____|__
+    return renderSlider
+  }
+
+  renderSlider.shifty = function(_) {
+  	shifty = _
+    return renderSlider  	
+  }
+
+  renderSlider.showticks = function(_) {
+    showticks = _
     return renderSlider
   }
 
@@ -368,6 +382,8 @@ function stemGraphGen(graphWidth, graphHeight, n) {
 function stackedBarchartGen(n, m) {
 
   var axis = [0,1.53]
+  var translatex = 110
+  var translatey = 10
 
   function renderStackedGraph(svg) {
 
@@ -378,7 +394,7 @@ function stackedBarchartGen(n, m) {
 		var width  = dwidth - margin.left - margin.right
 		var height = dheight - margin.top - margin.bottom;
 
-		var graphsvg = svg.append("g").attr("transform", "translate(110,10)")
+		var graphsvg = svg.append("g").attr("transform", "translate(" + translatex + "," + translatey + ")")
 
 		// graphDiv.append("span")
 		//   .style("top", (dheight/2 - margin.top) + "px")
@@ -484,7 +500,17 @@ function stackedBarchartGen(n, m) {
 
 	}
 
-	return renderStackedGraph
+  renderStackedGraph.translatex = function(_) {
+  	translatex = _; 
+  	return renderStackedGraph;
+  }
+  
+  renderStackedGraph.translatey = function(_) {
+  	translatey = _; 
+  	return renderStackedGraph;
+  }
+  
+  return renderStackedGraph
 }
 
 /* 2d "scatterplot" with lines generator */
@@ -597,6 +623,148 @@ function renderHeatmap(canvas, f, cmap) {
   ctx.putImageData(imageData, 0, 0);
 }
 
+
+function slider2D(div, onChange) {
+	var panel = div.append("svg")
+	              .append("g")
+	              .attr("transform", "translate(25,30)")
+
+	var width = 105
+	var maxX = 4
+	var maxY = 1
+
+	var X = d3.scaleLinear()
+	          .domain([0, maxX])
+	          .range([0, 2*width])
+	          .clamp(true);
+
+	var Y = d3.scaleLinear()
+	          .domain([maxY,0])
+	          .range([0, width])
+	          .clamp(true);
+
+	var path = panel.append("path")
+	            .attr("d","M 0 0 L " + 2*width + " 0 L " + width + " " + width + " L 0 " + width + " z")
+	            .attr("fill","#EEE")
+	            .attr("stroke", "#EEE")
+	            .attr("stroke-width", 5)
+	            .attr("stroke-linejoin", "round")
+	            .on("click", function() {
+	              var pt = d3.mouse(path.node())
+	              var xy = clip(pt)
+	              changeMouse(xy[0],xy[1])
+	            })
+	            .call( d3.drag().on("drag", function() {
+	              var pt = d3.mouse(path.node())
+	              var xy = clip(pt)
+	              changeMouse(xy[0],xy[1])
+	            }))
+
+	var ly = panel.append("line")
+	          .attr("x1", 0)
+	          .attr("y1",0)
+	          .attr("x2",width*2)
+	          .attr("y2",0)
+	          .style("stroke", "#DDD")
+	          .style("stroke-width","3px")
+
+	var lx = panel.append("line")
+	          .attr("x1", 0)
+	          .attr("y1",0)
+	          .attr("x2",0)
+	          .attr("y2",width)
+	          .style("stroke", "#DDD")
+	          .style("stroke-width","3px")
+
+	var xval = 10
+	var yval = 10
+
+	function clip(pt) {
+	  var y = Math.min(Math.max(0,pt[1]),width)
+	  var x = Math.min(Math.max(0,pt[0]),2*width - y)
+	  return [x,y]
+	}
+
+	function changeMouse(x,y) {
+	  circle.attr("cx",x) 
+	  circle.attr("cy",y) 
+	  ly.attr("y1", y).attr("y2",y).attr("x1", 0).attr("x2",2*width-y)
+	  lx.attr("x1", x).attr("x2",x).attr("y1", 0).attr("y2",(x>width) ? (width - (x-width)) : width)
+	  onChange(X.invert(x),Y.invert(y))
+	}
+
+	var circle = panel.append("circle").attr("r", 7).attr("fill", "rgb(255, 102, 0)").style("stroke", "white").call(
+	    d3.drag().on("drag", function() {
+	      var pt = d3.mouse(path.node())
+	      var xy = clip(pt)
+	      changeMouse(xy[0],xy[1])
+	    }))
+
+	var tickwidth = 2
+	var tickheight = 6
+	var tickgroupX = panel.append("g").attr("transform", "translate(0, " + (-12) +")")
+
+	tickgroupX.selectAll("rect")
+	  .data([0,maxX/2,maxX], function(d,i) {return i})
+	  .enter().append("rect")
+	  .attr("x", function(i) { return isNaN(i) ? -100: X(i) - tickwidth/2})
+	  .attr("y", 0)
+	  .attr("width", tickwidth )
+	  .attr("height", tickheight )
+	  .attr("opacity",0.2 )
+
+	tickgroupX.selectAll("text")
+	  .data([0,maxX/2,maxX], function(d,i) {return i})
+	  .enter().append("text")
+	    .attr("class", "ticktext")
+	    .attr("opacity", 0.3)
+	    .attr("text-anchor", "middle")
+	      .attr("transform", function(i) { return "translate(" + (X(i) - tickwidth/2 + 1) + "," + (tickwidth*2 -8) + ")" })
+	      .html(function(d,i) { return d})
+
+	var tickgroupY = panel.append("g").attr("transform", "translate(" + -12 + ", 0)")
+
+	tickgroupY.selectAll("rect")
+	  .data([0,maxY], function(d,i) {return i})
+	  .enter().append("rect")
+	  .attr("x", 0)
+	  .attr("y", function(i) { return isNaN(i) ? -100: Y(i) - tickwidth/2})
+	  .attr("width", tickheight )
+	  .attr("height", tickwidth )
+	  .attr("opacity",0.2 )
+
+	tickgroupY.selectAll("text")
+	  .data([0,maxY], function(d,i) {return i})
+	  .enter().append("text")
+	    .attr("class", "ticktext")
+	    .attr("opacity", 0.3)
+	    .attr("text-anchor", "middle")
+	      .attr("transform", function(i) { return "translate(" + (-8) + "," + (Y(i) - tickwidth/2 + 5) + ")" })
+	      .html(function(d,i) { return d})
+
+
+
+	var beta = (Math.sqrt(100) - 1)/(Math.sqrt(100) + 1); beta = beta*beta
+	var alpha = 2/(Math.sqrt(100) + 1)
+	alpha = alpha*alpha
+
+	var specialpoints = [[alpha*100, beta]]
+
+	console.log(specialpoints)
+	panel.append("g").selectAll("circle")
+	  .data(specialpoints)
+	  .enter().append("circle")
+	  .attr("cx", function(d,i) { return X(d[0])})
+	  .attr("cy", function(d,i) { return Y(d[1])})
+	  .attr("r", 2 )
+	  .attr("opacity",0.2 )
+	  .style("cursor", "pointer")
+	  .on("click", function(d) { changeMouse(X(d[0]), Y(d[1]) ) })
+
+
+	changeMouse(X(alpha*100),Y(beta))
+}
+
 /****************************************************************************
   OPTIMIZATION RELATED FUNCTIONS
 ****************************************************************************/
@@ -607,7 +775,7 @@ function renderHeatmap(canvas, f, cmap) {
 */
 function getStepsConvergence(Lambda, alpha) {
   return Lambda.map( function(lambdai) {
-    var o = -7*(1/Math.log10(1- lambdai*alpha))
+    var o = -3*(1/Math.log10(Math.abs(1- lambdai*alpha)))
     return o < 0 ? NaN : o
   })
 }
@@ -806,7 +974,7 @@ function colorMap(root) {
 
   var margin = { top: 0, right: 12, bottom: 30, left: 12 };
   var width = 180,
-      height = 10;
+      height = 12;
 
   root.style("width", (width + margin.right + margin.left)  + "px")
   root.style("height", (height + margin.top + margin.bottom) + "px")
@@ -814,16 +982,17 @@ function colorMap(root) {
       .attr("width", width+1)
       .attr("height", height)
       .style("position", "relative")
-      .style("left", margin.left + "px");
+      .style("left", margin.left + "px")
+      .style("top", "8px")
   var svg = root.append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", 40)
       .style("left", -margin.left + "px")
+      .style("opacity", 0.5)
     .append("g")
-      .attr("transform", "translate(" + margin.left + ", 2)")
-      .attr("opacity", 0.5)
+      .attr("transform", "translate(" + margin.left + ", 0)")
       .attr("class", "figtext")
-  var colorScale = d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Blues[5].concat(["black"]))
+  var colorScale = d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"]))
   var axisScale = d3.scaleLinear().domain([0,1.2001]).range([0, width]);
   var axis = d3.axisBottom(axisScale).ticks(5);
   svg.call(axis);
@@ -837,6 +1006,153 @@ function colorMap(root) {
 
 }
 
+function sliderBarGen(barlengths) {
+
+	var update = function() {}
+	var height = 60
+	var maxX = 14.2
+	var modval = 6
+	var strokewidth = 2
+	var gap = 15
+	var mouseover = function(i) {}
+	var labelFunc = function (d,i) { return ((i == 0) ? "Eigenvalue 1" : "") + (( (i+1) % modval == 0 ) ? (i + 1) : "")  }
+
+	function sliderBar(div) {
+
+	  var slider = div.append("div")
+	                 .style("position", "relative")
+
+	  var updateEverything = function(i, circ) { 
+	      step.html("Step k = " + Math.floor(Math.exp(i-0.1)) )
+
+	      if (!(circ === undefined) ){
+	        var ctm = circ.node().getCTM()
+	        setTM(line.node(), ctm)
+	        var barnodes = bars.nodes()
+	        for (var j = 0; j < barlengths.length; j++) {
+	          var r = d3.scaleLinear().domain([0,barlengths[j]-0.01,barlengths[j]-0.01,barlengths[j], 1/0]).range([1,1,1,0.2, 0.2])        
+	          d3.select(barnodes[j]).attr("opacity",r(i))
+	          if (i > barlengths[j]) {
+	             d3.select(barnodes[j]).style("stroke","black")
+	          } else{
+	             d3.select(barnodes[j]).style("stroke","black")          
+	          }
+	        }
+	      } 
+
+	      update(i)
+	    }
+
+	  var slidera = sliderGen([940, 60])
+	    .ticks([0,maxX])
+	    .ticktitles(function(d) {return d})
+	    .cRadius(5)
+	    .startxval(4)
+	    .shifty(3)
+	    .margin({right: 160, left: 140})
+	    .change(updateEverything)
+	    (slider)
+
+	  var width  = 695+80
+	  var svg = slider.select("svg")
+
+	  var step = svg.append("text").attr("class","figtext").attr("x",145).attr("y",15).html("Step k = ")
+
+	  var x = d3.scaleLinear().domain([0,maxX, 100]).range([90, width-45,width+45]);
+	  var y = d3.scaleLinear().domain([0,barlengths.length]).range([10, height]);
+
+	//  line.moveToBack()
+
+	  var line = svg.append("line")
+	     .attr("x1", 0 )
+	     .attr("y1", 0)
+	     .attr("x2", 0)
+	     .attr("y2", height+50+gap)
+	     .style("stroke", "black")
+	     .style("stroke-width", "1px")
+
+	  line.moveToBack()
+	  svg.moveToFront()
+
+	  var chart = svg.style("width", 940 + "px")
+	                 .style("height", (height+100) + "px")
+	                 .style("top", "30px")
+	                 .append("g")
+	                 .attr("transform", "translate(50, " + (gap+60) +" )")
+	                 
+
+	  chart.selectAll("rect").data(barlengths)
+	     .enter()
+	     .append("rect")
+	     .attr("x", x(0) )
+	     .attr("y", function(d,i) {return y(i)-2})
+	     .attr("width", x(maxX) - 90)
+	     .attr("height", 4)
+	     .attr("opacity", 0.01)
+	     .style("fill", "gray")
+	     .on("mouseover", mouseover)
+	     .on("mouseout", function(i) { console.log("Hi"); updateEverything(slidera.xval()) })
+
+	  var bars = chart.selectAll("line").data(barlengths)
+	     .enter()
+	     .append("line")
+	     .attr("x1", x(0) )
+	     .attr("y1", function(d,i) {return y(i)})
+	     .attr("x2", function(d,i) {return x(d)})
+	     .attr("y2", function(d,i) {return y(i)})
+	     .style("stroke-width", strokewidth + "px")
+
+	  chart.selectAll("text").data(barlengths)
+	       .enter()
+	       .append("text")
+	       .attr("class", "figtext2")
+	       .attr("text-anchor", "end")
+	       .attr("x", 75)
+	       .attr("y", function(d,i) {return y(i) + 4})
+	       .style("width", 150 + "px")
+	       .attr("fill", "gray")
+	       .html(labelFunc)
+
+	  chart.moveToBack()
+
+	  function updateBars(barlengths_in) {
+	  	for (var i = 0; i < barlengths.length; i++) { barlengths[i] = barlengths_in[i] }
+	  	chart.selectAll("line").data(barlengths_in).merge(chart).attr("x2", function(d,i) {return x(d)})
+	  }
+
+	  return {slidera:slidera, update:updateBars}
+	}
+
+	sliderBar.height = function(_) {
+		height = _; return sliderBar;
+	}
+
+	sliderBar.linewidth = function(_) {
+		strokewidth = _; return sliderBar;
+	}
+
+	sliderBar.maxX = function(_) {
+		maxX = _; return sliderBar;
+	}
+
+	sliderBar.update = function(_) {
+		update = _; return sliderBar;
+	}
+
+	sliderBar.mouseover = function(_) {
+		mouseover = _; return sliderBar;
+	}
+
+	sliderBar.mouseout = function(_) {
+		mouseout = _; return sliderBar;
+	}
+
+	sliderBar.labelFunc = function(_) {
+		labelFunc = _; return sliderBar;
+	}
+
+	return sliderBar
+}
 
 function renderDraggable(svg, p1, p2, radius, text) {
 
@@ -881,7 +1197,7 @@ function renderDraggable(svg, p1, p2, radius, text) {
       .attr("y",0)
       .attr("width", 100)
       .attr("height", 10)
-      .attr("r", 4)
+      .attr("r", 7)
       .html(text)
 
   var ringPath = ringPathGen(radius, label.node().getBBox().width, label.node().getBBox().height)
@@ -891,7 +1207,7 @@ function renderDraggable(svg, p1, p2, radius, text) {
   label.attr("transform", "translate(" + d.label[0] + "," + d.label[1]  + ")")
   circleDragger.attr("cx",p2[0]).attr("cy",p2[1])
 
-
+  return group
 }
 
 /****************************************************************************
@@ -958,6 +1274,15 @@ d3.selection.prototype.moveToFront = function() {
   return this.each(function(){
     this.parentNode.appendChild(this);
   });
+};
+
+d3.selection.prototype.moveToBack = function() { 
+    return this.each(function() { 
+        var firstChild = this.parentNode.firstChild; 
+        if (firstChild) { 
+            this.parentNode.insertBefore(this, firstChild); 
+        } 
+    }); 
 };
 
 /*
@@ -1049,4 +1374,21 @@ function wrap(text, width) {
       }
     }
   });
+}
+
+var inv = function(lambda) { return 1/lambda }
+
+function eigSym(X) {
+  var Eig = numeric.eig(X)
+  var lambda = Eig.lambda.x
+  var U = numeric.transpose(Eig.E.x)
+  var Z = d3.zip(U, lambda)
+  Z.sort(function(a, b) { return b[1] - a[1]; });
+  U = []
+  lambda = []
+  for (var i = 0; i < Z.length; i++) {
+    U.push(Z[i][0])
+    lambda.push(Z[i][1])
+  }
+  return {U:U, lambda:lambda}
 }

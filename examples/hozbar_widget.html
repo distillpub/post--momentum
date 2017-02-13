@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<link rel="stylesheet" href="../assets/lib/katex.min.css">
+<script src="../assets/lib/katex.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src="../assets/lib/template.js"></script>  
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/eigensum.js"></script>  
+  <script src = "../assets/lib/tooltip.js"></script>  
+</head> 
+<body>
+  <dt-article class="centered">
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  </p>
+
+  <figure id = "hozbar"><svg id = "hozbarsvg"></svg></figure>
+
+  <script>
+
+  var barlengths = [0.4585,0.9029,6.134,12.37,128.4,260.8]
+  var width = 800
+  var height = 90
+  var svg = d3.select("#hozbarsvg")
+
+  var x = d3.scaleLinear().domain([1,260.8]).range([90, width]);
+  var y = d3.scaleLinear().domain([0,barlengths.length]).range([10, height]);
+
+  var chart = svg.style("width", width + "px").style("height", height + "px").append("g")
+
+  chart.selectAll("line").data(barlengths)
+     .enter()
+     .append("line")
+     .attr("x1", x(0) )
+     .attr("y1", function(d,i) {return y(i)})
+     .attr("x2", function(d,i) {return x(d)})
+     .attr("y2", function(d,i) {return y(i)})
+     .style("stroke", function(d,i) { return colorbrewer.RdPu[7][i] })
+     .style("stroke-width", "4px")
+
+  chart.selectAll("text").data(barlengths)
+       .enter()
+       .append("text")
+       .attr("class", "figtext2")
+       .attr("text-anchor", "end")
+       .attr("x", 80)
+       .attr("y", function(d,i) {return y(i) + 4})
+       .style("width", 100)
+       .attr("fill", "gray")
+       .html(function (d,i) { return ((i == 0) ? "Eigenvalue " : "") + (i + 1)})
+
+
+
+  </script>
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+ </p>
+  </dt-article>
+</body>

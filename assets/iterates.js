@@ -22,6 +22,13 @@ function genIterDiagram(f, xstar, axis) {
   var num_contours = 15
   var onDrag = function() {}
   var w0 =[-1.21, 0.853]
+  var strokeColor = "#ff6600"
+  var showOptimum = true
+  var showSolution = true
+  var pathWidth = 1.5
+  var circleRadius = 2
+  var pointerScale = 1
+  var showStartingPoint = true
 
   function renderIterates(div) {
 
@@ -68,47 +75,54 @@ function genIterDiagram(f, xstar, axis) {
     circ.append("use")
       .style("cursor", "pointer")
       .attr("link:href", "#pointerThingy")
+      .attr("transform", "scale(" + pointerScale + ")")
 
-    circ.append("text")
-      .style("cursor", "pointer")
-      .attr("class", "figtext")
-      .attr("transform", "translate(20,3)")
-      .html("Starting Point")
+    if (showStartingPoint) {
+      circ.append("text")
+        .style("cursor", "pointer")
+        .attr("class", "figtext")
+        .attr("transform", "translate(20,3)")
+        .html("Starting Point")
+    }
 
-    var iterColor = d3.scaleLinear().domain([0, totalIters]).range(["#ff6600", "#ff6600"])
+    var iterColor = d3.scaleLinear().domain([0, totalIters]).range([strokeColor, strokeColor])
 
     var update2D = plot2dGen(X, Y, iterColor)
-                    .stroke("#ff6600")
-                    .pathWidth(1.5)
-                    .circleRadius(2)(svg)
+                    .stroke(strokeColor)
+                    .pathWidth(pathWidth)
+                    .circleRadius(circleRadius)(svg)
 
 
-    // Append x^star
-    var pxstar = ringPathGen(7,50,14)([X(xstar[0]), Y(xstar[1])],
-                                        [X(xstar[0]), Y(xstar[1]) - 15])
-    svg.append("circle").attr("cx", X(xstar[0])).attr("cy", Y(xstar[1])).attr("r", 7).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
-    svg.append("path").attr("d", pxstar.d).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
-    svg.append("text")
-      .attr("class","figtext")
-      .attr("transform", "translate(" + pxstar.label[0] + "," + (pxstar.label[1]+10) + ")" )
-      .html("Optimum")
+    if (showOptimum) {
+      // Append x^s var showSolution = falsetar
+      var pxstar = ringPathGen(7,50,14)([X(xstar[0]), Y(xstar[1])],
+                                        [X(xstar[0]), Y(xstar[1]) - 20])
+      svg.append("circle").attr("cx", X(xstar[0])).attr("cy", Y(xstar[1])).attr("r", 7).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
+      svg.append("path").attr("d", pxstar.d).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
+      svg.append("text")
+        .attr("class","figtext")
+        .attr("transform", "translate(" + pxstar.label[0] + "," + (pxstar.label[1]+10) + ")" )
+        .html("Optimum")
+    }
 
 
-
-    var pxsol = ringPathGen(7,43.36,14)([X(0), Y(0)],
-                                    [X(0), Y(0) + 15])
-    var solcirc = svg.append("circle").attr("cx", X(0)).attr("cy", Y(0)).attr("r", 7).attr("stroke","#ff6600").attr("stroke-width",1).attr("fill","none")
-    var solpath = svg.append("path").attr("d", pxsol.d).attr("stroke","#ff6600").attr("stroke-width",1).attr("fill","none")
-    var sollabel = svg.append("text")
-                    .attr("class","figtext")
-                    .attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
-                    .html("Solution")
-
+    if (showSolution) {
+      var pxsol = ringPathGen(7,43.36,14)([X(0), Y(0)],
+                                      [X(0), Y(0) + 20])
+      var solcirc = svg.append("circle").attr("cx", X(0)).attr("cy", Y(0)).attr("r", 7).attr("stroke",strokeColor).attr("stroke-width",1).attr("fill","none")
+      var solpath = svg.append("path").attr("d", pxsol.d).attr("stroke",strokeColor).attr("stroke-width",1).attr("fill","none")
+      var sollabel = svg.append("text")
+                      .attr("class","figtext")
+                      .attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+                      .html("Solution")
+    }
     function updateSol(x,y) {
-      var pxsol = ringPathGen(7,50,14)([X(x), Y(y)], [X(x), Y(y) + 15])
-      solcirc.attr("cx", X(x)).attr("cy", Y(y))
-      solpath.attr("d", pxsol.d)
-      sollabel.attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+      if (showSolution) {
+        var pxsol = ringPathGen(7,50,14)([X(x), Y(y)], [X(x), Y(y) + 15])
+        solcirc.attr("cx", X(x)).attr("cy", Y(y))
+        solpath.attr("d", pxsol.d)
+        sollabel.attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+      }
     }
 
     // svg.append("rect")
@@ -116,8 +130,6 @@ function genIterDiagram(f, xstar, axis) {
     //   .attr("height",14)
     //   .attr("x", pxstar.label[0] )
     //   .attr("y", pxstar.label[1])
-
-
 
     function iter(alpha, beta, w0) {
 
@@ -143,6 +155,34 @@ function genIterDiagram(f, xstar, axis) {
              alpha:function() { return state_alpha },
              beta:function() {return state_beta} }
 
+  }
+
+  renderIterates.showStartingPoint = function(_) {
+    showStartingPoint = _; return renderIterates;
+  }
+
+  renderIterates.pointerScale = function(_) {
+    pointerScale = _; return renderIterates;
+  }
+
+  renderIterates.circleRadius = function(_) {
+    circleRadius = _; return renderIterates;
+  }
+
+  renderIterates.pathWidth = function(_) {
+    pathWidth = _; return renderIterates;
+  }
+
+  renderIterates.showSolution = function(_) {
+    showSolution = _; return renderIterates;
+  }
+
+  renderIterates.showOptimum = function(_) {
+    showOptimum = _; return renderIterates;
+  }
+
+  renderIterates.strokeColor = function(_) {
+    strokeColor = _; return renderIterates;
   }
 
   renderIterates.width = function (_) {

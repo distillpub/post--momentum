@@ -970,11 +970,10 @@ function ringPathGen(radius, width, height) {
 
 }
 
-function colorMap(root) {
+function colorMap(root, width, colorScale, axisScale) {
 
   var margin = { top: 0, right: 12, bottom: 30, left: 12 };
-  var width = 180,
-      height = 12;
+  var height = 12;
 
   root.style("width", (width + margin.right + margin.left)  + "px")
   root.style("height", (height + margin.top + margin.bottom) + "px")
@@ -992,8 +991,6 @@ function colorMap(root) {
     .append("g")
       .attr("transform", "translate(" + margin.left + ", 0)")
       .attr("class", "figtext")
-  var colorScale = d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"]))
-  var axisScale = d3.scaleLinear().domain([0,1.2001]).range([0, width]);
   var axis = d3.axisBottom(axisScale).ticks(5);
   svg.call(axis);
   root.select(".label").text("Activation value")

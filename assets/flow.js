@@ -1,26 +1,45 @@
 function renderFlowWidget(divin) {
 
+var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]);
+
+  var colorBar = divin.append("div").style("position", "absolute").style("left","490px").style("top", "5px").style("height","45px")
+  colorMap(colorBar,
+  180,
+  d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]),
+  d3.scaleLinear().domain([0,100]).range([0, 180])
+  )
 
   divin.append("figcaption")
        .style("position", "absolute")
        .style("left", "500px")
        .style("width", "300px")
-       .html("Each square in the graph below represents a node (and a weight $w_i$), and edges connect neighboring squares. Drag the slider to see the progress of gradient descent.")
+       .style("top", "70px")
+       .html("Each represents a node (and a weight $w_i$), and edges connect neighboring squares.")
   
+
+  divin.append("figcaption")
+       .style("position", "absolute")
+       .style("left", "500px")
+       .style("width", "100px")
+       .style("top", "0px")
+       .attr("class", "figtext")
+       .html("Weights")
+
 
   var stepCaption = divin.append("figcaption")
        .style("position", "absolute")
        .style("left", "153px")
        .style("width", "300px")
+       .style("top", "45px")
        .attr("class", "figtext")
        .html("Step size α = 0.02")
   
 
-  sliderGen([320, 100])
+  sliderGen([320, 130])
       .ticks([0,2/FlowSigma[1119]])
       .cRadius(5)
       .startxval(4)
-      .shifty(-20)
+      .shifty(10)
       .change(changeStep)(divin.append("div").style("position","relative").style("left", "100px"))
 
   /*

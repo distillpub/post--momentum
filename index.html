@@ -672,7 +672,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
                       .style("position", "absolute")
                       .style("top","0px")
                       .style("left","0px")
-                      //.style("pointer-events","none")
+                      .style("pointer-events","none")
 
   // Swoopy Annotator
   var annotations = [
@@ -691,7 +691,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   var swoopy = d3.swoopyDrag()
     .x(function(d){ return (d.x) })
     .y(function(d){ return (d.y) })
-      .draggable(true)
+      .draggable(false)
       .annotations(annotations)
 
   var svg = d3.select("#eigendisplay").selectAll("svg")
@@ -1039,7 +1039,12 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
   var updateStemGraphs = tax.update
 
-  colorMap(d3.select("#momentumAnnotation"))
+  colorMap(
+  d3.select("#momentumAnnotation"),
+  180,
+  d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"])),
+  d3.scaleLinear().domain([0,1.2001]).range([0, 180])
+  )
 
   var up = function (i, alpha, beta) {
              var xy = coor(alpha, beta)

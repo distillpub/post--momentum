@@ -197,7 +197,7 @@
   </p> -->
 
   <p>
-  The new iteration, known best to machine learners as Momentum, <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite> <dt-fn> also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new iteration, known best to machine learners as Momentum<dt-fn> also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
   <p>
@@ -477,7 +477,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   <h3>Bad Scaling</h3>
 
   <p>
-  One simple culprit of pathological curvature is a bad scaling of the data. Even if the data were perfectly uncorrelated with mean 0, i.e. $Z^TZ$ was diagonal, the condition number of the matrix still depends on the variance of the individual features (the values of the diagonal). If the ratio of the largest and smallest variances are large, the matrix $Z^TZ$ becomes ill conditioned <dt-fn>This holds even if the matrix is correlated, see <dt-cite key="wiesler2011convergence"></dt-cite></dt-fn>.
+  One simple culprit of pathological curvature is a bad scaling of the data. Even if the data were perfectly uncorrelated with mean 0, i.e. $Z^TZ$ was diagonal, the condition number of the matrix still depends on the variance of the individual features (the values of the diagonal). If the ratio of the largest and smallest variances are large, the matrix $Z^TZ$ becomes ill conditioned.<dt-fn>This holds even if the matrix is correlated, see <dt-cite key="wiesler2011convergence"></dt-cite></dt-fn>
   </p>
 
   <p>
@@ -577,7 +577,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   $$
   Z=\left(\begin{array}{ccccc}
   1 & \xi_{1} & \xi_{1}^{2} & \ldots & \xi_{1}^{n-1}\\
-  1 & \xi_{2} & \xi_{2}^{2} & \ldots & \xi_{1}^{n-1}\\
+  1 & \xi_{2} & \xi_{2}^{2} & \ldots & \xi_{2}^{n-1}\\
   \vdots & \vdots & \vdots & \ddots & \vdots\\
   1 & \xi_{m} & \xi_{m}^{2} & \ldots & \xi_{m}^{n-1}
   \end{array}\right).
@@ -1341,7 +1341,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
 \begin{aligned}
 w^{0} & =0\\
 w^{1} & =[w_{1}^{1},0,\ldots,0]\\
-w^{2} & =[w_{1}^{1},w_{2}^{2},0,\ldots,0]\\
+w^{2} & =[w_{1}^{2},w_{2}^{2},0,\ldots,0]\\
  & \vdots\\
 w^{k} & =[w_{1}^{k},w_{2}^{k},\ldots,w_{k}^{k},0,\ldots,0]
 \end{aligned}
@@ -1492,7 +1492,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   pages={715--732},
   year={2015},
   publisher={Springer},
-  url={https://arxiv.org/abs/1204.3982}
+  url={https://arxiv.org/abs/1204.3982},
+  doi={10.1007/s10208-013-9150-3}
 }
 
 @article{flammarion2015averaging,
@@ -1641,7 +1642,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   pages={159--181},
   year={2008},
   publisher={Springer},
-  doi={10.1007/s10107-006-0089-x}
+  doi={10.1007/s10107-006-0089-x},
+  url={http://folk.uib.no/ssu029/Pdf_file/Nesterov08.pdf}
 }
 
 @article{qian1999momentum,
@@ -1653,7 +1655,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   pages={145--151},
   year={1999},
   publisher={Elsevier},
-  doi={10.1016/s0893-6080(98)00116-6}
+  doi={10.1016/s0893-6080(98)00116-6},
+  url={https://pdfs.semanticscholar.org/735d/4220d5579cc6afe956d9f6ea501a96ae99e2.pdf}
 }
 
 @article{amari1998natural,
@@ -1664,7 +1667,9 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   number={2},
   pages={251--276},
   year={1998},
-  publisher={MIT Press}
+  publisher={MIT Press},
+  doi={10.1162/089976698300017746},
+  url={http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.452.7280&rep=rep1&type=pdf}
 }
 
 @inproceedings{wiesler2011convergence,
@@ -1672,7 +1677,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   author={Wiesler, Simon and Ney, Hermann},
   booktitle={Advances in Neural Information Processing Systems},
   pages={657--665},
-  year={2011}
+  year={2011},
+  url={http://papers.nips.cc/paper/4421-a-convergence-analysis-of-log-linear-training.pdf}
 }
 
 @article{sutskever2013importance,
@@ -1681,7 +1687,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   journal={ICML (3)},
   volume={28},
   pages={1139--1147},
-  year={2013}
+  year={2013},
+  url={http://www.jmlr.org/proceedings/papers/v28/sutskever13.pdf}
 }
 
 

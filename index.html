@@ -420,18 +420,16 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
  -->  
  <h3>Choosing A Step-size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step-sizes, therefore, fall in the interval
-
-  $$
-  0<\alpha<\frac{2}{\lambda_n}
-  $$
+  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. <dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
+  $$\begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\ & ~=~ \max\left(|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right) \end{aligned}$$
   </p>
   <p>
-  The optimal $\alpha$ can be done by solving a one dimensional optimization problem over $\alpha$ to get
+  This overall rate is minimized when the rates for $\lambda_0$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvector to converge at the same time. If we work this through we get:
+
   $$
   \begin{aligned}
-  \text{optimal }\alpha ={\mathop{\text{argmin}}\limits_\alpha}\{\max_{i}\{1-\alpha\lambda_{i}\}\} & =\frac{2}{\lambda_{1}+\lambda_{n}},\\
-  \text{convergence rate = }{\min_\alpha}\{\max_{i}\{1-\alpha\lambda_{i}\}\} & =\frac{\lambda_{n}/\lambda_{1}-1}{\lambda_{n}/\lambda_{1}+1}.,
+  \text{optimal }\alpha ~=~{\mathop{\text{argmin}}\limits_\alpha} ~\text{rate}(\alpha) & ~=~\frac{2}{\lambda_{1}+\lambda_{n}}\\
+  \text{optimal rate} ~=~{\min_\alpha} ~\text{rate}(\alpha) & ~=~\frac{\lambda_{n}/\lambda_{1}-1}{\lambda_{n}/\lambda_{1}+1}
   \end{aligned}
   $$
 <!--   For ill conditioned problems, the optimal $\alpha$ gets uncomfortably close to limit of divergence. This, however, justifies the heuristic of choosing the largest stepsize you can get away with.

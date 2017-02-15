@@ -421,14 +421,14 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
  <h3>Choosing A Step-size</h3>
   <p>
   The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. <dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
-  $$\begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\ & ~=~ \max\left(|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right) \end{aligned}$$
+  $$\begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left(|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right) \end{aligned}$$
   </p>
   <p>
   This overall rate is minimized when the rates for $\lambda_0$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvector to converge at the same time. If we work this through we get:
 
   $$
   \begin{aligned}
-  \text{optimal }\alpha ~=~{\mathop{\text{argmin}}\limits_\alpha} ~\text{rate}(\alpha) & ~=~\frac{2}{\lambda_{1}+\lambda_{n}}\\
+  \text{optimal }\alpha ~=~{\mathop{\text{argmin}}\limits_\alpha} ~\text{rate}(\alpha) & ~=~\frac{2}{\lambda_{1}+\lambda_{n}}\\[1.4em]
   \text{optimal rate} ~=~{\min_\alpha} ~\text{rate}(\alpha) & ~=~\frac{\lambda_{n}/\lambda_{1}-1}{\lambda_{n}/\lambda_{1}+1}
   \end{aligned}
   $$
@@ -1235,16 +1235,19 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   To understand the limits of what we can do, we must first formally define the algorithmic space in which we are searching. Here's one possible definition. The observation we will make is that both Gradient Descent and momentum can be "unrolled". Indeed, since
   $$
-  \begin{aligned}w^{1} & =w^{0}-\alpha\nabla f(w^{0})\\
-  w^{2} & =w^{1}-\alpha\nabla f(w^{1})=w^{0}-\alpha\nabla f(w^{1})-\alpha\nabla f(w^{0})\\
-   & \vdots\\
-  w^{k} & =w^{0}-\alpha\nabla f(w^{k-1})+\cdots+\alpha\nabla f(w^{0})
-  \end{aligned}
+  \begin{array}{lll}
+    w^{1} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0})\\[0.35em]
+    w^{2} & \!= & \!w^{1} ~-~ \alpha\nabla f(w^{1})\\[0.35em]
+          & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0}) ~-~ \alpha\nabla f(w^{1})\\[0.35em]
+     & ~ \!\vdots \\
+
+   w^{k} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0}) ~-~~~~ \cdots\cdots ~~~~-~ \alpha\nabla f(w^{k})
+  \end{array}
   $$
   can write gradient descent as
 
   $$
-  w^{k}=w^{0}-\alpha\sum_{i}\nabla f(w^{i}).
+  w^{k}~~=~~w^{0} ~-~ \alpha\sum_{i}\nabla f(w^{i}).~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   $$
 
   A similar trick can be done with momentum,
@@ -1443,8 +1446,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   $$
 \begin{aligned}
-\|w^{k}-w^{\star}\| & \geq\sum_{i=k+1}^{n}\!\!w_{i}^{\star}\\
- & =\sum_{i=k+1}^{n}\!\!\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\
+\|w^{k}-w^{\star}\| & \geq\sum_{i=k+1}^{n}\!\!w_{i}^{\star}\\[1.7em]
+ & =\sum_{i=k+1}^{n}\!\!\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\[1.7em]
  & =\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{k}-w^{0}\|+\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}
 \end{aligned}
   $$

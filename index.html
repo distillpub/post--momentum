@@ -856,7 +856,6 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   The <b>colorizer</b> pulls distinguished pixels towards 1
   </figcaption>
 
-
   <span style="position:absolute; left:305px; top:10px">
   $$+$$ 
   </span>
@@ -1429,17 +1428,17 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \nabla f(x)_{i}=\frac{\kappa-1}{4}(2w_{i}-w_{i-1}-w_{i+1})+w_{i}, \qquad i \neq 1.
   $$
 
-  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction,
-
+  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
+   
   $$
+  \begin{array}{lllllllll}
+    w^{0} & = & [~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0]\\
+    w^{1} & = & [w_{1}^{1}, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0]\\
+    w^{2} & = & [w_{1}^{2}, & w_{2}^{2}, & 0, & \ldots & 0, & 0, & \ldots & 0]\\
+     & ~ \vdots \\
 
-\begin{aligned}
-w^{0} & =0\\
-w^{1} & =[w_{1}^{1},0,\ldots,0]\\
-w^{2} & =[w_{1}^{2},w_{2}^{2},0,\ldots,0]\\
- & \vdots\\
-w^{k} & =[w_{1}^{k},w_{2}^{k},\ldots,w_{k}^{k},0,\ldots,0]
-\end{aligned}
+   w^{k} & = & [w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0]\\
+  \end{array}
   $$
 
   Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ can propagate to $w_k$. We can therefore sum up the errors which can not have changed yet

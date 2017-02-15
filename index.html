@@ -2,8 +2,8 @@
 <meta charset="utf-8">
 <script src="assets/lib/template.js"></script>
 <script type="text/front-matter">
-  title: A Guide to Momentum
-  description: A Guide to Momentum.
+  title: Why Momentum Works.
+  description: And why gradient descent fails.
   authors:
     - Gabriel Goh: http://gabgoh.github.io
   affiliations:
@@ -86,8 +86,8 @@
 </svg>
 
 <dt-article class="centered">
-  <h1>A Guide to Momentum [DRAFT]</h1>
-  <h2>A concise overview of the article and main point.</h2>
+  <h1>Why Momentum Works [DRAFT] </h1>
+  <h2>And why gradient descent fails.</h2>
 
   <figure style = "position:relative; width:920px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
@@ -156,15 +156,15 @@
   The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
   </p> -->
   <p>
-  Here's a problem which occurs quite often in practice. You're optimizing a smooth function $f$ with gradient descent. Starting from $w^0$, you refine the estimate with the update rule
+  Gradient descent has a bug in it, but it isn't obvious at first glance. It manifests in subtle ways, sneaking into iterations with no red flags or warning signs. You goal is to search some smooth optimization landscape of $f$ for a local minimum. It doesn't sound too difficult. Starting from $w^0$, you refine the estimate with the update rule
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  Your choice of step-size, $\alpha$ seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things begin quite well - with an impressive, almost immediate decrease in the loss. But after a time, the improvements begin to slow down. You're iterating hard, but the loss isn't getting smaller. And convergence is still nowhere in sight. Should you keep going, and hope for the best?
+  Your choice of step-size, $\alpha$ seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things begin quite well - with an impressive, almost immediate decrease in the loss. But after a time, you notice something amiss. The improvements begin to slow. The loss isn't getting smaller. And convergence is nowhere in sight. Something is wrong, but what?
   </p>
 
   <p>
-  The problem may be an optimizers old nemesis - pathological curvature. We all have certain image in our mind of of what it looks like. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  You may have encountered the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - all we do is give gradient descent a short term memory:
 

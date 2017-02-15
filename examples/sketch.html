@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+  <script src = "../assets/lib/d3.v4.min.js"></script>
+  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+  <script src = "../assets/utils.js"></script>  
+  <script src = "../assets/lib/tooltip.js"></script>  
+  <script src="../assets/lib/template.js"></script>  
+<script src="../assets/lib/auto-render.min.js"></script>
+<script src="../assets/lib/katex.min.js"></script>
+<link   rel="stylesheet" href="../assets/lib/katex.min.css">
+<link   rel="stylesheet" type="text/css" href="../assets/widgets.css">
+
+  <script src = "../assets/momentum.js"></script>  
+  <script src = "../assets/data/Urosen.json"></script>    
+</head> 
+<body>
+  <dt-article class="centered">
+  <p>
+  Each row is a single iterate down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  </p>
+
+  <figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <div style="position:relative; top:-40px">
+  <span style="position:absolute; top:10px">
+  $$\text{minimize} $$
+  </span>
+
+  <span style="position:absolute; left:90px">
+  $$\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 $$
+  </span>
+
+  <figcaption style="position:absolute; left:160px; top:100px; width:130px">
+  The <b>colorizer</b> pulls distinguished pixels towards 1
+  </figcaption>
+
+
+  <span style="position:absolute; left:310px; top:10px">
+  $$+$$ 
+  </span>
+
+  <span style="position:absolute; left:340px">
+  $$\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.$$
+  </span>
+
+
+  <figcaption style="position:absolute; left:355px; top:100px; width:150px">
+  The <b>smoother</b> spreads out the color
+  </figcaption>  
+  </div>
+  </figure>
+  <script>
+
+  </script> 
+  <p>
+  Hold down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  </p>
+  </dt-article>
+  <script>
+    renderMathInElement(
+        document.body,
+        {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+            ]
+        }
+    );  
+
+</script>
+</body>

@@ -743,14 +743,14 @@ function slider2D(div, onChange) {
 	      .html(function(d,i) { return d})
 
 
-
-	var beta = (Math.sqrt(100) - 1)/(Math.sqrt(100) + 1); beta = beta*beta
-	var alpha = 2/(Math.sqrt(100) + 1)
+	var lambda1 = 4.6
+	var lambdan = 996.35
+	var beta = (Math.sqrt(lambda1) - Math.sqrt(lambdan))/(Math.sqrt(lambda1) + Math.sqrt(lambdan)); beta = beta*beta
+	var alpha = 2/(Math.sqrt(lambda1) + Math.sqrt(lambdan))
 	alpha = alpha*alpha
 
-	var specialpoints = [[alpha*100, beta]]
+	var specialpoints = [[alpha*lambdan, beta]]
 
-	console.log(specialpoints)
 	panel.append("g").selectAll("circle")
 	  .data(specialpoints)
 	  .enter().append("circle")
@@ -761,8 +761,8 @@ function slider2D(div, onChange) {
 	  .style("cursor", "pointer")
 	  .on("click", function(d) { changeMouse(X(d[0]), Y(d[1]) ) })
 
-
-	changeMouse(X(alpha*100),Y(beta))
+	console.log(alpha, beta)
+	changeMouse(X(alpha*lambdan),Y(beta))
 }
 
 /****************************************************************************

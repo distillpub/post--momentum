@@ -817,7 +817,7 @@ $$
 Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize. For stepsizes
 close to the upper limit of convergence, the smallest eigenvalue may converge faster (or at the same rate) as the largest. These stepsizes,
 however, occupy a minuscule fraction of the set of acceptable stepsizes, and are almost never encountered in practice. 
-</dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This seemingly free gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
+</dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   
 <!--   The behavior is exactly as you might expect. Our model has more than enough expressive power to overfit any dataset. And yet, for all reasonable runtimes, it does not. Gradient descent produces a decent result in a few minutes, and starts overfitting data only at the $k=10^8$ mark (a year and a half of runtime). And the whole thing reaches final convergence in about about 10 billion years, assuming your computer's still running then! That seems like a lot of work for polynomial regression in 25 variables. But the directions of slowest progress are also the directions which overfit the data. And thus pathological curvature here, is a surprising friend, putting into check our model's worst instincts. -->
   </p>
@@ -840,19 +840,45 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </p>
   <h4>The Colorization Problem</h4>
   <p>
-  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to
+  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums, 
+  </p>
+<figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <div style="position:relative; top:-40px">
+  <span style="position:absolute; top:10px">
+  $$\text{minimize} $$
+  </span>
+
+  <span style="position:absolute; left:90px">
+  $$\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 $$
+  </span>
+
+  <figcaption style="position:absolute; left:160px; top:100px; width:130px">
+  The <b>colorizer</b> pulls distinguished pixels towards 1
+  </figcaption>
+
+
+  <span style="position:absolute; left:305px; top:10px">
+  $$+$$ 
+  </span>
+
+  <span style="position:absolute; left:340px">
+  $$\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.$$
+  </span>
+
+
+  <figcaption style="position:absolute; left:355px; top:100px; width:150px">
+  The <b>smoother</b> spreads out the color
+  </figcaption>  
+  </div>
+  </figure>
+  <p>
+  This is the colorization problem. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   $$
-  \text{minimize} \qquad  \color{#7570b3}{\frac{1}{2} \sum_{i\in D} (w_i - 1)^2} + \color{#d95f02}{\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.}
-  $$
-
-  This is the colorization problem. The two sums in the function serve distinct purposes. The first is the <span style="color:#7570b3">colorizer</span> - making the distinguished pixels closer to $1$ (our target color). And the second is a <span style="color:#d95f02">smoother</span>, spreading out these colors in the pixels of the image. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
-
-  $$
-  w_{i}^{k+1}=\begin{cases}
-  w_{i}^{k}-\alpha(w_{i}^{k}-1)-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k}) & i\in D\\
-  w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k}) & i\notin D
-  \end{cases}
+w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
+\alpha(w_{i}^{k}-1) & i\in D\\
+0 & i\notin D
+\end{cases}
   $$
 
   This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
@@ -1236,7 +1262,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   w^{k} = w^{0}+\sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
   $$
 
-  is a superset of momentum, gradient descent and a whole bunch of other iterations you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
+  contains momentum, gradient descent and a whole bunch of other iterations you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
 
   $$
   w^{k} = w^{0}+\sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
@@ -1266,75 +1292,144 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   and the condtion number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
   </p>
 
-  <div style = "width:920px; height:20px">
-  <div id="sliderAlphaR" style="display:inline">
-    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">α</text>
-  </div>
+  <figure style="width:950px; height:770px">
+    <div id = "sliderz" style="position:absolute;top: 0px;left:550px;"></div>    
+    <div class="figtext" style="position:absolute; pointer-events:none; top:1px; width:300px; left:705px; height:100px">Step size α = </div>
+    <div class="figtext" style="position:absolute; pointer-events:none; top:20px; width:300px; left:463px; height:100px">Momentum β = </div>
 
-  <div id="sliderBetaR" style="display:inline">
-    <text style="font-size: 18px; top: -9px; left: 5px; position: relative;">β</text>
-  </div>
-  </div>
+    <figcaption style="width:270px; position:absolute; left:150px; top:40px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
-  <div style="position:relative; width:920px; height:220px">
-  <div id = "iterates" style="position:relative;"></div>
-  <div id = "sliderz" style="position:relative; top:175px"></div>
-  </div>
+    <div style="position:absolute; top:150px">
+    <figcaption style="width:120px; position:absolute; left:670px; top:90px">Notice that this triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
+    <figcaption style="width:120px; position:absolute; left:670px; top:360px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
+    <div id = "iterates" style="position:absolute; top:60px; left:0"></div>
+    <div class="figtext" style="position:absolute; top:5px; width:300px; left:460px; height:100px">Error</div>
+    <div id = "rosen_colorbar1" style="position:absolute; top:5px; width:300px; left:448px; height:100px"></div>
+    <div class="figtext" style="position:absolute; top:5px; width:300px; left:240px; height:100px">Weights</div>
+    <div id = "rosen_colorbar2" style="position:absolute; top:5px; width:300px; left:228px; height:100px"></div>
+    </div>
+  </figure>
   <script>
 
-  var update = stemGraphGen(920, 170, 200)
-                .ylabel("$w^k$ (purple) $\\quad w^\\star$ (pink)")
-                .axis([-0.05,1.05])(d3.select("#iterates"))
+  (function() { var RQ = [[0.033430859446525574,0.06637421995401382,0.09834969788789749,0.1288910210132599,0.1575528085231781,0.18391713500022888,0.20759953558444977,0.22825466096401215,0.24558131396770477,0.25932684540748596,0.2692908048629761,0.2753278911113739,0.2773500978946686,0.2753278911113739,0.2692908048629761,0.25932684540748596,0.24558131396770477,0.22825466096401215,0.20759953558444977,0.18391713500022888,0.1575528085231781,0.1288910210132599,0.09834969788789749,0.06637421995401382,0.033430859446525574],[-0.06637421995401382,-0.1288910210132599,-0.18391713500022888,-0.22825466096401215,-0.25932684540748596,-0.2753278911113739,-0.2753278911113739,-0.25932684540748596,-0.22825466096401215,-0.18391713500022888,-0.1288910210132599,-0.06637421995401382,-1.917815576756455e-14,0.06637421995401382,0.1288910210132599,0.18391713500022888,0.22825466096401215,0.25932684540748596,0.2753278911113739,0.2753278911113739,0.25932684540748596,0.22825466096401215,0.18391713500022888,0.1288910210132599,0.06637421995401382],[0.09834969788789749,0.18391713500022888,0.24558131396770477,0.2753278911113739,0.2692908048629761,0.22825466096401215,0.1575528085231781,0.06637421995401382,-0.033430859446525574,-0.1288910210132599,-0.20759953558444977,-0.25932684540748596,-0.2773500978946686,-0.25932684540748596,-0.20759953558444977,-0.1288910210132599,-0.033430859446525574,0.06637421995401382,0.1575528085231781,0.22825466096401215,0.2692908048629761,0.2753278911113739,0.24558131396770477,0.18391713500022888,0.09834969788789749],[0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599,-1.2834394835694717e-14,0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599],[-0.1575528085231781,-0.25932684540748596,-0.2692908048629761,-0.18391713500022888,-0.033430859446525574,0.1288910210132599,0.24558131396770477,0.2753278911113739,0.20759953558444977,0.06637421995401382,-0.09834969788789749,-0.22825466096401215,-0.2773500978946686,-0.22825466096401215,-0.09834969788789749,0.06637421995401382,0.20759953558444977,0.2753278911113739,0.24558131396770477,0.1288910210132599,-0.033430859446525574,-0.18391713500022888,-0.2692908048629761,-0.25932684540748596,-0.1575528085231781],[-0.18391713500022888,-0.2753278911113739,-0.22825466096401215,-0.06637421995401382,0.1288910210132599,0.25932684540748596,0.25932684540748596,0.1288910210132599,-0.06637421995401382,-0.22825466096401215,-0.2753278911113739,-0.18391713500022888,-4.583645525716709e-15,0.18391713500022888,0.2753278911113739,0.22825466096401215,0.06637421995401382,-0.1288910210132599,-0.25932684540748596,-0.25932684540748596,-0.1288910210132599,0.06637421995401382,0.22825466096401215,0.2753278911113739,0.18391713500022888],[-0.20759953558444977,-0.2753278911113739,-0.1575528085231781,0.06637421995401382,0.24558131396770477,0.25932684540748596,0.09834969788789749,-0.1288910210132599,-0.2692908048629761,-0.22825466096401215,-0.033430859446525574,0.18391713500022888,0.2773500978946686,0.18391713500022888,-0.033430859446525574,-0.22825466096401215,-0.2692908048629761,-0.1288910210132599,0.09834969788789749,0.25932684540748596,0.24558131396770477,0.06637421995401382,-0.1575528085231781,-0.2753278911113739,-0.20759953558444977],[-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215,4.337912797388764e-15,-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215],[-0.24558131396770477,-0.22825466096401215,0.033430859446525574,0.25932684540748596,0.20759953558444977,-0.06637421995401382,-0.2692908048629761,-0.18391713500022888,0.09834969788789749,0.2753278911113739,0.1575528085231781,-0.1288910210132599,-0.2773500978946686,-0.1288910210132599,0.1575528085231781,0.2753278911113739,0.09834969788789749,-0.18391713500022888,-0.2692908048629761,-0.06637421995401382,0.20759953558444977,0.25932684540748596,0.033430859446525574,-0.22825466096401215,-0.24558131396770477],[-0.25932684540748596,-0.18391713500022888,0.1288910210132599,0.2753278911113739,0.06637421995401382,-0.22825466096401215,-0.22825466096401215,0.06637421995401382,0.2753278911113739,0.1288910210132599,-0.18391713500022888,-0.25932684540748596,-2.6265288907570752e-15,0.25932684540748596,0.18391713500022888,-0.1288910210132599,-0.2753278911113739,-0.06637421995401382,0.22825466096401215,0.22825466096401215,-0.06637421995401382,-0.2753278911113739,-0.1288910210132599,0.18391713500022888,0.25932684540748596],[0.2692908048629761,0.1288910210132599,-0.20759953558444977,-0.22825466096401215,0.09834969788789749,0.2753278911113739,0.033430859446525574,-0.25932684540748596,-0.1575528085231781,0.18391713500022888,0.24558131396770477,-0.06637421995401382,-0.2773500978946686,-0.06637421995401382,0.24558131396770477,0.18391713500022888,-0.1575528085231781,-0.25932684540748596,0.033430859446525574,0.2753278911113739,0.09834969788789749,-0.22825466096401215,-0.20759953558444977,0.1288910210132599,0.2692908048629761],[0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739,-2.224606886845463e-15,0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739],[0.2773500978946686,1.2625047254649028e-16,-0.2773500978946686,-6.312523627324514e-16,0.2773500978946686,8.83753307825432e-16,-0.2773500978946686,-8.83753307825432e-16,0.2773500978946686,1.5781309068311285e-15,-0.2773500978946686,-4.734392720493385e-16,0.2773500978946686,2.0200075607438445e-15,-0.2773500978946686,-1.7990691808479273e-15,0.2773500978946686,1.6728188141805554e-15,-0.2773500978946686,-1.4518804342846382e-15,0.2773500978946686,-3.4718879950284827e-16,-0.2773500978946686,1.2625047254649028e-15,0.2773500978946686],[-0.2753278911113739,0.06637421995401382,0.25932684540748596,-0.1288910210132599,-0.22825466096401215,0.18391713500022888,0.18391713500022888,-0.22825466096401215,-0.1288910210132599,0.25932684540748596,0.06637421995401382,-0.2753278911113739,-1.0026396759284933e-15,0.2753278911113739,-0.06637421995401382,-0.25932684540748596,0.1288910210132599,0.22825466096401215,-0.18391713500022888,-0.18391713500022888,0.22825466096401215,0.1288910210132599,-0.25932684540748596,-0.06637421995401382,0.2753278911113739],[0.2692908048629761,-0.1288910210132599,-0.20759953558444977,0.22825466096401215,0.09834969788789749,-0.2753278911113739,0.033430859446525574,0.25932684540748596,-0.1575528085231781,-0.18391713500022888,0.24558131396770477,0.06637421995401382,-0.2773500978946686,0.06637421995401382,0.24558131396770477,-0.18391713500022888,-0.1575528085231781,0.25932684540748596,0.033430859446525574,-0.2753278911113739,0.09834969788789749,0.22825466096401215,-0.20759953558444977,-0.1288910210132599,0.2692908048629761],[-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596,1.770693656524247e-16,-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596],[0.24558131396770477,-0.22825466096401215,-0.033430859446525574,0.25932684540748596,-0.20759953558444977,-0.06637421995401382,0.2692908048629761,-0.18391713500022888,-0.09834969788789749,0.2753278911113739,-0.1575528085231781,-0.1288910210132599,0.2773500978946686,-0.1288910210132599,-0.1575528085231781,0.2753278911113739,-0.09834969788789749,-0.18391713500022888,0.2692908048629761,-0.06637421995401382,-0.20759953558444977,0.25932684540748596,-0.033430859446525574,-0.22825466096401215,0.24558131396770477],[0.22825466096401215,-0.25932684540748596,0.06637421995401382,0.18391713500022888,-0.2753278911113739,0.1288910210132599,0.1288910210132599,-0.2753278911113739,0.18391713500022888,0.06637421995401382,-0.25932684540748596,0.22825466096401215,9.870699398085384e-16,-0.22825466096401215,0.25932684540748596,-0.06637421995401382,-0.18391713500022888,0.2753278911113739,-0.1288910210132599,-0.1288910210132599,0.2753278911113739,-0.18391713500022888,-0.06637421995401382,0.25932684540748596,-0.22825466096401215],[-0.20759953558444977,0.2753278911113739,-0.1575528085231781,-0.06637421995401382,0.24558131396770477,-0.25932684540748596,0.09834969788789749,0.1288910210132599,-0.2692908048629761,0.22825466096401215,-0.033430859446525574,-0.18391713500022888,0.2773500978946686,-0.18391713500022888,-0.033430859446525574,0.22825466096401215,-0.2692908048629761,0.1288910210132599,0.09834969788789749,-0.25932684540748596,0.24558131396770477,-0.06637421995401382,-0.1575528085231781,0.2753278911113739,-0.20759953558444977],[-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888,8.371955066048889e-16,-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888],[-0.1575528085231781,0.25932684540748596,-0.2692908048629761,0.18391713500022888,-0.033430859446525574,-0.1288910210132599,0.24558131396770477,-0.2753278911113739,0.20759953558444977,-0.06637421995401382,-0.09834969788789749,0.22825466096401215,-0.2773500978946686,0.22825466096401215,-0.09834969788789749,-0.06637421995401382,0.20759953558444977,-0.2753278911113739,0.24558131396770477,-0.1288910210132599,-0.033430859446525574,0.18391713500022888,-0.2692908048629761,0.25932684540748596,-0.1575528085231781],[-0.1288910210132599,0.22825466096401215,-0.2753278911113739,0.25932684540748596,-0.18391713500022888,0.06637421995401382,0.06637421995401382,-0.18391713500022888,0.25932684540748596,-0.2753278911113739,0.22825466096401215,-0.1288910210132599,-3.0802549003271684e-16,0.1288910210132599,-0.22825466096401215,0.2753278911113739,-0.25932684540748596,0.18391713500022888,-0.06637421995401382,-0.06637421995401382,0.18391713500022888,-0.25932684540748596,0.2753278911113739,-0.22825466096401215,0.1288910210132599],[-0.09834969788789749,0.18391713500022888,-0.24558131396770477,0.2753278911113739,-0.2692908048629761,0.22825466096401215,-0.1575528085231781,0.06637421995401382,0.033430859446525574,-0.1288910210132599,0.20759953558444977,-0.25932684540748596,0.2773500978946686,-0.25932684540748596,0.20759953558444977,-0.1288910210132599,0.033430859446525574,0.06637421995401382,-0.1575528085231781,0.22825466096401215,-0.2692908048629761,0.2753278911113739,-0.24558131396770477,0.18391713500022888,-0.09834969788789749],[-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382,6.798085926082532e-17,-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382],[0.033430859446525574,-0.06637421995401382,0.09834969788789749,-0.1288910210132599,0.1575528085231781,-0.18391713500022888,0.20759953558444977,-0.22825466096401215,0.24558131396770477,-0.25932684540748596,0.2692908048629761,-0.2753278911113739,0.2773500978946686,-0.2753278911113739,0.2692908048629761,-0.25932684540748596,0.24558131396770477,-0.22825466096401215,0.20759953558444977,-0.18391713500022888,0.1575528085231781,-0.1288910210132599,0.09834969788789749,-0.06637421995401382,0.033430859446525574]]
 
-  var b = zeros(200); b[0] = 2499.75
-  var iter = geniterMomentum(RU, RLambda, b, 0.00038, 0.995)
-  i = 140
-  var wstar = iter(10000000)[1]
-  update(iter(i)[1], wstar)
+  RLambda = [4.6419172286987305,15.514562606811523,33.45938491821289,58.21471405029297,89.4195556640625,126.61888122558594,169.27023315429688,216.7516632080078,268.37078857421875,323.3748474121094,380.9618225097656,440.29193115234375,500.5,560.7080688476562,620.0381469726562,677.6251220703125,732.6292114257812,784.2483520507812,831.7297973632812,874.381103515625,911.5804443359375,942.7852783203125,967.5405883789062,985.4854125976562,996.3580932617188]
 
-  var L1s = Math.sqrt(RLambda[0])
-  var Lns = Math.sqrt(RLambda[RLambda.length-1])
-  var optAlphaRosen = 2/ (L1s + Lns); optAlphaRosen = optAlphaRosen*optAlphaRosen
-  var optBetaRosen = (Lns - L1s)/(Lns + L1s); optBetaRosen = optBetaRosen*optBetaRosen
-  var slider = sliderGen([920, 60])
-            .startxval(i)
-            .ticks([0,200])
-            .margin({right: 3, left: 15})
-            .change(function(i,handle) {
-              update(iter(Math.floor(i))[1], wstar)
-              handle.select("text").text("k = " + Math.floor(i) )
-            })
-            .cRadius(5)(d3.select("#sliderz")).xval
+  var alpha = 0.003
+  var beta = 0.8
+  var b = zeros(25); b[0] =  249.75
+  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta) 
+  var res = function(i) { return iter(i)[0] }
 
-  var alpha = sliderGen([400, 25])
-            .ticks([0,optAlphaRosen,0.0004])
-            .tooltip(function(i) { return [false, "Optimal Stepsize", false][i]})
-            .margins(20,20)
-            .change(function(i) {
-              iter = geniterMomentum(RU, RLambda, b, i, beta())
-              update(iter(Math.floor(slider()))[1], wstar)
-            })
-            .cRadius(5)(d3.select("#sliderAlphaR")).xval
+  var sampleSVG = d3.select("#iterates")
+    .style("display", "block")
+      .append("svg")
+      .attr("width", 770)
+      .attr("height", 700)   
 
-  var beta = sliderGen([200, 25])
-            .ticks([0,optBetaRosen,1])
-            .margins(20,20)
-            .tooltip(function(i) { return [false, "Optimal Momentum", false][i]})
-            .change(function(i) {
-              iter = geniterMomentum(RU, RLambda, b, alpha(), i)
-              update(iter(Math.floor(slider()))[1], wstar)
-            })
-            .cRadius(5)(d3.select("#sliderBetaR")).xval
+  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.9]).range(colorbrewer.RdPu[5]);
+  var jet = d3.scaleLinear().domain([0,0.2,0.5,1.0,1.5]).range(colorbrewer.Spectral[5]);
+  var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.RdBu[3]);
 
-  </script>
+  var xstar = iter(10000000)
+  var numIters = 72
+
+
+  var Disps3 = []
+  var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 440 + ",0)")
+  for (var j = 0; j < numIters; j++) {
+    var disp = errorPlot.append("g")
+
+    var denter = disp.selectAll("rect")
+        .data(iter(j)[1])
+        .enter()
+
+    denter.append("rect")
+        .style("fill", function(d,i) { return rosen(d) })
+        .attr("height", 7)
+        .attr("width", 7.7)
+        .attr("x", function(d, i){return i*8+ 10})
+        .attr("y", function(d, i){return j*8 })  
+        // .attr("stroke", "black")
+        // .attr("stroke-width", function(d,i) { return (i == j) ? 1.5 : 0 })
+        // .attr("stroke-dasharray", "14.8, 14")
+
+    // if ((j % 10 == 0) || j == 0) {
+    // disp.append("text")
+    //     .attr("class", "figtext")
+    //     .attr("text-anchor", "end")
+    //     .attr("x", 0)
+    //     .attr("y", function(d, i){return (j*8 + 10) })  
+    //     .html( (j == 0) ? "Iteration 0" : "" + j) 
+    // }
+
+    Disps3.push(disp)
+  } 
+
+
+
+  var Disps4 = []
+  var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 220 + ",0)")
+  for (var j = 0; j < numIters; j++) {
+    var disp = errorPlot.append("g")
+
+    var denter = disp.selectAll("rect")
+        .data(iter(j)[1])
+        .enter()
+
+    denter.append("rect")
+        .style("fill", function(d,i) { return jet(d) })
+        .attr("height", 7)
+        .attr("width", 7.7)
+        .attr("x", function(d, i){return i*8+ 10})
+        .attr("y", function(d, i){return j*8 })  
+        // .attr("stroke", "black")
+        // .attr("stroke-width", function(d,i) { return (i == j) ? 1.5 : 0 })
+        // .attr("stroke-dasharray", "14.8, 14")
+
+    if ((j % 10 == 0) || j == 0) {
+    disp.append("text")
+        .attr("class", "figtext")
+        .attr("text-anchor", "end")
+        .attr("x", 0)
+        .attr("y", function(d, i){return (j*8 + 10) })  
+        .html( (j == 0) ? "Iteration 0" : "" + j) 
+    }
+
+    Disps4.push(disp)
+  } 
+  function update(alpha, beta) {
+    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta) 
+    for (var j = 0; j < numIters; j++) {
+      var iterj = iter(j)
+      Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })
+      Disps4[j].selectAll("rect").data(iterj[1]).merge(Disps4[j]).style("fill", function(d,i) { return jet(d) })
+
+    }
+  }
+
+  var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) })
+
+  update(0.0035,0.95)
+  
+  colorMap( d3.select("#rosen_colorbar1"),
+            180,
+            rosen,
+            d3.scaleLinear().domain([0,1]).range([0, 180]) )
+
+  colorMap( d3.select("#rosen_colorbar2"),
+            180,
+            jet,
+            d3.scaleLinear().domain([0,1]).range([0, 180]) )})()
+  </script> 
   <p>
-  Momentum does shockingly well on this problem. For the optimal choice of $\alpha$ and $\beta$, it converges in exactly $n$ steps. But notice that no matter what the choice of $\alpha$ and $\beta$, the iterates all have a dead zone of zeros for $i\geq k$. This is true, in fact, for every possible linear first order algorithm. First observe that each component of the gradient depends only on the values directly before and after it:
+  The observations made in the above diagram are true for any Linear First Order algorithm. Let us prove this. First observe that each component of the gradient depends only on the values directly before and after it:
 
   $$
 \nabla f(x)_{i}=\frac{\kappa-1}{4}(2w_{i}-w_{i-1}-w_{i+1})+w_{i}, \qquad i \neq 1.
   $$
 
-  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
+  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction,
 
   $$
 

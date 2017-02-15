@@ -1,6 +1,6 @@
 function renderFlowWidget(divin) {
 
-var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]);
+  var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]);
 
   var colorBar = divin.append("div").style("position", "absolute").style("left","490px").style("top", "5px").style("height","45px")
   colorMap(colorBar,

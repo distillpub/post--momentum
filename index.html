@@ -1244,28 +1244,28 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
    w^{k} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0}) ~-~~~~ \cdots\cdots ~~~~-~ \alpha\nabla f(w^{k})
   \end{array}
   $$
-  can write gradient descent as
+  we can write gradient descent as:
 
   $$
-  w^{k}~~=~~w^{0} ~-~ \alpha\sum_{i}\nabla f(w^{i}).~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  w^{k} ~~=~~ w^{0} ~-~ \alpha\sum_{i}\nabla f(w^{i})
   $$
 
   A similar trick can be done with momentum,
 
   $$
-  w^{k}=w^{0}+\alpha\sum\frac{(1-\beta^{k})}{1-\beta}\nabla f(w^{k})
+  w^{k} ~~=~~ w^{0} ~+~ \alpha\sum\frac{(1-\beta^{k})}{1-\beta}\nabla f(w^{k})
   $$
 
   In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more can be written in (though not quite so neatly) this unrolled form. Therefore the class of algorithms for which
 
   $$
-  w^{k} = w^{0}+\sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
+  w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
   $$
 
   contains momentum, gradient descent and a whole bunch of other iterations you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
 
   $$
-  w^{k} = w^{0}+\sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
+  w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
   $$
 
   This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods". Now comes the Achille's heel of all methods of this kind.
@@ -1276,7 +1276,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   Here it is.
 
   $$
-  f^n(w) = \frac{(\kappa-1)}{8}\left(\left(w_{1}-1\right)^{2}+\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}\right)+\frac{1}{2}\|w\|^{2}
+  f^n(w) ~~=~~ \frac{(\kappa-1)}{8}\left(\left(w_{1}-1\right)^{2}+\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}\right)~+~\frac{1}{2}\|w\|^{2}
   $$
 
   The function looks rather innocent. It is a quadratic. It is simple to express. And it is surprisingly explicable. In fact, we've seen it once before already. This is just a variation on the colorization problem, one with a small regularization term which determines how well behaved it is. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function.
@@ -1434,12 +1434,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
    
   $$
   \begin{array}{lllllllll}
-    w^{0} & = & [~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0]\\
-    w^{1} & = & [w_{1}^{1}, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0]\\
-    w^{2} & = & [w_{1}^{2}, & w_{2}^{2}, & 0, & \ldots & 0, & 0, & \ldots & 0]\\
+    w^{0} & = & [~~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
+    w^{1} & = & [~w_{1}^{1}, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
+    w^{2} & = & [~w_{1}^{2}, & w_{2}^{2}, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
      & ~ \vdots \\
 
-   w^{k} & = & [w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0]\\
+   w^{k} & = & [~w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0~]\\
   \end{array}
   $$
 

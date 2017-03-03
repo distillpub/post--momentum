@@ -9,6 +9,8 @@
   <script src="../assets/lib/template.js"></script>  
 <script src="../assets/lib/auto-render.min.js"></script>
 <script src="../assets/lib/katex.min.js"></script>
+<script src="../assets/lib/swoopy-drag.js"></script>
+
 <link   rel="stylesheet" href="../assets/lib/katex.min.css">
 <link   rel="stylesheet" type="text/css" href="../assets/widgets.css">
 
@@ -21,36 +23,83 @@
   Each row is a single iterate down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
   </p>
 
-  <figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
-  <div style="position:relative; top:-40px">
-  <span style="position:absolute; top:10px">
-  $$\text{minimize} $$
+  <figure style="width:530px; height:120px; display:block; margin-left:auto; margin-right:auto; position:relative">
+
+  <div style="position:relative; top:-20px">
+
+  <span style="position:absolute; left:40px; top:20px">
+  $$y_{i}^{k+1}=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}$$
   </span>
 
-  <span style="position:absolute; left:90px">
-  $$\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 $$
-  </span>
+  <figcaption style="position:absolute;left:270px;top: 37px;width:300px;">
+  Interpreit $y_i^k$ as <b>velocity</b>, which is dampened at each step, and perturbed by an external force field.
 
-  <figcaption style="position:absolute; left:160px; top:100px; width:130px">
-  The <b>colorizer</b> pulls distinguished pixels towards 1
   </figcaption>
 
-
-  <span style="position:absolute; left:310px; top:10px">
-  $$+$$ 
+  <span style="position:absolute;left: 40px;top: 75px;">
+  $$x_i^{k+1} = x_i^k - \alpha y_i^{k+1}$$
   </span>
 
-  <span style="position:absolute; left:340px">
-  $$\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.$$
-  </span>
+  <figcaption style="position:absolute;left: 270px;top: 92px;width:300px;">
+  Interpreit $x^k_i$ as the <b>position</b> at time $k$, now updated by a small step in velocity $y$.
+  </figcaption>
 
-
-  <figcaption style="position:absolute; left:355px; top:100px; width:150px">
-  The <b>smoother</b> spreads out the color
-  </figcaption>  
   </div>
+  <svg id="position_velocity" style="width:530px; height:180px; position:absolute; top:-25px; left:0px"></svg>
+
   </figure>
   <script>
+  // Swoopy Annotator
+  var annotations = [
+  {
+    "x": 0,
+    "y": 0,
+    "path": "M 22,27 A 18.336 18.336 0 0 0 34,58",
+    "text": "velocity (new)",
+    "textOffset": [
+      6,
+      20
+    ]
+  },
+  {
+    "x": 0,
+    "y": 0,
+    "path": "M 119,25 A 24.331 24.331 0 0 0 124,48",
+    "text": "dampening coefficient",
+    "textOffset": [
+      103,
+      20
+    ]
+  },
+  {
+    "x": 0,
+    "y": 0,
+    "path": "M 257,31 A 35.485 35.485 0 0 1 229,60",
+    "text": "external force field depending on x",
+    "textOffset": [
+      243,
+      21
+    ]
+  },
+  {
+    "x": 0,
+    "y": 0,
+    "path": "M 20,146 A 25.871 25.871 0 0 1 36,120",
+    "text": "position (new)",
+    "textOffset": [
+      4,
+      159
+    ]
+  }
+]
+  var swoopy = d3.swoopyDrag()
+    .x(function(d){ return (d.x) })
+    .y(function(d){ return (d.y) })
+      .draggable(false)
+      .annotations(annotations)
+
+  var svg = d3.select("#position_velocity")
+  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
 
   </script> 
   <p>

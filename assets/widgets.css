@@ -234,3 +234,13 @@ path {
   color:gray;
 }
 
+
+.links line {
+  stroke: #000;
+  stroke-opacity: 1;
+}
+
+.nodes circle {
+  stroke: #000;
+  stroke-width: 1px;
+}

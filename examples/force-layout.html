@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.links line {
+  stroke: #000;
+  stroke-opacity: 1;
+}
+
+.nodes circle {
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+</style>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src = "../assets/utils.js"></script>  
+<script src = "../assets/lib/numeric-1.2.6.min.js"></script>
+<script src = "../assets/graph.js"></script>
+
+  <script src="http://distill.pub/template.js"></script>
+<dt-article class="centered">
+<p>
+  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
+
+</p>
+<figure style="width:900px; height:250px">
+<svg width="900" height="300" id="graph"></svg>
+<figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
+
+<figcaption id = "expander" style="position:absolute; left:370px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
+
+<figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
+
+</figure>
+<script>
+var g1 = d3.select("#graph").append("g")
+genExpander(g1)
+
+var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
+genGrid(g2)
+
+var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
+genPath(g3)
+</script>
+
+</dt-article>

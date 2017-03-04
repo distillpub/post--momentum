@@ -10,32 +10,15 @@
     - UC Davis: http://math.ucdavis.edu
 </script>
 
+<!-- Katex -->
 <script src="assets/lib/auto-render.min.js"></script>
 <script src="assets/lib/katex.min.js"></script>
-<link   rel="stylesheet" href="assets/lib/katex.min.css">
-<link   rel="stylesheet" type="text/css" href="assets/widgets.css">
-<script src="assets/lib/d3.v4.min.js"></script>
-<script src="assets/lib/numeric-1.2.6.min.js"></script>
-<script src="assets/utils.js"></script>
-<script src="assets/flow.js"></script>
-<script src="assets/momentum.js"></script>
-<script src="assets/poly.js"></script>
-<script src="assets/data/Sigma.json"></script>
-<script src="assets/data/matrix.json"></script>
-<script src="assets/data/Uval.json"></script>
-<script src="assets/flow.js"></script>
-<script src="assets/milestones.js"></script>
-<script src="assets/lib/contour_plot.js"></script>
-<script src="assets/lib/tooltip.js"></script>
-<script src="assets/iterates.js"></script>
-<script src="assets/data/Urosen.json"></script>
-<script src="assets/phasediagram.js"></script>
-<script src="assets/eigensum.js"></script>
-<script src="assets/graph.js"></script>
-<script src="assets/lib/swoopy-drag.js"></script>
-
-
+<link rel="stylesheet" href="assets/lib/katex.min.css">
 <link rel="stylesheet" type="text/css" href="assets/widgets.css">
+
+<!-- Required -->
+<script src="assets/lib/lib.js"></script>
+<script src="assets/utils.js"></script>
 
 <svg style="display: none;">
   <g id="pointerThingy">
@@ -104,6 +87,8 @@
 
   <dt-byline class="l-page"></dt-byline>
 
+  <script src="assets/lib/contour_plot.js"></script>
+  <script src="assets/iterates.js"></script>
   <script>
 
   // Render Foreground
@@ -147,7 +132,7 @@
 
   iterChange(getalpha(), getbeta(), getw0() )
 
-  </script><!-- 
+  </script><!--
   <p>
   If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, you start to get a nagging feeling you're not making as much progress as you should be. You're iterating hard, but the loss isn't getting smaller. Should you keep iterating, and hope for the best?
   </p>
@@ -156,7 +141,7 @@
   The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
   </p> -->
   <p>
-  Gradient descent has many virtues, but speed is not one of them. When optimizing a smooth function $f$, gradient descent 
+  Gradient descent has many virtues, but speed is not one of them. When optimizing a smooth function $f$, gradient descent
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
@@ -189,7 +174,7 @@
   When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically. -->
   </p>
   <p>
-  Optimizers call this minor miracle "acceleration". 
+  Optimizers call this minor miracle "acceleration".
   </p>
 
 <!--   <p>
@@ -229,70 +214,71 @@
   </div>
   <script>
 
-  (function() { var U = givens(Math.PI/4)
-  var Ut = numeric.transpose(U)
-  // Render Foreground
-  var left = d3.select("#mom1").style("border", "1px solid rgba(0, 0, 0, 0.2)")
+  (function() {
+    var U = givens(Math.PI/4)
+    var Ut = numeric.transpose(U)
+    // Render Foreground
+    var left = d3.select("#mom1").style("border", "1px solid rgba(0, 0, 0, 0.2)")
 
-  var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
-            .width(340)
-            .height(340)
-            .iters(300)
-            .alpha(0.018)
-            .showSolution(false)
-            .pathWidth(1)
-            .circleRadius(1.5)
-            .pointerScale(0.5)
-            .showStartingPoint(false)           
-            .drag(function() {
-              c2.control(c1.alpha(),
-                         c1.beta(),
-                         numeric.dot(U,c1.w0())) })
-            (left)
+    var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
+              .width(340)
+              .height(340)
+              .iters(300)
+              .alpha(0.018)
+              .showSolution(false)
+              .pathWidth(1)
+              .circleRadius(1.5)
+              .pointerScale(0.5)
+              .showStartingPoint(false)
+              .drag(function() {
+                c2.control(c1.alpha(),
+                          c1.beta(),
+                          numeric.dot(U,c1.w0())) })
+              (left)
 
-  // var s = 150
-  // left.select("svg")
-  //     .append("line").attr("x1", s).attr("x2",340-s).attr("y1", s).attr("y2",340-s)
-  //     .style("stroke", "red")
-  //     .style("stroke-width", 1)
+    // var s = 150
+    // left.select("svg")
+    //     .append("line").attr("x1", s).attr("x2",340-s).attr("y1", s).attr("y2",340-s)
+    //     .style("stroke", "red")
+    //     .style("stroke-width", 1)
 
-  // s = 100
-  // left.select("svg")
-  //     .append("line").attr("x1", 340-s).attr("y1", s).attr("x2",s).attr("y2",340-s)
-  //     .style("stroke", "red")
-  //     .style("stroke-width", 1)
+    // s = 100
+    // left.select("svg")
+    //     .append("line").attr("x1", 340-s).attr("y1", s).attr("x2",s).attr("y2",340-s)
+    //     .style("stroke", "red")
+    //     .style("stroke-width", 1)
 
-  // s = 100
-  // left.select("svg")
-  //     .append("text").attr("x", 135).attr("y", 145)
-  //     .style("font-size", "13px")
-  //     .text("q₁")
+    // s = 100
+    // left.select("svg")
+    //     .append("text").attr("x", 135).attr("y", 145)
+    //     .style("font-size", "13px")
+    //     .text("q₁")
 
-  // left.select("svg")
-  //     .append("text").attr("x", 240).attr("y", 95)
-  //     .style("font-size", "13px")
-  //     .text("q₂")
+    // left.select("svg")
+    //     .append("text").attr("x", 240).attr("y", 95)
+    //     .style("font-size", "13px")
+    //     .text("q₂")
 
-  var right = d3.select("#mom2").style("border", "1px solid rgba(0, 0, 0, 0.2)")
-  var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
-            .width(340)
-            .height(340)
-            .iters(300)
-            .alpha(0.018)
-            .showSolution(false)
-            .pathWidth(1)
-            .circleRadius(1.5) 
-            .pointerScale(0.5)
-            .showStartingPoint(false)           
-            .drag(function() {
-              c1.control(c2.alpha(),
-                         c2.beta(),
-                         numeric.dot(Ut,c2.w0())) })
-            (right)
+    var right = d3.select("#mom2").style("border", "1px solid rgba(0, 0, 0, 0.2)")
+    var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
+              .width(340)
+              .height(340)
+              .iters(300)
+              .alpha(0.018)
+              .showSolution(false)
+              .pathWidth(1)
+              .circleRadius(1.5)
+              .pointerScale(0.5)
+              .showStartingPoint(false)
+              .drag(function() {
+                c1.control(c2.alpha(),
+                          c2.beta(),
+                          numeric.dot(Ut,c2.w0())) })
+              (right)
 
-// Initalize
-c2.control(0.018,0,[-2.5,1])
-c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
+  // Initalize
+  c2.control(0.018,0,[-2.5,1])
+  c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
 
 </script>
 <p>
@@ -332,7 +318,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   <figcaption style="position:absolute; text-align:left; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
 
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
- -->  
+ -->
   <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px">
     <div id="stepSizeMilestones" class="figtext" style="position:absolute; left:15px; top:15px">Step Size </div>
     <div class="figtext2" style="position:absolute; font-size:11px; left:152px; top:18px">Optimal Step Size </div>
@@ -341,8 +327,9 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
     </svg>
 
   </div>
-  <div id = "obj"></div>  
-  </figure>  
+  <div id = "obj"></div>
+  </figure>
+  <script src="assets/milestones.js"></script>
   <script>
   var graphDiv = d3.select("#obj")
                    .style("width",  920 + "px")
@@ -353,7 +340,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
                    .style("margin-right", "auto")
                    .attr("width", 920)
                    .attr("height", 500)
-  
+
   var svg = graphDiv.append("svg").attr("width", 920).attr("height", 500)
 
   var updateSliderGD = renderMilestones(svg, function() {})
@@ -417,7 +404,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   </script>
   <p>
 <!--   The loss, $f(w^k)$ is a superposition of exponentially decaying curves. For the quadratic function $f$ with $A = \text{diag}([1,10,100])$ and $b = [1,1/\sqrt{10}, 1/\sqrt{100}]$, we see three curves, each with its own rate of decay, depending on the step-length $\alpha$. The timeline beneath the plot visualizes the milestones of descent - with a tick every time error in one eigenspace as it dips below a certain tolerance. Our iterates thus move through 3 stages of convergence, and when the $k$ passes the final milestone, convergence is achieved. The rate at which the slowest error goes down is referred to as the convergence rate.
- -->  
+ -->
  <h3>Choosing A Step-size</h3>
   <p>
   The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. <dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
@@ -496,13 +483,13 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   </p> -->
 
   <h3>Understanding Early Stopping</h3>
-<!-- 
+<!--
   <p>
   Pathological curvature gets more complex, however, when the directions of pathology are not axis aligned. This isn't necessarily a bad thing, however. By understanding what these directions of pathological curvature mean, we can shed light on an interesting heuristic used in neural network training - early stopping.
   </p> -->
-<!--  As we shall see, the smallest eigenvectors of $Z^T Z$ correspond often to blind spots in our data. And deliberately decreasing the error in these eigenspaces can lead to overfitting. -->  
+<!--  As we shall see, the smallest eigenvectors of $Z^T Z$ correspond often to blind spots in our data. And deliberately decreasing the error in these eigenspaces can lead to overfitting. -->
   <p>
-  The situation where the directions of pathology aren't axis aligned gets more complicated. But by studying this carefully, we can precisely understand and characterize the path the iterates take to the optimum, gain a few insights into a common heuristic in the optimization of neural networks - Early Stopping. 
+  The situation where the directions of pathology aren't axis aligned gets more complicated. But by studying this carefully, we can precisely understand and characterize the path the iterates take to the optimum, gain a few insights into a common heuristic in the optimization of neural networks - Early Stopping.
   </p>
 
   <p>
@@ -515,7 +502,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   Lets understand this phenomena in the quadratic model. Consider polynomial regression. Given 1D data, $\xi_i$, we wish to fit the model
 
 <!--   $$
-  \xi \mapsto w_0 + w_1\xi + w_2\xi^2 + \cdots + w_n\xi^{n-1} 
+  \xi \mapsto w_0 + w_1\xi + w_2\xi^2 + \cdots + w_n\xi^{n-1}
   $$
  -->
 <!--   To the human eye, these monomials look very much alike. $\xi^2$ resembles $\xi^4$, and $\xi^3$ resembles $\xi^5$. In fact, from a visual inspection of these curves, one might venture that beyond the fourth or so power, the polynomials cannot furnish any new information.  -->
@@ -525,14 +512,14 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   $$
 \text{model}(\xi)=w_{1}p_{1}(\xi)+\cdots+w_{n}p_{n}(\xi)\qquad p_{i}=\xi\mapsto\xi^{i-1}
   $$
-  
+
   to our data. This model, though nonlinear in the input ($\xi$) is linear in the weights, i.e. we can write the model as a linear combination of monomials, like:
   </p>
 
   <figure id = "polydisplay" style="height:165px"></figure>
-
+  <script src="assets/eigensum.js"></script>
   <script>
-  (function() { 
+  (function() {
 
   // Preprocess x, get eigendecomposition, etc
   var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
@@ -596,7 +583,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   <figure id = "eigendisplay" style="height:285px"></figure>
 
   <script>
-  (function() { 
+  (function() {
   var inv = function(lambda) { return 1/lambda }
   var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
 
@@ -638,8 +625,8 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   .style("height", 150 + "px")
   .style("left", "30px")
   .style("position", "absolute")
-  .style("border-top", "1px solid black")  
-    .style("padding", "10px")    
+  .style("border-top", "1px solid black")
+    .style("padding", "10px")
   .html("The first 2 eigenfeatures, the largest components, captures variations between the clusters. ")
 
   annotate.append("figcaption")
@@ -647,8 +634,8 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   .style("height", 150 + "px")
   .style("left", "300px")
   .style("position", "absolute")
-  .style("border-top", "1px solid black")  
-  .style("padding", "10px")  
+  .style("border-top", "1px solid black")
+  .style("padding", "10px")
   .html("Next there are smooth variations within clusters, peaks within clusters,")
 
   annotate.append("figcaption")
@@ -657,7 +644,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
   .style("left", 300+270+"px")
   .style("position", "absolute")
   .style("border-top", "1px solid black")
-  .style("padding", "10px")    
+  .style("padding", "10px")
   .html("Finally, jagged polynomials which differ wildly on neighboring points. ")})()
 
 
@@ -726,7 +713,7 @@ c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
 \lambda_{n}^{-1}\nu
 \end{array}\right)
 $$
-  
+
   </dt-fn> shows that an interesting.  pathological directions are those most sensitive to tiny changes to the observations. In other words, their purpose of existence is to fit the the smallest changes to $d$, the noise.  is a somewhat surprising result. What this says is that : in linear regression, the hardest directions to optimize are also those which fit the noise. And this property is easy to exploit - just stop optimizing before those errors go down. This is early stopping. Lets see how this plays out in gradient descent.
  -->  <!-- Pathological curvature here is a feature, not a bug. The hardest directions to move along are those we dont want to fit anyway. And if we set our initial point to something simple, like $0$, then we can exploit the first phases of the optimization to get a structurally simple result. Lets see how this plays out on a more complex example. -->
   </p>
@@ -768,7 +755,7 @@ $$
   var barlengths = getStepsConvergence(lambda, step).map(Math.log)
 
   var onChange = function(i) {
-    eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) ))) 
+    eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
   }
   var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
 
@@ -808,15 +795,15 @@ Recall that $Z^{T}Z=Q\text{diag}(\Lambda_{1},\ldots,\Lambda_{n})Q^T$. The soluti
 $$
 (Z^{T}Z+\eta I)^{-1}(Zd)=Q\text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
 $$
-Rewrite the eigenvalues of $(Z^{T}Z+\eta I)^{-1}$ as 
+Rewrite the eigenvalues of $(Z^{T}Z+\eta I)^{-1}$ as
 $$
 \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
 $$
 Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize. For stepsizes
 close to the upper limit of convergence, the smallest eigenvalue may converge faster (or at the same rate) as the largest. These stepsizes,
-however, occupy a minuscule fraction of the set of acceptable stepsizes, and are almost never encountered in practice. 
+however, occupy a minuscule fraction of the set of acceptable stepsizes, and are almost never encountered in practice.
 </dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
-  
+
 <!--   The behavior is exactly as you might expect. Our model has more than enough expressive power to overfit any dataset. And yet, for all reasonable runtimes, it does not. Gradient descent produces a decent result in a few minutes, and starts overfitting data only at the $k=10^8$ mark (a year and a half of runtime). And the whole thing reaches final convergence in about about 10 billion years, assuming your computer's still running then! That seems like a lot of work for polynomial regression in 25 variables. But the directions of slowest progress are also the directions which overfit the data. And thus pathological curvature here, is a surprising friend, putting into check our model's worst instincts. -->
   </p>
 
@@ -834,7 +821,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   $$
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   $$
-  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph. 
+  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph.
   </p>
   <figure style="width:900px; height:250px">
   <svg width="900" height="300" id="graph"></svg>
@@ -845,6 +832,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
 
   </figure>
+  <script src="assets/graph.js"></script>
   <script>
   var g1 = d3.select("#graph").append("g")
   genExpander(g1)
@@ -861,7 +849,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </p>
   <h4>The Colorization Problem</h4>
   <p>
-  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums, 
+  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
   </p>
 <figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
@@ -878,7 +866,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </figcaption>
 
   <span style="position:absolute; left:310px; top:10px">
-  $$+$$ 
+  $$+$$
   </span>
 
   <span style="position:absolute; left:350px">
@@ -888,7 +876,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
 
   <figcaption style="position:absolute; left:353px; top:100px; width:150px">
   The <b>smoother</b> spreads out the color
-  </figcaption>  
+  </figcaption>
   </div>
   </figure>
   <p>
@@ -904,6 +892,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
   </p>
   <figure id = "flow"></figure>
+  <!--FlowSigma-->
+  <script src="assets/data/Sigma.json"></script>
+  <!--M-->
+  <script src="assets/data/matrix.json"></script>
+  <!--FlowU-->
+  <script src="assets/data/Uval.json"></script>
+
+  <script src="assets/flow.js"></script>
   <script>renderFlowWidget(d3.select("#flow"))</script>
   <p>
   This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
@@ -1044,7 +1040,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     </div>
     <div id = "taxonomy"></div>
     <svg id="momentumOverlay" style="position:absolute; width:984px; height:540px; z-index:4; pointer-events:none"></svg>
-  </figure>  
+  </figure>
+  <script src="assets/momentum.js"></script>
   <script>
 
   var defaults = [[0.0015, 0.9],
@@ -1054,27 +1051,27 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
                   [0.025, 0.235 ]]
 
   coor = render2DSliderGen(
-    function(a,b,bold) { 
+    function(a,b,bold) {
       var xy = coor(a,b)
       updatePaths[0](xy[0], xy[1],bold)
       updateStemGraphs[0](a,b)
-    }, 
-    function(a,b,bold) { 
+    },
+    function(a,b,bold) {
       var xy = coor(a,b)
       updatePaths[1](xy[0], xy[1],bold)
       updateStemGraphs[1](a,b)
-    },  
-    function(a,b,bold) { 
+    },
+    function(a,b,bold) {
       var xy = coor(a,b)
       updatePaths[2](xy[0], xy[1],bold)
       updateStemGraphs[2](a,b)
-    }, 
-    function(a,b,bold) { 
+    },
+    function(a,b,bold) {
       var xy = coor(a,b)
       updatePaths[3](xy[0], xy[1],bold)
       updateStemGraphs[3](a,b)
     },
-    function(a,b,bold) { 
+    function(a,b,bold) {
       var xy = coor(a,b)
       updatePaths[4](xy[0], xy[1],bold)
       updateStemGraphs[4](a,b)
@@ -1101,7 +1098,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   for (var i = 0; i<5; i++) {
     up(i,defaults[i][0], defaults[i][1])
   }
-  </script> 
+  </script>
   <p>
 
   Notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
@@ -1109,7 +1106,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  Let us take a brief detour. When $\alpha$ becomes small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time. 
+  Let us take a brief detour. When $\alpha$ becomes small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
 
@@ -1191,7 +1188,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   var svg = d3.select("#position_velocity")
   var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
 
-  </script> 
+  </script>
   <p>
   Since $\alpha$ is small, we can think of $x_i$ as position of a particle (in 1D), and $y_i$ as its velocity (since at each iteration, we move in a small step along $y$). The update on $y_i$, our velocity, is
 
@@ -1213,6 +1210,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
   <figure id = "phasediagram" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
+  <script src="assets/phasediagram.js"></script>
   <script>
   phaseDiagram(d3.select("#phasediagram"))
   </script>
@@ -1260,8 +1258,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   Convergence rate, <b>Momentum</b>
   </figcaption>
   </div>
-  </figure> 
-  <p> 
+  </figure>
+  <p>
   With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. For ill conditioned problems, set $\beta$ as close to $1$ as you can, and make the $\alpha$ as high as possible. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
 
@@ -1274,7 +1272,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
   <div id = "sliderStep2D" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
-  <div id = "milestonesMomentum"></div>  
+  <div id = "milestonesMomentum"></div>
   </figure>
   <script>
   (function() {var graphDiv = d3.select("#milestonesMomentum")
@@ -1286,7 +1284,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
                    .style("margin-right", "auto")
                    .attr("width", 920)
                    .attr("height", 500)
-  
+
   var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
   var update = renderMilestones(svg, function() {})
@@ -1406,7 +1404,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
 
   <figure style="width:950px; height:770px">
-    <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>    
+    <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
@@ -1431,14 +1429,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   var alpha = 0.003
   var beta = 0.8
   var b = zeros(25); b[0] =  249.75
-  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta) 
+  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta)
   var res = function(i) { return iter(i)[0] }
 
   var sampleSVG = d3.select("#iterates")
     .style("display", "block")
       .append("svg")
       .attr("width", 770)
-      .attr("height", 700)   
+      .attr("height", 700)
 
   var rosen = d3.scaleLinear().domain([0,0.2,0.5,1.4,5]).range(colorbrewer.RdPu[5]);
   var jet = d3.scaleLinear().domain([-0.5,0,0.2,0.5,1.0,5]).range(colorbrewer.Spectral[6]);
@@ -1462,7 +1460,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
         .attr("height", 7)
         .attr("width", 7.7)
         .attr("x", function(d, i){return i*8+ 10})
-        .attr("y", function(d, i){return j*8 })  
+        .attr("y", function(d, i){return j*8 })
         // .attr("stroke", "black")
         // .attr("stroke-width", function(d,i) { return (i == j) ? 1.5 : 0 })
         // .attr("stroke-dasharray", "14.8, 14")
@@ -1472,12 +1470,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     //     .attr("class", "figtext")
     //     .attr("text-anchor", "end")
     //     .attr("x", 0)
-    //     .attr("y", function(d, i){return (j*8 + 10) })  
-    //     .html( (j == 0) ? "Iteration 0" : "" + j) 
+    //     .attr("y", function(d, i){return (j*8 + 10) })
+    //     .html( (j == 0) ? "Iteration 0" : "" + j)
     // }
 
     Disps3.push(disp)
-  } 
+  }
 
 
 
@@ -1495,7 +1493,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
         .attr("height", 7)
         .attr("width", 7.7)
         .attr("x", function(d, i){return i*8+ 10})
-        .attr("y", function(d, i){return j*8 })  
+        .attr("y", function(d, i){return j*8 })
         // .attr("stroke", "black")
         // .attr("stroke-width", function(d,i) { return (i == j) ? 1.5 : 0 })
         // .attr("stroke-dasharray", "14.8, 14")
@@ -1505,14 +1503,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
         .attr("class", "figtext")
         .attr("text-anchor", "end")
         .attr("x", 0)
-        .attr("y", function(d, i){return (j*8 + 10) })  
-        .html( (j == 0) ? "Iteration 0" : "" + j) 
+        .attr("y", function(d, i){return (j*8 + 10) })
+        .html( (j == 0) ? "Iteration 0" : "" + j)
     }
 
     Disps4.push(disp)
-  } 
+  }
   function update(alpha, beta) {
-    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta) 
+    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta)
     for (var j = 0; j < numIters; j++) {
       var iterj = iter(j)
       Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })
@@ -1524,7 +1522,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) })
 
   update(0.0035,0.95)
-  
+
   colorMap( d3.select("#rosen_colorbar1"),
             180,
             rosen,
@@ -1535,7 +1533,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
             jet,
             d3.scaleLinear().domain([0.2,1.5]).range([0, 180]) )})()
 
-  </script> 
+  </script>
   <p>
   The observations made in the above diagram are true for any Linear First Order algorithm. Let us prove this. First observe that each component of the gradient depends only on the values directly before and after it:
 
@@ -1544,7 +1542,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$
 
   Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
-   
+
   $$
   \begin{array}{lllllllll}
     w^{0} & = & [~~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
@@ -1660,8 +1658,8 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   <dt-fn> Hint : the eigenvalues are $\frac{1}{2} \left(-\sqrt{(-\alpha  \lambda +\beta +1)^2-4 \beta }-\alpha
    \lambda +\beta +1\right)$</dt-fn> -->
 <p>
-<!-- 
-  To understand why these features are meaningful, lets imagine that for some $n$-vector $q$, 
+<!--
+  To understand why these features are meaningful, lets imagine that for some $n$-vector $q$,
 
   $$
   q_{1}\bar{p}_1 + \cdots + q_{n}\bar{p}_n =\bar{p}_n(\xi_i) = 0 \qquad \text{for all }i, \qquad \|q\| = 1
@@ -1677,7 +1675,7 @@ Geoff Hinton calls this phenomena, in a rather raunchy biological analogy, "coad
   This eigenfeaturemap is visualized below. -->
   </p>
 
-<!-- 
+<!--
 <div id = "poly2"></div>
 
 <div id="eigenFeatures" style="display:block; margin-left:auto; margin-right:auto; width:920px; position:relative; top:20px; height:250px">
@@ -1912,6 +1910,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
 
 </script>
 
+<!-- Katex -->
 <script>
     renderMathInElement(
         document.body,
@@ -1921,8 +1920,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
                 {left: "$", right: "$", display: false},
             ]
         }
-    );  
-
+    );
 </script>
 
 <!--   <figure id = "eigensum2"></figure>
@@ -1939,7 +1937,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
    if (i != 6) {
     var html = katex.renderToString("w_"+(i+1)+" p_"+(i+1))
    }else{
-    var html = katex.renderToString("\\text{model}")  
+    var html = katex.renderToString("\\text{model}")
    }
    mathdiv.append("span").style("text-align","center")
     .style("display","inline-block")
@@ -1949,8 +1947,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
     .style("cursor", "ew-resize")
     .html(html)
     .call( d3.drag()
-        .on("drag", (function(i) { return function() { 
-          var m = d3.mouse(this) 
+        .on("drag", (function(i) { return function() {
+          var m = d3.mouse(this)
           var html = katex.renderToString(m[0]/10 + " p_"+(i+1))
           d3.select(this).html(html)
           var w = zeros(6)
@@ -1966,7 +1964,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
     .style("width", "25px")
     .style("height", "50px")
     .style("font-size", "16px")
-    .html(html)  
+    .html(html)
    } else{
     if (i == 5) {
     var html = katex.renderToString("=")
@@ -1975,10 +1973,10 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
     .style("width", "26px")
     .style("height", "50px")
     .style("font-size", "16px")
-    .html(html)  
+    .html(html)
     }
   }
-  
+
   }
 
   var div = eigensum
@@ -2002,15 +2000,15 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
     var w = zeros(6)
     w[i] = 2
 
-    var scal = lambda[i] < 1e-10 ? -100 : -1.5/Math.sqrt(lambda[i]) 
+    var scal = lambda[i] < 1e-10 ? -100 : -1.5/Math.sqrt(lambda[i])
     var update = renderEigenSum(div.append("svg"),x,numeric.mul(U[i],scal))
     updates.push(update.poly)
     if (i != 5) {
       div.append("span").html("+").style("position", "relative").style("top", "-51px")
     }
   }
-  
-  div.append("span").html("=").style("position", "relative").style("top", "-51px")  
+
+  div.append("span").html("=").style("position", "relative").style("top", "-51px")
   renderEigenSum(div.append("svg"),x, [-1,-2,2,-2,2,7])
 
   var annotate = eigensum
@@ -2020,8 +2018,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   .style("height", 150 + "px")
   .style("left", "30px")
   .style("position", "absolute")
-  .style("border-top", "1px solid black")  
-    .style("padding", "10px")    
+  .style("border-top", "1px solid black")
+    .style("padding", "10px")
   .html("The first 2 eigenfeatures, the largest components, captures variations between the clusters. ")
 
   annotate.append("figcaption")
@@ -2029,8 +2027,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   .style("height", 150 + "px")
   .style("left", "300px")
   .style("position", "absolute")
-  .style("border-top", "1px solid black")  
-  .style("padding", "10px")  
+  .style("border-top", "1px solid black")
+  .style("padding", "10px")
   .html("Next there are smooth variations within clusters, peaks within clusters,")
 
   annotate.append("figcaption")
@@ -2039,12 +2037,12 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   .style("left", 300+270+"px")
   .style("position", "absolute")
   .style("border-top", "1px solid black")
-  .style("padding", "10px")    
+  .style("padding", "10px")
   .html("Finally, jagged polynomials which differ wildly on neighboring points. ")
 
   </script> -->
 
-  <!-- 
+  <!--
   <figure id = "eigensum"></figure>
 
   <script>
@@ -2056,7 +2054,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   // for (var i =0; i < 6; i++) {
   //  s(sliderdiv)
   // }
- 
+
   var mathdiv = d3.select("#eigensum").append("div")
 
 
@@ -2065,7 +2063,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
    if (i != 6) {
     var html = katex.renderToString([-1,-2,2,-2,2,7][i]+" p_"+(i+1))
    }else{
-    var html = katex.renderToString("\\text{model}")  
+    var html = katex.renderToString("\\text{model}")
    }
    mathdiv.append("span").style("text-align","center")
     .style("display","inline-block")
@@ -2081,7 +2079,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
       .style("width", "25px")
       .style("height", "50px")
       .style("font-size", "16px")
-      .html(html)  
+      .html(html)
    } else{
     if (i == 5) {
       var html = katex.renderToString("=")
@@ -2090,10 +2088,10 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
       .style("width", "26px")
       .style("height", "50px")
       .style("font-size", "16px")
-      .html(html)  
+      .html(html)
     }
   }
-  
+
   }
 
   var div = d3.select("#eigensum")
@@ -2113,7 +2111,7 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
   var U = numeric.transpose(Eig.E.x)
 
   for (var i = 0; i < 6; i++ ){
-    var scal = lambda[i] < 1e-10 ? -100 : -1.5/Math.sqrt(lambda[i]) 
+    var scal = lambda[i] < 1e-10 ? -100 : -1.5/Math.sqrt(lambda[i])
     var w = zeros(6)
     w[i] = [-1,-2,2,-2,2,7][i]
     renderEigenSum(div.append("svg"),x,w)
@@ -2121,8 +2119,8 @@ renderNN(function(i) {control.eigen(25-i)}, function(i) {control.poly(25-i)})
     div.append("span").html("+").style("position", "relative").style("top", "-51px")
   }
   }
-  
-  div.append("span").html("=").style("position", "relative").style("top", "-51px")  
+
+  div.append("span").html("=").style("position", "relative").style("top", "-51px")
   renderEigenSum(div.append("svg"),x, [-1,-2,2,-2,2,7])
 
 

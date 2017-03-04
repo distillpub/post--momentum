@@ -302,7 +302,6 @@
 
   and there we have it - gradient descent in closed form.
   </p>
-  </p>
   <h3>Decomposing the Error</h3>
   <p>
   The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of $Q$. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, at a rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
@@ -315,19 +314,17 @@
   we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
   </p>
   <figure style="position:relative; width:920px; height:350px">
-  <figcaption style="position:absolute; text-align:left; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
+    <figcaption style="position:absolute; text-align:left; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
 
-<!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
- -->
-  <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px">
-    <div id="stepSizeMilestones" class="figtext" style="position:absolute; left:15px; top:15px">Step Size </div>
-    <div class="figtext2" style="position:absolute; font-size:11px; left:152px; top:18px">Optimal Step Size </div>
-    <svg style="position:absolute; font-size:10px; left:224px; top:34px">
-<line marker-end="url(#arrowhead)" style="stroke: black; stroke-width: 1.5; visibility: visible;" x2="5" y2="10" x1="5" y1="0"></line>
-    </svg>
-
-  </div>
-  <div id = "obj"></div>
+    <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"] -->
+    <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px">
+      <div id="stepSizeMilestones" class="figtext" style="position:absolute; left:15px; top:15px">Step Size </div>
+      <div class="figtext2" style="position:absolute; font-size:11px; left:152px; top:18px">Optimal Step Size </div>
+      <svg style="position:absolute; font-size:10px; left:224px; top:34px">
+        <line marker-end="url(#arrowhead)" style="stroke: black; stroke-width: 1.5; visibility: visible;" x2="5" y2="10" x1="5" y1="0"></line>
+      </svg>
+    </div>
+    <div id = "obj"></div>
   </figure>
   <script src="assets/milestones.js"></script>
   <script>

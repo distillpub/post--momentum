@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build": "cat node_modules/d3/build/d3.min.js node_modules/numeric/numeric-1.2.6.min.js node_modules/d3-swoopy-drag/swoopy-drag.js node_modules/d3-tip/index.js > public/assets/lib/lib.js"
+  },
+  "dependencies": {
+    "d3": "^4.7.1",
+    "d3-swoopy-drag": "^0.0.3",
+    "d3-tip": "^0.7.1",
+    "numeric": "^1.2.6"
+  }
+}

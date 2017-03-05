@@ -1018,7 +1018,7 @@ function sliderBarGen(barlengths) {
 	                 .style("position", "relative")
 
 	  var updateEverything = function(i, circ) { 
-	      step.html("Step k = " + Math.floor(Math.exp(i-0.1)) )
+	      step.html("Step k = " + numberWithCommas(Math.floor(Math.exp(i-0.1))) )
 
 	      if (!(circ === undefined) ){
 	        var ctm = circ.node().getCTM()
@@ -1385,4 +1385,11 @@ function eigSym(X) {
     lambda.push(Z[i][1])
   }
   return {U:U, lambda:lambda}
+}
+
+// http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
 }

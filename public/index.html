@@ -390,15 +390,12 @@
   </p>
 
 <hr>
-  <h2>
-  The Path of Descent
-  </h2>
 
+  <h3>Example - Linear Regression</h3>
   <p>
   The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. Lets take apply this understanding on a few, simple examples.
   </p>
 
-  <h3>Linear Regression</h3>
   <p>
   Linear Regression, conveniently a quadratic objective, provides a cartoon we need for understanding pathological curvature in deep learning. Let's do a quick refresher. In Linear Regression we fit $n$ features (the components of $z_i$) to observations $d_i$. Assume there are $m$ data points, stacked to form matrix $Z$. Then the optimization problem we're solving is
 
@@ -665,6 +662,7 @@
   var onChange = function(i) {
     eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
   }
+  
   var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
 
   d3.select("#eigensum2").append("figcaption")
@@ -687,7 +685,11 @@
                       .style("left","0px")
                       .style("pointer-events","none")
 
-  renderDraggable(svgannotate, [139.88888549804688, 243.77951049804688], [121.88888549804688, 200.77951049804688], 5, "We begin at x=w=0")})()
+  renderDraggable(svgannotate, 
+                  [139.88888549804688, 243.77951049804688], 
+                  [121.88888549804688, 200.77951049804688], 
+                  5, 
+                  "We begin at x=w=0")})()
 
   </script>
   <p>
@@ -707,114 +709,6 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 close to the upper limit of convergence, the smallest eigenvalue may converge faster (or at the same rate) as the largest. These stepsizes,
 however, occupy a minuscule fraction of the set of acceptable stepsizes, and are almost never encountered in practice.
 </dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
-
-  </p>
-
-  <h3>Laplacian Systems</h3>
-  <p>
-
-  A completely different source of pathological curvature comes from a quadratics defined on graphs - the graph Laplacian. Imagine a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. This is too, a manifestation of pathological curvature, and can be seen vividly in Laplacian Systems.
-  </p>
-  <p>
-  Given a graph $G=(V,E)$, the quadratic form induced by the graph is.
-  $$
-  f(w) =  \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
-  $$
-  The matrix $L_G$ is the Laplacian matrix, and can be written explicitly as
-  $$
-  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
-  $$
-  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph.
-  </p>
-  <figure style="width:900px; height:250px">
-  <svg width="900" height="300" id="graph"></svg>
-  <figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
-
-  <figcaption id = "expander" style="position:absolute; left:370px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
-
-  <figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
-
-  </figure>
-  <script src="assets/graph.js"></script>
-  <script>
-  var g1 = d3.select("#graph").append("g")
-  genExpander(g1)
-
-  var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
-  genGrid(g2)
-
-  var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
-  genPath(g3)
-  </script>
-  <p>
-
-  The reason for this will be clear in a moment.
-  </p>
-  <h4>The Colorization Problem</h4>
-  <p>
-  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
-  </p>
-<figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
-  <div style="position:relative; top:-40px">
-  <span style="position:absolute; top:10px">
-  $$\text{minimize} $$
-  </span>
-
-  <span style="position:absolute; left:90px">
-  $$\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 $$
-  </span>
-
-  <figcaption style="position:absolute; left:140px; top:100px; width:130px">
-  The <b>colorizer</b> pulls distinguished pixels towards 1
-  </figcaption>
-
-  <span style="position:absolute; left:310px; top:10px">
-  $$+$$
-  </span>
-
-  <span style="position:absolute; left:350px">
-  $$\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.$$
-  </span>
-
-
-  <figcaption style="position:absolute; left:353px; top:100px; width:150px">
-  The <b>smoother</b> spreads out the color
-  </figcaption>
-  </div>
-  </figure>
-  <p>
-  This is the colorization problem. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
-
-  $$
-w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
-\alpha(w_{i}^{k}-1) & i\in D\\
-0 & i\notin D
-\end{cases}
-  $$
-
-  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
-  </p>
-  <figure id = "flow"></figure>
-  <!--FlowSigma-->
-  <script src="assets/data/Sigma.json"></script>
-  <!--M-->
-  <script src="assets/data/matrix.json"></script>
-  <!--FlowU-->
-  <script src="assets/data/Uval.json"></script>
-
-  <script src="assets/flow.js"></script>
-  <script>renderFlowWidget(d3.select("#flow"),FlowSigma, M, FlowU)</script>
-  <p>
-  This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
-
-  </p>
-  <p>
-  <i>
-  In graph Laplacians, gradient descent makes good progress in directions corresponding to high frequency errors, and bad progress low frequency errors.
-  </i>
-  </p>
-  <p>
-  This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph.
   </p>
 
 <hr>
@@ -1260,6 +1154,114 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
   </p>
 
+
+  <h3>Laplacian Systems</h3>
+  <p>
+
+  A completely different source of pathological curvature comes from a quadratics defined on graphs - the graph Laplacian. Imagine a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. This is too, a manifestation of pathological curvature, and can be seen vividly in Laplacian Systems.
+  </p>
+  <p>
+  Given a graph $G=(V,E)$, the quadratic form induced by the graph is.
+  $$
+  f(w) =  \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
+  $$
+  The matrix $L_G$ is the Laplacian matrix, and can be written explicitly as
+  $$
+  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
+  $$
+  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph.
+  </p>
+  <figure style="width:900px; height:250px">
+  <svg width="900" height="300" id="graph"></svg>
+  <figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
+
+  <figcaption id = "expander" style="position:absolute; left:370px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
+
+  <figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
+
+  </figure>
+  <script src="assets/graph.js"></script>
+  <script>
+  var g1 = d3.select("#graph").append("g")
+  genExpander(g1)
+
+  var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
+  genGrid(g2)
+
+  var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
+  genPath(g3)
+  </script>
+  <p>
+
+  The reason for this will be clear in a moment.
+  </p>
+  <h4>The Colorization Problem</h4>
+  <p>
+  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
+  </p>
+<figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <div style="position:relative; top:-40px">
+  <span style="position:absolute; top:10px">
+  $$\text{minimize} $$
+  </span>
+
+  <span style="position:absolute; left:90px">
+  $$\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 $$
+  </span>
+
+  <figcaption style="position:absolute; left:140px; top:100px; width:130px">
+  The <b>colorizer</b> pulls distinguished pixels towards 1
+  </figcaption>
+
+  <span style="position:absolute; left:310px; top:10px">
+  $$+$$
+  </span>
+
+  <span style="position:absolute; left:350px">
+  $$\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.$$
+  </span>
+
+
+  <figcaption style="position:absolute; left:353px; top:100px; width:150px">
+  The <b>smoother</b> spreads out the color
+  </figcaption>
+  </div>
+  </figure>
+  <p>
+  This is the colorization problem. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+
+  $$
+w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
+\alpha(w_{i}^{k}-1) & i\in D\\
+0 & i\notin D
+\end{cases}
+  $$
+
+  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
+  </p>
+  <figure id = "flow"></figure>
+  <!--FlowSigma-->
+  <script src="assets/data/Sigma.json"></script>
+  <!--M-->
+  <script src="assets/data/matrix.json"></script>
+  <!--FlowU-->
+  <script src="assets/data/Uval.json"></script>
+
+  <script src="assets/flow.js"></script>
+  <script>renderFlowWidget(d3.select("#flow"),FlowSigma, M, FlowU)</script>
+  <p>
+  This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
+
+  </p>
+  <p>
+  <i>
+  In graph Laplacians, gradient descent makes good progress in directions corresponding to high frequency errors, and bad progress low frequency errors.
+  </i>
+  </p>
+  <p>
+  This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph.
+  </p>
+
 <hr>
   <h2>
   The Resisting Oracle
@@ -1454,18 +1456,19 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$
 
   Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
-
+  </p>
+  <div style="position:relative; height:178px">
   $$
   \begin{array}{lllllllll}
     w^{0} & = & [~~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
     w^{1} & = & [~w_{1}^{1}, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
     w^{2} & = & [~w_{1}^{2}, & w_{2}^{2}, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
      & ~ \vdots \\
-
    w^{k} & = & [~w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0~]\\
   \end{array}
   $$
-
+  </div>
+  <p>
   Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ can propagate to $w_k$. We can therefore sum up the errors which can not have changed yet
 
   $$

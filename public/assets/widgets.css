@@ -36,10 +36,10 @@
   stroke-width: 1.5px;
 }
 
-path { 
-/*    stroke: black;
+.figtext path{ 
+    stroke: black;
     stroke-width:1;
-    fill: none;*/
+    fill: none;
 }
 
 /* Tooltip Styles */
@@ -243,4 +243,21 @@ path {
 .nodes circle {
   stroke: #000;
   stroke-width: 1px;
+}
+.axis line, .axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
+.annotations path{
+  fill: none;
+  stroke: black;
+}
+.annotations g:hover circle{
+  stroke: red;
+}
+.annotations g:hover text{
+  fill: red;
 }

@@ -662,7 +662,7 @@
   var onChange = function(i) {
     eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
   }
-  
+
   var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
 
   d3.select("#eigensum2").append("figcaption")
@@ -685,10 +685,10 @@
                       .style("left","0px")
                       .style("pointer-events","none")
 
-  renderDraggable(svgannotate, 
-                  [139.88888549804688, 243.77951049804688], 
-                  [121.88888549804688, 200.77951049804688], 
-                  5, 
+  renderDraggable(svgannotate,
+                  [139.88888549804688, 243.77951049804688],
+                  [121.88888549804688, 200.77951049804688],
+                  5,
                   "We begin at x=w=0")})()
 
   </script>
@@ -893,7 +893,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  Let us take a brief detour. When $\alpha$ becomes small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time. 
+  Let us take a brief detour. When $\alpha$ becomes small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
   <figure style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -958,12 +958,12 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </div>
   </figure>
   <p>
-  Lets study this interpretation of the momentum update in a phase diagram. For $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis). 
+  Lets study this interpretation of the momentum update in a phase diagram. For $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis).
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
   <figure id = "phasediagram_" style="position:relative; width:450px; height:700px;margin-left:auto; margin-right:auto">
-    
+
   <figcaption style="width:200px; top:190px; position:absolute">
   $$
   \begin{aligned}
@@ -972,7 +972,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   \end{aligned}
   $$
   When $\lambda_i = 0$ and $\beta=1$, this is Newton's first law. An object in motion stays in motion. The object moves at constant speed.
-  </figcaption>  
+  </figcaption>
 
   <figcaption style="width:200px; left:260px; top:190px; position:absolute">
   $$
@@ -981,7 +981,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   w^{k+1}&=w^{k}- 0.01 z^{k+1},
   \end{aligned}
   $$
-  With a damping coefficient $\beta$ less than 1, the particle decelerates. $\beta$ is the amount of kinetic energy the particle loses at each tick.   </figcaption>    
+  With a damping coefficient $\beta$ less than 1, the particle decelerates. $\beta$ is the amount of kinetic energy the particle loses at each tick.   </figcaption>
 
 
   <figcaption style="width:200px; top:530px; position:absolute">
@@ -992,7 +992,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   \end{aligned}
   $$
 
-  Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$. The object moves in a periodic trajectory. </figcaption>  
+  Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$. The object moves in a periodic trajectory. </figcaption>
 
 
   <figcaption style="width:200px; left:260px; top:530px; position:absolute">
@@ -1003,7 +1003,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   \end{aligned}
   $$
 
-  Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium. </figcaption>    
+  Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium. </figcaption>
   <figcaption style="width:220px; left:80px; top:-13px; position:absolute">
   $\beta = 1$
   </figcaption>
@@ -1014,11 +1014,11 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
 
   <figcaption style="width:220px; left:-70px; top:88px; position:absolute">
   $\lambda_i = 0$
-  </figcaption>  
+  </figcaption>
 
   <figcaption style="width:220px; left:-70px; top:440px; position:absolute">
   $\lambda_i = 1$
-  </figcaption>  
+  </figcaption>
 
   </figure>
   <script>
@@ -1240,15 +1240,21 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
   </p>
   <figure id = "flow"></figure>
-  <!--FlowSigma-->
-  <script src="assets/data/Sigma.json"></script>
-  <!--M-->
-  <script src="assets/data/matrix.json"></script>
-  <!--FlowU-->
-  <script src="assets/data/Uval.json"></script>
-
   <script src="assets/flow.js"></script>
-  <script>renderFlowWidget(d3.select("#flow"),FlowSigma, M, FlowU)</script>
+  <script>
+    d3.queue()
+      .defer(d3.json, "assets/data/Sigma.json")
+      .defer(d3.json, "assets/data/matrix.json")
+      .defer(d3.json, "assets/data/Uval.json")
+      .await(function(error, FlowSigma, M, FlowU) {
+        if (error) {
+          console.error("Error loading data files");
+        }
+        else {
+          renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
+        }
+      });
+  </script>
   <p>
   This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
 

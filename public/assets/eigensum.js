@@ -6,8 +6,6 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   var startpoint = 0
   var witemp = 0
 
-  console.log("wi", wi)
-
   var equations = []
 
   if (!(renderStars === undefined)) {

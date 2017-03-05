@@ -64,7 +64,6 @@ function renderEigenFeatures(divin) {
       .duration(100) 
 
     pd.attr("cy", function (d) {
-      console.log(poly(U[i], d))
       return y(poly(numeric.mul(3/Math.pow(Lambda[i],0.5),U[i]), d))
     })
   }
@@ -84,7 +83,6 @@ function renderEigenFeatures(divin) {
       .duration(100) 
 
     pd.attr("cy", function (d) {
-      console.log(poly(U[i], d))
       return y(poly(ei, d))
     })
   }  

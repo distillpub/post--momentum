@@ -5,8 +5,6 @@
 var colorscheme = colorbrewer.Set1
 function renderOverlay(svg, nodes) {
 
-//    console.log(outdiv.node().offsetLeft, outdiv.node().offsetTop)
-
   var ringPath = ringPathGen(5, 0, 0)
 
   var updates = []
@@ -114,8 +112,7 @@ function renderTaxonomy(div) {
      .style("margin-right","auto")
      .style("position", "relative")
      .style("border-radius", "5px")
-      .on("click", function () { console.log(d3.mouse(this)) })
-
+     
   var divs = []
   function genPhase(i,t,l, range,title,text) {
 

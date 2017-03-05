@@ -134,7 +134,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
                     .height(281)
                     .linewidth(1.3)
                     .maxX(13.3)
-                    .mouseover( function(d,i) { console.log(i); display(FlowU[i], divergent) })
+                    .mouseover( function(d,i) { display(FlowU[i], divergent) })
                     .labelFunc(function (d,i) {
                       if (i < 50) {
                         return ((i == 0) ? "Eigenvalue 1" : "") + (( (i+1) % 25 == 0 ) ? (i + 1) : "")

@@ -17,7 +17,7 @@ function phaseDiagram_dec(divin) {
       if (w.every(isFinite)) {
         W.push(w)
         Z.push(z)
-      } else{ console.log("breaking"); break; }
+      } else{ break; }
     }
     return [Z,W]
   }
@@ -26,7 +26,6 @@ function phaseDiagram_dec(divin) {
     var m = []
     var iter = myRunMomentum(function(x) { return [x[0],lambda*x[1]] }, [2,0.92], alpha, beta, totalIters) 
     // run for 500 iterations
-    console.log(iter)
     for (var i = 0; i <= totalIters; i++) { 
       var x = -1*iter[1][i][1]
       var y = (1.4)*iter[0][i][1]

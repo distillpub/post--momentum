@@ -761,7 +761,6 @@ function slider2D(div, onChange) {
 	  .style("cursor", "pointer")
 	  .on("click", function(d) { changeMouse(X(d[0]), Y(d[1]) ) })
 
-	console.log(alpha, beta)
 	changeMouse(X(alpha*lambdan),Y(beta))
 }
 
@@ -995,7 +994,6 @@ function colorMap(root, width, colorScale, axisScale) {
   svg.call(axis);
   root.select(".label").text("Activation value")
   var context = canvas.node().getContext("2d");
-  console.log(colorScale, axisScale)
   for (var i = 0; i < width + 1; i++) {
     context.fillStyle = colorScale(axisScale.invert(i));
     context.fillRect(i, 0, 1, height)
@@ -1181,7 +1179,6 @@ function renderDraggable(svg, p1, p2, radius, text) {
                   path.attr("d", d.d)
                   label.attr("transform", "translate(" + d.label[0] + "," + d.label[1]  + ")")
                   circleDragger.attr("cx",x).attr("cy",y)
-                  console.log("P1", p1, "P2", p2)
               }));
 
   var label = svg.append("text")

@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "cat node_modules/d3/build/d3.min.js node_modules/numeric/numeric-1.2.6.min.js node_modules/d3-swoopy-drag/swoopy-drag.js node_modules/d3-tip/index.js > public/assets/lib/lib.js"
+    "build": "cat node_modules/d3/build/d3.min.js node_modules/numeric/numeric-1.2.6.min.js node_modules/d3-swoopy-drag/swoopy-drag.js node_modules/d3-tip/index.js > public/assets/lib/lib.js",
+    "serve": "python -m SimpleHTTPServer"
   },
   "dependencies": {
     "d3": "^4.7.1",

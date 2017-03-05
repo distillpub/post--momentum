@@ -1,4 +1,4 @@
-function renderFlowWidget(divin) {
+function renderFlowWidget(divin, FlowSigma, M, FlowU) {
 
   var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]);
 
@@ -15,7 +15,7 @@ function renderFlowWidget(divin) {
        .style("width", "300px")
        .style("top", "70px")
        .html("Each represents a node (and a weight $w_i$), and edges connect neighboring squares.")
-  
+
 
   divin.append("figcaption")
        .style("position", "absolute")
@@ -33,7 +33,7 @@ function renderFlowWidget(divin) {
        .style("top", "45px")
        .attr("class", "figtext")
        .html("Step size α = 0.02")
-  
+
 
   sliderGen([320, 130])
       .ticks([0,2/FlowSigma[1119]])
@@ -57,12 +57,12 @@ function renderFlowWidget(divin) {
   var iter = geniter(FlowU, FlowSigma, b, step)
   var Ub = numeric.dot(FlowU, b)
 
-  // We can also run this on momentum. 
+  // We can also run this on momentum.
   //var iterf = geniterMomentum(U, FlowSigma, b, 2/8, 1)
   //var iter = function(k) { return iterf(k)[1] }
 
   /**************************************************************************
-    START VISUALIZATION 
+    START VISUALIZATION
   ***************************************************************************/
 
   divin.style("position", "relative")
@@ -78,7 +78,7 @@ function renderFlowWidget(divin) {
       .style("width", "920px")
         .append("svg")
         .attr("width", 920)
-        .attr("height", 150)   
+        .attr("height", 150)
 
     /* Render discretization of 2D Laplacian*/
     sampleSVG.selectAll("rect")
@@ -98,7 +98,7 @@ function renderFlowWidget(divin) {
         sampleSVG.transition()
           .duration(transition)
           .selectAll("rect")
-          .style("fill", function(d,i) { return map(x[i]) })      
+          .style("fill", function(d,i) { return map(x[i]) })
       }
     }
 
@@ -117,7 +117,7 @@ function renderFlowWidget(divin) {
   var cacheval  = -1
   var cacheiter = null
   var onDragSlider = function (i) {
-    var i = Math.floor(Math.exp(i)) 
+    var i = Math.floor(Math.exp(i))
     if (cacheval != i) {
       cacheiter = iter(i)
       cacheval = i
@@ -135,11 +135,11 @@ function renderFlowWidget(divin) {
                     .linewidth(1.3)
                     .maxX(13.3)
                     .mouseover( function(d,i) { console.log(i); display(FlowU[i], divergent) })
-                    .labelFunc(function (d,i) { 
+                    .labelFunc(function (d,i) {
                       if (i < 50) {
-                        return ((i == 0) ? "Eigenvalue 1" : "") + (( (i+1) % 25 == 0 ) ? (i + 1) : "") 
+                        return ((i == 0) ? "Eigenvalue 1" : "") + (( (i+1) % 25 == 0 ) ? (i + 1) : "")
                       } else {
-                        return (( (i+1) % 25 == 0 ) ? 20*(i + 1) : "") 
+                        return (( (i+1) % 25 == 0 ) ? 20*(i + 1) : "")
                       }
                     })
                     .update(onDragSlider)(divin)
@@ -154,6 +154,6 @@ function renderFlowWidget(divin) {
     slideControl.slidera.init()
     stepCaption.html("Step size α = " + step.toPrecision(3))
   }
-    
+
 }
 

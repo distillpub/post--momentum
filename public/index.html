@@ -889,15 +889,22 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
   </p>
   <figure id = "flow"></figure>
-  <!--FlowSigma-->
-  <script src="assets/data/Sigma.json"></script>
-  <!--M-->
-  <script src="assets/data/matrix.json"></script>
-  <!--FlowU-->
-  <script src="assets/data/Uval.json"></script>
-
   <script src="assets/flow.js"></script>
-  <script>renderFlowWidget(d3.select("#flow"))</script>
+  <script>
+    d3.queue()
+      .defer(d3.json, "assets/data/Sigma.json")
+      .defer(d3.json, "assets/data/matrix.json")
+      .defer(d3.json, "assets/data/Uval.json")
+      .await(function(error, FlowSigma, M, FlowU) {
+        if (error) {
+          console.error("Error loading data files");
+        }
+        else {
+          console.log("loaded")
+          renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
+        }
+      });
+  </script>
   <p>
   This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
 

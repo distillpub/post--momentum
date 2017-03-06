@@ -1107,7 +1107,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
   var update = renderMilestones(svg, function() {})
-  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 4.6, 996.35)
+  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
 
   // Swoopy Annotator
   var annotations = [
@@ -1438,7 +1438,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     }
   }
 
-  var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) })
+  var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
 
   update(0.0035,0.95)
 

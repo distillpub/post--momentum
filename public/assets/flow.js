@@ -131,7 +131,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   slideControl.slidera.init()
 
   function changeStep(alpha, beta) {
-    var iteration = geniterMomentum(FlowU, FlowSigma, b, alpha/FlowSigma[1119], beta)
+    var iteration = geniterMomentum(FlowU, FlowSigma, b, alpha/FlowSigma[1119], Math.min(beta,0.999999))
     iterf = iteration.iter
     var barLengths = getStepsConvergence(iteration.maxLambda.map(function(i) { return 1- i}), 1)
       .map( function(i) {return Math.log(Math.max(i,1))} )

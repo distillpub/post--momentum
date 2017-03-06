@@ -893,7 +893,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  Let us take a brief detour. When $\alpha$ becomes small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time.
+  Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
   <figure style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -958,7 +958,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </div>
   </figure>
   <p>
-  Lets study this interpretation of the momentum update in a phase diagram. For $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis).
+  Lets break apart what this equation means. For $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
@@ -1051,7 +1051,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   -\alpha\beta & 1-\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   $$
-  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> which I will for you as an exercise. Let's take it as a given that the critical point is
+  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, so let's take it as a given that the critical point is
   $$
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   $$
@@ -1153,50 +1153,10 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
   </p>
 
-
-  <h3>Laplacian Systems</h3>
+  <h3>Example: The Colorization Problem</h3>
+  
   <p>
-
-  A completely different source of pathological curvature comes from a quadratics defined on graphs - the graph Laplacian. Imagine a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. This is too, a manifestation of pathological curvature, and can be seen vividly in Laplacian Systems.
-  </p>
-  <p>
-  Given a graph $G=(V,E)$, the quadratic form induced by the graph is.
-  $$
-  f(w) =  \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
-  $$
-  The matrix $L_G$ is the Laplacian matrix, and can be written explicitly as
-  $$
-  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
-  $$
-  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. There is one pertinent fact relevant to this article. The conditioning of $L_G$ is directly connected to the connectivity of the graph.
-  </p>
-  <figure style="width:900px; height:250px">
-  <svg width="900" height="300" id="graph"></svg>
-  <figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
-
-  <figcaption id = "expander" style="position:absolute; left:370px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
-
-  <figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
-
-  </figure>
-  <script src="assets/graph.js"></script>
-  <script>
-  var g1 = d3.select("#graph").append("g")
-  genExpander(g1)
-
-  var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
-  genGrid(g2)
-
-  var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
-  genPath(g3)
-  </script>
-  <p>
-
-  The reason for this will be clear in a moment.
-  </p>
-  <h4>The Colorization Problem</h4>
-  <p>
-  Let us consider a toy example. On a grid of pixels let $G$ be the graph with vertices as pixels and edges connecting neighbouring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
+  Lets look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices's as pixels and $E$ be the set of edges connecting neighboring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
   </p>
 <figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
@@ -1236,9 +1196,15 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{cases}
   $$
 
-  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure.
+  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. 
   </p>
-  <figure id = "flow"></figure>
+  <figure id = "flow">
+    
+  <figcaption style="left:800px; top:430px; position:absolute; width:130px">
+      The eigenvectors of the colorization problem form a generalized Fourier basis for $R^n$. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
+  </figcaption>
+
+  </figure>
   <script src="assets/flow.js"></script>
   <script>
     d3.queue()
@@ -1255,18 +1221,47 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       });
   </script>
   <p>
-  This observation can be made more precise by looking at the eigenvectors of $L_G$. The eigenvectors of a Laplacian, shown here, form a generalized Fourier basis for $R^n$. Eigenvectors with high frequencies have large eigenvalues, and the smallest eigenvalues are smooth. And thus we arrive at the conclusion
-
-  </p>
-  <p>
-  <i>
-  In graph Laplacians, gradient descent makes good progress in directions corresponding to high frequency errors, and bad progress low frequency errors.
-  </i>
-  </p>
-  <p>
-  This fact is not a mere mathematical curiosity - it is the basis of the celebrated multigrid <dt-cite key="briggs2000multigrid"></dt-cite> algorithm. The multigrid algorithms begins by noticing that low frequency errors in the full quadratic correspond to high frequency errors in a coarsened grid. Therefore, by doing a few steps of gradient descent on a hierarchy of such models, we hit the errors at all the right places, allow information to move quickly across the graph.
+  Momentum helps by ...
   </p>
 
+  <p>
+  In the colorization problem, the smoother dominates the behavior of the function. We can generalize our smoother a little, and define it on a general graph $G=(V,E)$,
+  $$
+  w \mapsto \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
+  $$
+  The matrix $L_G$ is the Laplacian matrix
+  <dt-fn>This can be written explicitly
+  $$
+  [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
+  $$
+  </dt-fn>.
+  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. The first eigenvalue of $L_G$ is always $0$, but more surprisingly, the conditioning of $L_G$, the ratio of the second eigenvector to the last, is directly connected to the connectivity of the graph.
+  </p>
+  <figure style="width:900px; height:250px">
+  <svg width="900" height="300" id="graph"></svg>
+  <figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
+
+  <figcaption id = "expander" style="position:absolute; left:370px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
+
+  <figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
+
+  </figure>
+  <script src="assets/graph.js"></script>
+  <script>
+  var g1 = d3.select("#graph").append("g")
+  genExpander(g1)
+
+  var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
+  genGrid(g2)
+
+  var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
+  genPath(g3)
+  </script>
+  <p>
+
+  The intuition behind this should be clear. Well connected graphs allow rapid diffusion through the edges, while long paths do not. But surprisingly, these functions, taken to an extreme, are in some sense the hardest functions to optimize amongst all functions. This gives us the lower bound which shows that Momentum is some sense optimal.
+
+  </p>
 <hr>
   <h2>
   The Resisting Oracle
@@ -1314,9 +1309,9 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods". Now comes the Achille's heel of all methods of this kind.
 
   </p>
-  <h3>The Worst Function in the World</h3>
+  <h3>The Convex Rosenbrock</h3>
   <p>
-  Here it is.
+  Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world".
 
   $$
   f^n(w) ~~=~~ \frac{(\kappa-1)}{8}\left(\left(w_{1}-1\right)^{2}+\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}\right)~+~\frac{1}{2}\|w\|^{2}
@@ -1484,7 +1479,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{aligned}
   $$
 
-  With the final term going to 0 as $n$ gets large. And there we have it - the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than.
+  As $n$ gets large, the final term going to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes to yield the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than.
   </p>
   <p>
   Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favourite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum.

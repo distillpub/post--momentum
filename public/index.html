@@ -19,7 +19,9 @@
 <!-- Required -->
 <script src="assets/lib/lib.js"></script>
 <script src="assets/utils.js"></script>
-
+<script>
+  var renderQueue = [];
+</script>
 <svg style="display: none;">
   <g id="pointerThingy">
     <circle fill="none" stroke="#FF6C00" stroke-linecap="round" cx="0" cy="0" r="14"/>
@@ -200,7 +202,7 @@
   </div>
   <script>
 
-  (function() {
+  renderQueue.push(function(callback) {
     var U = givens(Math.PI/4)
     var Ut = numeric.transpose(U)
     // Render Foreground
@@ -241,7 +243,10 @@
 
   // Initalize
   c2.control(0.018,0,[-2.5,1])
-  c1.control(0.018,0,numeric.dot(Ut,[-2.5,1])) })()
+  c1.control(0.018,0,numeric.dot(Ut,[-2.5,1]));
+
+  callback(null);
+});
 
 </script>
 <p>
@@ -294,76 +299,79 @@
   </figure>
   <script src="assets/milestones.js"></script>
   <script>
-  var graphDiv = d3.select("#obj")
-                   .style("width",  920 + "px")
-                   .style("height", 300 + "px")
-                   .style("top", "90px")
-                   .style("position", "relative")
-                   .style("margin-left", "auto")
-                   .style("margin-right", "auto")
-                   .attr("width", 920)
-                   .attr("height", 500)
+    renderQueue.push(function(callback) {
+      var graphDiv = d3.select("#obj")
+                      .style("width",  920 + "px")
+                      .style("height", 300 + "px")
+                      .style("top", "90px")
+                      .style("position", "relative")
+                      .style("margin-left", "auto")
+                      .style("margin-right", "auto")
+                      .attr("width", 920)
+                      .attr("height", 500)
 
-  var svg = graphDiv.append("svg").attr("width", 920).attr("height", 500)
+      var svg = graphDiv.append("svg").attr("width", 920).attr("height", 500)
 
-  var updateSliderGD = renderMilestones(svg, function() {})
+      var updateSliderGD = renderMilestones(svg, function() {})
 
-  var slidera = sliderGen([250, 80])
-              .ticks([0,1,200/(101),2])
-              .change( function (i) {
-                var html = katex.renderToString("\\alpha = " + i.toPrecision(4) )
-                d3.select("#stepSizeMilestones")
-                  .html("Stepsize " + html )
-                updateSliderGD(i,0.000)
-              } )
-              .ticktitles(function(d,i) { return [0,1,"",2][i] })
-              .startxval(200/(106))
-              .cRadius(7)
-              .shifty(-12)
-              .shifty(10)
-              .margins(20,20)(d3.select("#sliderStep"))
-
-
-  renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.4)
-  renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.4)
-  renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.4)
+      var slidera = sliderGen([250, 80])
+                  .ticks([0,1,200/(101),2])
+                  .change( function (i) {
+                    var html = katex.renderToString("\\alpha = " + i.toPrecision(4) )
+                    d3.select("#stepSizeMilestones")
+                      .html("Stepsize " + html )
+                    updateSliderGD(i,0.000)
+                  } )
+                  .ticktitles(function(d,i) { return [0,1,"",2][i] })
+                  .startxval(200/(106))
+                  .cRadius(7)
+                  .shifty(-12)
+                  .shifty(10)
+                  .margins(20,20)(d3.select("#sliderStep"))
 
 
-  svg.append("text")
-    .attr("class", "katex morsd mathit")
-    .style("font-size", "19px")
-    .style("font-family","KaTeX_Math")
-    .attr("x", 105)
-    .attr("y", 50)
-    .attr("text-anchor", "end")
-    .attr("fill", "gray")
-    .html("f(w<tspan baseline-shift = \"super\" font-size = \"15\">k</tspan>) - f(w<tspan baseline-shift = \"super\" font-size = \"15\">*</tspan>)")
+      renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.4)
+      renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.4)
+      renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.4)
+
+
+      svg.append("text")
+        .attr("class", "katex morsd mathit")
+        .style("font-size", "19px")
+        .style("font-family","KaTeX_Math")
+        .attr("x", 105)
+        .attr("y", 50)
+        .attr("text-anchor", "end")
+        .attr("fill", "gray")
+        .html("f(w<tspan baseline-shift = \"super\" font-size = \"15\">k</tspan>) - f(w<tspan baseline-shift = \"super\" font-size = \"15\">*</tspan>)")
 
 
 
-  svg.append("text")
-    .style("font-size", "13px")
-    .attr("x", 0)
-    .attr("y", 80)
-    .attr("dy", 0)
-    .attr("transform", "translate(110,0)")
-    .attr("class", "caption")
-    .attr("text-anchor", "end")
-    .attr("fill", "gray")
-    .text("At the initial point, the error in each component is equal.")
+      svg.append("text")
+        .style("font-size", "13px")
+        .attr("x", 0)
+        .attr("y", 80)
+        .attr("dy", 0)
+        .attr("transform", "translate(110,0)")
+        .attr("class", "caption")
+        .attr("text-anchor", "end")
+        .attr("fill", "gray")
+        .text("At the initial point, the error in each component is equal.")
 
-  svg.selectAll(".caption").call(wrap, 100)
+      svg.selectAll(".caption").call(wrap, 100)
 
 
-  svg.append("text")
-    .style("font-size", "13px")
-    .attr("x", 420)
-    .attr("y", 270)
-    .attr("dy", 0)
-    .attr("text-anchor", "end")
-    .attr("fill", "gray")
-    .text("At the initial point, the error in each component is equal.")
+      svg.append("text")
+        .style("font-size", "13px")
+        .attr("x", 420)
+        .attr("y", 270)
+        .attr("dy", 0)
+        .attr("text-anchor", "end")
+        .attr("fill", "gray")
+        .text("At the initial point, the error in each component is equal.")
 
+      callback(null);
+    });
   </script>
   <p>
  <h3>Choosing A Step-size</h3>
@@ -441,36 +449,38 @@
   <figure id = "polydisplay" style="height:165px"></figure>
   <script src="assets/eigensum.js"></script>
   <script>
-  (function() {
+  renderQueue.push(function(callback) {
 
-  // Preprocess x, get eigendecomposition, etc
-  var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
-  var D = vandermonde(x, 5)
-  var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
-  var U = Eigs.U
-  var lambda = Eigs.lambda
+    // Preprocess x, get eigendecomposition, etc
+    var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+    var D = vandermonde(x, 5)
+    var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+    var U = Eigs.U
+    var lambda = Eigs.lambda
 
-  // Preprocess y
-  var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
-  var Dtb = numeric.dot(b,D)
-  var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-
-  var step = 1.8/lambda[0]
-  var iter = geniter(U, lambda, Dtb, step)
-
-  var eigensum = d3.select("#polydisplay")
-
-  var wi = [2,2,2,2,2,2]
-
-  function refit(b) {
+    // Preprocess y
+    var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
     var Dtb = numeric.dot(b,D)
     var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-    var Utsol = numeric.dot(sol,U)
-    eigenControl.updateweights(Utsol)
-  }
 
-  var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit)
-  })()
+    var step = 1.8/lambda[0]
+    var iter = geniter(U, lambda, Dtb, step)
+
+    var eigensum = d3.select("#polydisplay")
+
+    var wi = [2,2,2,2,2,2]
+
+    function refit(b) {
+      var Dtb = numeric.dot(b,D)
+      var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
+      var Utsol = numeric.dot(sol,U)
+      eigenControl.updateweights(Utsol)
+    }
+
+    var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit);
+
+    callback(null);
+  });
 
   </script>
   <p>
@@ -505,114 +515,115 @@
   <figure id = "eigendisplay" style="height:285px"></figure>
 
   <script>
-  (function() {
-  var inv = function(lambda) { return 1/lambda }
-  var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
+  renderQueue.push(function(callback) {
+    var inv = function(lambda) { return 1/lambda }
+    var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
 
-  // Preprocess x, get eigendecomposition, etc
-  var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
-  var D = vandermonde(x, 5)
-  var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
-  var U = Eigs.U
-  var lambda = Eigs.lambda
+    // Preprocess x, get eigendecomposition, etc
+    var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+    var D = vandermonde(x, 5)
+    var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+    var U = Eigs.U
+    var lambda = Eigs.lambda
 
-  // Preprocess y
-  var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
-  var Dtb = numeric.dot(b,D)
-  var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-
-  var step = 1.8/lambda[0]
-  var iter = geniter(U, lambda, Dtb, step)
-
-  var eigensum = d3.select("#eigendisplay")
-
-  var wi = lambda.slice(0).map(scal)
-
-  function refit(b) {
+    // Preprocess y
+    var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
     var Dtb = numeric.dot(b,D)
     var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-    var Utsol = numeric.dot(sol,U)
-    eigenControl.updateweights(sol)
-  }
 
-  var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
+    var step = 1.8/lambda[0]
+    var iter = geniter(U, lambda, Dtb, step)
 
-  var annotate = eigensum
+    var eigensum = d3.select("#eigendisplay")
 
-  annotate.append("figcaption")
-  .style("width", 200 + "px")
-  .style("height", 150 + "px")
-  .style("left", "30px")
-  .style("position", "absolute")
-  .style("border-top", "1px solid black")
+    var wi = lambda.slice(0).map(scal)
+
+    function refit(b) {
+      var Dtb = numeric.dot(b,D)
+      var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
+      var Utsol = numeric.dot(sol,U)
+      eigenControl.updateweights(sol)
+    }
+
+    var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
+
+    var annotate = eigensum
+
+    annotate.append("figcaption")
+    .style("width", 200 + "px")
+    .style("height", 150 + "px")
+    .style("left", "30px")
+    .style("position", "absolute")
+    .style("border-top", "1px solid black")
+      .style("padding", "10px")
+    .html("The first 2 eigenfeatures, the largest components, captures variations between the clusters. ")
+
+    annotate.append("figcaption")
+    .style("width", 200 + "px")
+    .style("height", 150 + "px")
+    .style("left", "300px")
+    .style("position", "absolute")
+    .style("border-top", "1px solid black")
     .style("padding", "10px")
-  .html("The first 2 eigenfeatures, the largest components, captures variations between the clusters. ")
+    .html("Next there are smooth variations within clusters, peaks within clusters,")
 
-  annotate.append("figcaption")
-  .style("width", 200 + "px")
-  .style("height", 150 + "px")
-  .style("left", "300px")
-  .style("position", "absolute")
-  .style("border-top", "1px solid black")
-  .style("padding", "10px")
-  .html("Next there are smooth variations within clusters, peaks within clusters,")
+    annotate.append("figcaption")
+    .style("width", 200 + "px")
+    .style("height", 150 + "px")
+    .style("left", 300+270+"px")
+    .style("position", "absolute")
+    .style("border-top", "1px solid black")
+    .style("padding", "10px")
+    .html("Finally, jagged polynomials which differ wildly on neighboring points. ");
 
-  annotate.append("figcaption")
-  .style("width", 200 + "px")
-  .style("height", 150 + "px")
-  .style("left", 300+270+"px")
-  .style("position", "absolute")
-  .style("border-top", "1px solid black")
-  .style("padding", "10px")
-  .html("Finally, jagged polynomials which differ wildly on neighboring points. ")})()
+    var figwidth = d3.select("#eigendisplay").style("width")
+    var figheight = d3.select("#eigendisplay").style("height")
+    var svg = d3.select("#eigendisplay")
+                        .append("svg")
+                        .style("width", figwidth)
+                        .style("height", figheight)
+                        .style("position", "absolute")
+                        .style("top","0px")
+                        .style("left","0px")
+                        .style("pointer-events","none")
 
-
-  var figwidth = d3.select("#eigendisplay").style("width")
-  var figheight = d3.select("#eigendisplay").style("height")
-  var svg = d3.select("#eigendisplay")
-                      .append("svg")
-                      .style("width", figwidth)
-                      .style("height", figheight)
-                      .style("position", "absolute")
-                      .style("top","0px")
-                      .style("left","0px")
-                      .style("pointer-events","none")
-
-  // Swoopy Annotator
-  var annotations = [
-  {
-    "x": 0,
-    "y": 0,
-    "path": "M 807,198 A 26.661 26.661 0 0 1 838,159",
-    "text": "drag points to fit data",
-    "textOffset": [
-      799,
-      214
+    // Swoopy Annotator
+    var annotations = [
+    {
+      "x": 0,
+      "y": 0,
+      "path": "M 807,198 A 26.661 26.661 0 0 1 838,159",
+      "text": "drag points to fit data",
+      "textOffset": [
+        799,
+        214
+      ]
+    }
     ]
-  }
-  ]
 
-  var swoopy = d3.swoopyDrag()
-    .x(function(d){ return (d.x) })
-    .y(function(d){ return (d.y) })
-      .draggable(false)
-      .annotations(annotations)
+    var swoopy = d3.swoopyDrag()
+      .x(function(d){ return (d.x) })
+      .y(function(d){ return (d.y) })
+        .draggable(false)
+        .annotations(annotations)
 
-  var svg = d3.select("#eigendisplay").selectAll("svg")
-  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+    var svg = d3.select("#eigendisplay").selectAll("svg")
+    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
 
-  svg.append('marker')
-      .attr('id', 'arrow')
-      .attr('viewBox', '-10 -10 20 20')
-      .attr('markerWidth', 20)
-      .attr('markerHeight', 20)
-      .attr('orient', 'auto')
-    .append('path')
-      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-      .attr("transform", "scale(0.5)")
+    svg.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '-10 -10 20 20')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 20)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+        .attr("transform", "scale(0.5)")
 
-  swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
 
+    callback(null);
+  });
 
   </script>
   <p>
@@ -626,70 +637,74 @@
   <figure id = "eigensum2" style="height:360px"></figure>
 
   <script>
-  (function() { var inv = function(lambda) { return 1/lambda }
-  var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
+  renderQueue.push(function(callback) {
+    var inv = function(lambda) { return 1/lambda }
+    var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
 
-  // Preprocess x, get eigendecomposition, etc
-  var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
-  var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
+    // Preprocess x, get eigendecomposition, etc
+    var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+    var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
 
-  var D = vandermonde(x, 5)
-  var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
-  var U = Eigs.U
-  var lambda = Eigs.lambda
+    var D = vandermonde(x, 5)
+    var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+    var U = Eigs.U
+    var lambda = Eigs.lambda
 
-  // Preprocess y
-  var Dtb = numeric.dot(b,D)
-  var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-
-  var step = 1.8/lambda[0]
-  var iter = geniter(U, lambda, Dtb, step)
-
-  var eigensum = d3.select("#eigensum2")
-
-  var wi = lambda.slice(0).map(scal)
-
-  function refit(b) {
+    // Preprocess y
     var Dtb = numeric.dot(b,D)
-    iter = geniter(U, lambda, Dtb, step)
-    onChange(sliderControl.slidera.xval())
-  }
+    var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
 
-  var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
+    var step = 1.8/lambda[0]
+    var iter = geniter(U, lambda, Dtb, step)
 
-  var barlengths = getStepsConvergence(lambda, step).map(Math.log)
+    var eigensum = d3.select("#eigensum2")
 
-  var onChange = function(i) {
-    eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
-  }
+    var wi = lambda.slice(0).map(scal)
 
-  var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
+    function refit(b) {
+      var Dtb = numeric.dot(b,D)
+      iter = geniter(U, lambda, Dtb, step)
+      onChange(sliderControl.slidera.xval())
+    }
 
-  d3.select("#eigensum2").append("figcaption")
-        .style("width", "120px")
-        .style("position", "absolute")
-        .style("left", "820px")
-        .style("top","200px")
-        .html("When an eigenspace has converged to three significant digits, the bar greys out. Drag the observations to change fit.")
+    var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
 
-  sliderControl.slidera.init()
+    var barlengths = getStepsConvergence(lambda, step).map(Math.log)
 
-  var figwidth = d3.select("#eigensum2").style("width")
-  var figheight = d3.select("#eigensum2").style("height")
-  var svgannotate = d3.select("#eigensum2")
-                      .append("svg")
-                      .style("width", figwidth)
-                      .style("height", figheight)
-                      .style("position", "absolute")
-                      .style("top","0px")
-                      .style("left","0px")
-                      .style("pointer-events","none")
+    var onChange = function(i) {
+      eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
+    }
 
-  renderDraggable(svgannotate,
-                  [139.88888549804688, 243.77951049804688],
-                  [121.88888549804688, 200.77951049804688],
-                  5,
-                  "We begin at x=w=0")})()
+    var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
+
+    d3.select("#eigensum2").append("figcaption")
+          .style("width", "120px")
+          .style("position", "absolute")
+          .style("left", "820px")
+          .style("top","200px")
+          .html("When an eigenspace has converged to three significant digits, the bar greys out. Drag the observations to change fit.")
+
+    sliderControl.slidera.init()
+
+    var figwidth = d3.select("#eigensum2").style("width")
+    var figheight = d3.select("#eigensum2").style("height")
+    var svgannotate = d3.select("#eigensum2")
+                        .append("svg")
+                        .style("width", figwidth)
+                        .style("height", figheight)
+                        .style("position", "absolute")
+                        .style("top","0px")
+                        .style("left","0px")
+                        .style("pointer-events","none")
+
+    renderDraggable(svgannotate,
+                    [139.88888549804688, 243.77951049804688],
+                    [121.88888549804688, 200.77951049804688],
+                    5,
+                    "We begin at x=w=0");
+
+    callback(null);
+  });
 
   </script>
   <p>
@@ -830,61 +845,64 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </figure>
   <script src="assets/momentum.js"></script>
   <script>
+  renderQueue.push(function(callback) {
+    var defaults = [[0.0015, 0.9],
+                    [0.0015, 0.125],
+                    [0.01, 0.00001],
+                    [0.02, 0.05   ],
+                    [0.025, 0.235 ]]
 
-  var defaults = [[0.0015, 0.9],
-                  [0.0015, 0.125],
-                  [0.01, 0.00001],
-                  [0.02, 0.05   ],
-                  [0.025, 0.235 ]]
+    coor = render2DSliderGen(
+      function(a,b,bold) {
+        var xy = coor(a,b)
+        updatePaths[0](xy[0], xy[1],bold)
+        updateStemGraphs[0](a,b)
+      },
+      function(a,b,bold) {
+        var xy = coor(a,b)
+        updatePaths[1](xy[0], xy[1],bold)
+        updateStemGraphs[1](a,b)
+      },
+      function(a,b,bold) {
+        var xy = coor(a,b)
+        updatePaths[2](xy[0], xy[1],bold)
+        updateStemGraphs[2](a,b)
+      },
+      function(a,b,bold) {
+        var xy = coor(a,b)
+        updatePaths[3](xy[0], xy[1],bold)
+        updateStemGraphs[3](a,b)
+      },
+      function(a,b,bold) {
+        var xy = coor(a,b)
+        updatePaths[4](xy[0], xy[1],bold)
+        updateStemGraphs[4](a,b)
+      }, defaults)(d3.select("#momentumCanvas"))
 
-  coor = render2DSliderGen(
-    function(a,b,bold) {
-      var xy = coor(a,b)
-      updatePaths[0](xy[0], xy[1],bold)
-      updateStemGraphs[0](a,b)
-    },
-    function(a,b,bold) {
-      var xy = coor(a,b)
-      updatePaths[1](xy[0], xy[1],bold)
-      updateStemGraphs[1](a,b)
-    },
-    function(a,b,bold) {
-      var xy = coor(a,b)
-      updatePaths[2](xy[0], xy[1],bold)
-      updateStemGraphs[2](a,b)
-    },
-    function(a,b,bold) {
-      var xy = coor(a,b)
-      updatePaths[3](xy[0], xy[1],bold)
-      updateStemGraphs[3](a,b)
-    },
-    function(a,b,bold) {
-      var xy = coor(a,b)
-      updatePaths[4](xy[0], xy[1],bold)
-      updateStemGraphs[4](a,b)
-    }, defaults)(d3.select("#momentumCanvas"))
+    var tax = renderTaxonomy(d3.select("#momentum2D"))
 
-  var tax = renderTaxonomy(d3.select("#momentum2D"))
+    var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
+    var updateStemGraphs = tax.update
 
-  var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
-  var updateStemGraphs = tax.update
+    colorMap(
+    d3.select("#momentumAnnotation"),
+    180,
+    d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"])),
+    d3.scaleLinear().domain([0,1.2001]).range([0, 180])
+    )
 
-  colorMap(
-  d3.select("#momentumAnnotation"),
-  180,
-  d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"])),
-  d3.scaleLinear().domain([0,1.2001]).range([0, 180])
-  )
+    var up = function (i, alpha, beta) {
+              var xy = coor(alpha, beta)
+              updatePaths[i](xy[0], xy[1], true)
+              updateStemGraphs[i](alpha,beta)
+            }
 
-  var up = function (i, alpha, beta) {
-             var xy = coor(alpha, beta)
-             updatePaths[i](xy[0], xy[1], true)
-             updateStemGraphs[i](alpha,beta)
-           }
+    for (var i = 0; i<5; i++) {
+      up(i,defaults[i][0], defaults[i][1])
+    }
 
-  for (var i = 0; i<5; i++) {
-    up(i,defaults[i][0], defaults[i][1])
-  }
+    callback(null);
+  });
   </script>
   <p>
 
@@ -1031,7 +1049,10 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </div>
   <script src="assets/phasediagram.js"></script>
   <script>
-  phaseDiagram(d3.select("#phasediagram"))
+    renderQueue.push(function(callback) {
+      phaseDiagram(d3.select("#phasediagram"));
+      callback(null);
+    });
   </script>
   <p>
 
@@ -1094,7 +1115,8 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <div id = "milestonesMomentum"></div>
   </figure>
   <script>
-  (function() {var graphDiv = d3.select("#milestonesMomentum")
+    renderQueue.push(function(callback) {
+      var graphDiv = d3.select("#milestonesMomentum")
                    .style("width",  920 + "px")
                    .style("height", 300 + "px")
                    .style("top", "170px")
@@ -1104,49 +1126,48 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
                    .attr("width", 920)
                    .attr("height", 500)
 
-  var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+    var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
-  var update = renderMilestones(svg, function() {})
-  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
+    var update = renderMilestones(svg, function() {})
+    var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
 
-  // Swoopy Annotator
-  var annotations = [
-    {
-      "x": 0,
-      "y": 0,
-      "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
-      "text": "Optimal parameters",
-      "textOffset": [
-        188,
-        109
-      ]
-    }
-  ]
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+        "text": "Optimal parameters",
+        "textOffset": [
+          188,
+          109
+        ]
+      }
+    ]
 
-  var swoopy = d3.swoopyDrag()
-    .x(function(d){ return (d.x) })
-    .y(function(d){ return (d.y) })
-      .draggable(false)
-      .annotations(annotations)
+    var swoopy = d3.swoopyDrag()
+      .x(function(d){ return (d.x) })
+      .y(function(d){ return (d.y) })
+        .draggable(false)
+        .annotations(annotations)
 
-  var svg = d3.select("#sliderStep2D").selectAll("svg")
-  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+    var svg = d3.select("#sliderStep2D").selectAll("svg")
+    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
 
-  svg.append('marker')
-      .attr('id', 'arrow')
-      .attr('viewBox', '-10 -10 20 20')
-      .attr('markerWidth', 20)
-      .attr('markerHeight', 20)
-      .attr('orient', 'auto')
-    .append('path')
-      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-      .attr("transform", "scale(0.5)")
+    svg.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '-10 -10 20 20')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 20)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+        .attr("transform", "scale(0.5)")
 
-  swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
 
-  }
-
-  )()
+    callback(null);
+  });
 
   </script>
   <p>
@@ -1154,7 +1175,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </p>
 
   <h3>Example: The Colorization Problem</h3>
-  
+
   <p>
   Lets look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices's as pixels and $E$ be the set of edges connecting neighboring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
   </p>
@@ -1196,10 +1217,10 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{cases}
   $$
 
-  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. 
+  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious.
   </p>
   <figure id = "flow">
-    
+
   <figcaption style="left:800px; top:430px; position:absolute; width:130px">
       The eigenvectors of the colorization problem form a generalized Fourier basis for $R^n$. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
   </figcaption>
@@ -1207,18 +1228,21 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
   <script src="assets/flow.js"></script>
   <script>
-    d3.queue()
-      .defer(d3.json, "assets/data/Sigma.json")
-      .defer(d3.json, "assets/data/matrix.json")
-      .defer(d3.json, "assets/data/Uval.json")
-      .await(function(error, FlowSigma, M, FlowU) {
-        if (error) {
-          console.error("Error loading data files");
-        }
-        else {
-          renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
-        }
-      });
+    renderQueue.push(function(callback) {
+      d3.queue()
+        .defer(d3.json, "assets/data/Sigma.json")
+        .defer(d3.json, "assets/data/matrix.json")
+        .defer(d3.json, "assets/data/Uval.json")
+        .await(function(error, FlowSigma, M, FlowU) {
+          if (error) {
+            console.error("Error loading data files");
+          }
+          else {
+            renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
+          }
+        });
+      callback(null);
+    });
   </script>
   <p>
   Momentum helps by ...
@@ -1248,14 +1272,17 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
   <script src="assets/graph.js"></script>
   <script>
-  var g1 = d3.select("#graph").append("g")
-  genExpander(g1)
+    renderQueue.push(function(callback) {
+      var g1 = d3.select("#graph").append("g")
+      genExpander(g1)
 
-  var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
-  genGrid(g2)
+      var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
+      genGrid(g2)
 
-  var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
-  genPath(g3)
+      var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
+      genPath(g3);
+      callback(null);
+    });
   </script>
   <p>
 
@@ -1349,7 +1376,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
   <script>
 
-  (function() { var RQ = [[0.033430859446525574,0.06637421995401382,0.09834969788789749,0.1288910210132599,0.1575528085231781,0.18391713500022888,0.20759953558444977,0.22825466096401215,0.24558131396770477,0.25932684540748596,0.2692908048629761,0.2753278911113739,0.2773500978946686,0.2753278911113739,0.2692908048629761,0.25932684540748596,0.24558131396770477,0.22825466096401215,0.20759953558444977,0.18391713500022888,0.1575528085231781,0.1288910210132599,0.09834969788789749,0.06637421995401382,0.033430859446525574],[-0.06637421995401382,-0.1288910210132599,-0.18391713500022888,-0.22825466096401215,-0.25932684540748596,-0.2753278911113739,-0.2753278911113739,-0.25932684540748596,-0.22825466096401215,-0.18391713500022888,-0.1288910210132599,-0.06637421995401382,-1.917815576756455e-14,0.06637421995401382,0.1288910210132599,0.18391713500022888,0.22825466096401215,0.25932684540748596,0.2753278911113739,0.2753278911113739,0.25932684540748596,0.22825466096401215,0.18391713500022888,0.1288910210132599,0.06637421995401382],[0.09834969788789749,0.18391713500022888,0.24558131396770477,0.2753278911113739,0.2692908048629761,0.22825466096401215,0.1575528085231781,0.06637421995401382,-0.033430859446525574,-0.1288910210132599,-0.20759953558444977,-0.25932684540748596,-0.2773500978946686,-0.25932684540748596,-0.20759953558444977,-0.1288910210132599,-0.033430859446525574,0.06637421995401382,0.1575528085231781,0.22825466096401215,0.2692908048629761,0.2753278911113739,0.24558131396770477,0.18391713500022888,0.09834969788789749],[0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599,-1.2834394835694717e-14,0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599],[-0.1575528085231781,-0.25932684540748596,-0.2692908048629761,-0.18391713500022888,-0.033430859446525574,0.1288910210132599,0.24558131396770477,0.2753278911113739,0.20759953558444977,0.06637421995401382,-0.09834969788789749,-0.22825466096401215,-0.2773500978946686,-0.22825466096401215,-0.09834969788789749,0.06637421995401382,0.20759953558444977,0.2753278911113739,0.24558131396770477,0.1288910210132599,-0.033430859446525574,-0.18391713500022888,-0.2692908048629761,-0.25932684540748596,-0.1575528085231781],[-0.18391713500022888,-0.2753278911113739,-0.22825466096401215,-0.06637421995401382,0.1288910210132599,0.25932684540748596,0.25932684540748596,0.1288910210132599,-0.06637421995401382,-0.22825466096401215,-0.2753278911113739,-0.18391713500022888,-4.583645525716709e-15,0.18391713500022888,0.2753278911113739,0.22825466096401215,0.06637421995401382,-0.1288910210132599,-0.25932684540748596,-0.25932684540748596,-0.1288910210132599,0.06637421995401382,0.22825466096401215,0.2753278911113739,0.18391713500022888],[-0.20759953558444977,-0.2753278911113739,-0.1575528085231781,0.06637421995401382,0.24558131396770477,0.25932684540748596,0.09834969788789749,-0.1288910210132599,-0.2692908048629761,-0.22825466096401215,-0.033430859446525574,0.18391713500022888,0.2773500978946686,0.18391713500022888,-0.033430859446525574,-0.22825466096401215,-0.2692908048629761,-0.1288910210132599,0.09834969788789749,0.25932684540748596,0.24558131396770477,0.06637421995401382,-0.1575528085231781,-0.2753278911113739,-0.20759953558444977],[-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215,4.337912797388764e-15,-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215],[-0.24558131396770477,-0.22825466096401215,0.033430859446525574,0.25932684540748596,0.20759953558444977,-0.06637421995401382,-0.2692908048629761,-0.18391713500022888,0.09834969788789749,0.2753278911113739,0.1575528085231781,-0.1288910210132599,-0.2773500978946686,-0.1288910210132599,0.1575528085231781,0.2753278911113739,0.09834969788789749,-0.18391713500022888,-0.2692908048629761,-0.06637421995401382,0.20759953558444977,0.25932684540748596,0.033430859446525574,-0.22825466096401215,-0.24558131396770477],[-0.25932684540748596,-0.18391713500022888,0.1288910210132599,0.2753278911113739,0.06637421995401382,-0.22825466096401215,-0.22825466096401215,0.06637421995401382,0.2753278911113739,0.1288910210132599,-0.18391713500022888,-0.25932684540748596,-2.6265288907570752e-15,0.25932684540748596,0.18391713500022888,-0.1288910210132599,-0.2753278911113739,-0.06637421995401382,0.22825466096401215,0.22825466096401215,-0.06637421995401382,-0.2753278911113739,-0.1288910210132599,0.18391713500022888,0.25932684540748596],[0.2692908048629761,0.1288910210132599,-0.20759953558444977,-0.22825466096401215,0.09834969788789749,0.2753278911113739,0.033430859446525574,-0.25932684540748596,-0.1575528085231781,0.18391713500022888,0.24558131396770477,-0.06637421995401382,-0.2773500978946686,-0.06637421995401382,0.24558131396770477,0.18391713500022888,-0.1575528085231781,-0.25932684540748596,0.033430859446525574,0.2753278911113739,0.09834969788789749,-0.22825466096401215,-0.20759953558444977,0.1288910210132599,0.2692908048629761],[0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739,-2.224606886845463e-15,0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739],[0.2773500978946686,1.2625047254649028e-16,-0.2773500978946686,-6.312523627324514e-16,0.2773500978946686,8.83753307825432e-16,-0.2773500978946686,-8.83753307825432e-16,0.2773500978946686,1.5781309068311285e-15,-0.2773500978946686,-4.734392720493385e-16,0.2773500978946686,2.0200075607438445e-15,-0.2773500978946686,-1.7990691808479273e-15,0.2773500978946686,1.6728188141805554e-15,-0.2773500978946686,-1.4518804342846382e-15,0.2773500978946686,-3.4718879950284827e-16,-0.2773500978946686,1.2625047254649028e-15,0.2773500978946686],[-0.2753278911113739,0.06637421995401382,0.25932684540748596,-0.1288910210132599,-0.22825466096401215,0.18391713500022888,0.18391713500022888,-0.22825466096401215,-0.1288910210132599,0.25932684540748596,0.06637421995401382,-0.2753278911113739,-1.0026396759284933e-15,0.2753278911113739,-0.06637421995401382,-0.25932684540748596,0.1288910210132599,0.22825466096401215,-0.18391713500022888,-0.18391713500022888,0.22825466096401215,0.1288910210132599,-0.25932684540748596,-0.06637421995401382,0.2753278911113739],[0.2692908048629761,-0.1288910210132599,-0.20759953558444977,0.22825466096401215,0.09834969788789749,-0.2753278911113739,0.033430859446525574,0.25932684540748596,-0.1575528085231781,-0.18391713500022888,0.24558131396770477,0.06637421995401382,-0.2773500978946686,0.06637421995401382,0.24558131396770477,-0.18391713500022888,-0.1575528085231781,0.25932684540748596,0.033430859446525574,-0.2753278911113739,0.09834969788789749,0.22825466096401215,-0.20759953558444977,-0.1288910210132599,0.2692908048629761],[-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596,1.770693656524247e-16,-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596],[0.24558131396770477,-0.22825466096401215,-0.033430859446525574,0.25932684540748596,-0.20759953558444977,-0.06637421995401382,0.2692908048629761,-0.18391713500022888,-0.09834969788789749,0.2753278911113739,-0.1575528085231781,-0.1288910210132599,0.2773500978946686,-0.1288910210132599,-0.1575528085231781,0.2753278911113739,-0.09834969788789749,-0.18391713500022888,0.2692908048629761,-0.06637421995401382,-0.20759953558444977,0.25932684540748596,-0.033430859446525574,-0.22825466096401215,0.24558131396770477],[0.22825466096401215,-0.25932684540748596,0.06637421995401382,0.18391713500022888,-0.2753278911113739,0.1288910210132599,0.1288910210132599,-0.2753278911113739,0.18391713500022888,0.06637421995401382,-0.25932684540748596,0.22825466096401215,9.870699398085384e-16,-0.22825466096401215,0.25932684540748596,-0.06637421995401382,-0.18391713500022888,0.2753278911113739,-0.1288910210132599,-0.1288910210132599,0.2753278911113739,-0.18391713500022888,-0.06637421995401382,0.25932684540748596,-0.22825466096401215],[-0.20759953558444977,0.2753278911113739,-0.1575528085231781,-0.06637421995401382,0.24558131396770477,-0.25932684540748596,0.09834969788789749,0.1288910210132599,-0.2692908048629761,0.22825466096401215,-0.033430859446525574,-0.18391713500022888,0.2773500978946686,-0.18391713500022888,-0.033430859446525574,0.22825466096401215,-0.2692908048629761,0.1288910210132599,0.09834969788789749,-0.25932684540748596,0.24558131396770477,-0.06637421995401382,-0.1575528085231781,0.2753278911113739,-0.20759953558444977],[-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888,8.371955066048889e-16,-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888],[-0.1575528085231781,0.25932684540748596,-0.2692908048629761,0.18391713500022888,-0.033430859446525574,-0.1288910210132599,0.24558131396770477,-0.2753278911113739,0.20759953558444977,-0.06637421995401382,-0.09834969788789749,0.22825466096401215,-0.2773500978946686,0.22825466096401215,-0.09834969788789749,-0.06637421995401382,0.20759953558444977,-0.2753278911113739,0.24558131396770477,-0.1288910210132599,-0.033430859446525574,0.18391713500022888,-0.2692908048629761,0.25932684540748596,-0.1575528085231781],[-0.1288910210132599,0.22825466096401215,-0.2753278911113739,0.25932684540748596,-0.18391713500022888,0.06637421995401382,0.06637421995401382,-0.18391713500022888,0.25932684540748596,-0.2753278911113739,0.22825466096401215,-0.1288910210132599,-3.0802549003271684e-16,0.1288910210132599,-0.22825466096401215,0.2753278911113739,-0.25932684540748596,0.18391713500022888,-0.06637421995401382,-0.06637421995401382,0.18391713500022888,-0.25932684540748596,0.2753278911113739,-0.22825466096401215,0.1288910210132599],[-0.09834969788789749,0.18391713500022888,-0.24558131396770477,0.2753278911113739,-0.2692908048629761,0.22825466096401215,-0.1575528085231781,0.06637421995401382,0.033430859446525574,-0.1288910210132599,0.20759953558444977,-0.25932684540748596,0.2773500978946686,-0.25932684540748596,0.20759953558444977,-0.1288910210132599,0.033430859446525574,0.06637421995401382,-0.1575528085231781,0.22825466096401215,-0.2692908048629761,0.2753278911113739,-0.24558131396770477,0.18391713500022888,-0.09834969788789749],[-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382,6.798085926082532e-17,-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382],[0.033430859446525574,-0.06637421995401382,0.09834969788789749,-0.1288910210132599,0.1575528085231781,-0.18391713500022888,0.20759953558444977,-0.22825466096401215,0.24558131396770477,-0.25932684540748596,0.2692908048629761,-0.2753278911113739,0.2773500978946686,-0.2753278911113739,0.2692908048629761,-0.25932684540748596,0.24558131396770477,-0.22825466096401215,0.20759953558444977,-0.18391713500022888,0.1575528085231781,-0.1288910210132599,0.09834969788789749,-0.06637421995401382,0.033430859446525574]]
+  renderQueue.push(function(callback) {
+    var RQ = [[0.033430859446525574,0.06637421995401382,0.09834969788789749,0.1288910210132599,0.1575528085231781,0.18391713500022888,0.20759953558444977,0.22825466096401215,0.24558131396770477,0.25932684540748596,0.2692908048629761,0.2753278911113739,0.2773500978946686,0.2753278911113739,0.2692908048629761,0.25932684540748596,0.24558131396770477,0.22825466096401215,0.20759953558444977,0.18391713500022888,0.1575528085231781,0.1288910210132599,0.09834969788789749,0.06637421995401382,0.033430859446525574],[-0.06637421995401382,-0.1288910210132599,-0.18391713500022888,-0.22825466096401215,-0.25932684540748596,-0.2753278911113739,-0.2753278911113739,-0.25932684540748596,-0.22825466096401215,-0.18391713500022888,-0.1288910210132599,-0.06637421995401382,-1.917815576756455e-14,0.06637421995401382,0.1288910210132599,0.18391713500022888,0.22825466096401215,0.25932684540748596,0.2753278911113739,0.2753278911113739,0.25932684540748596,0.22825466096401215,0.18391713500022888,0.1288910210132599,0.06637421995401382],[0.09834969788789749,0.18391713500022888,0.24558131396770477,0.2753278911113739,0.2692908048629761,0.22825466096401215,0.1575528085231781,0.06637421995401382,-0.033430859446525574,-0.1288910210132599,-0.20759953558444977,-0.25932684540748596,-0.2773500978946686,-0.25932684540748596,-0.20759953558444977,-0.1288910210132599,-0.033430859446525574,0.06637421995401382,0.1575528085231781,0.22825466096401215,0.2692908048629761,0.2753278911113739,0.24558131396770477,0.18391713500022888,0.09834969788789749],[0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599,-1.2834394835694717e-14,0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599],[-0.1575528085231781,-0.25932684540748596,-0.2692908048629761,-0.18391713500022888,-0.033430859446525574,0.1288910210132599,0.24558131396770477,0.2753278911113739,0.20759953558444977,0.06637421995401382,-0.09834969788789749,-0.22825466096401215,-0.2773500978946686,-0.22825466096401215,-0.09834969788789749,0.06637421995401382,0.20759953558444977,0.2753278911113739,0.24558131396770477,0.1288910210132599,-0.033430859446525574,-0.18391713500022888,-0.2692908048629761,-0.25932684540748596,-0.1575528085231781],[-0.18391713500022888,-0.2753278911113739,-0.22825466096401215,-0.06637421995401382,0.1288910210132599,0.25932684540748596,0.25932684540748596,0.1288910210132599,-0.06637421995401382,-0.22825466096401215,-0.2753278911113739,-0.18391713500022888,-4.583645525716709e-15,0.18391713500022888,0.2753278911113739,0.22825466096401215,0.06637421995401382,-0.1288910210132599,-0.25932684540748596,-0.25932684540748596,-0.1288910210132599,0.06637421995401382,0.22825466096401215,0.2753278911113739,0.18391713500022888],[-0.20759953558444977,-0.2753278911113739,-0.1575528085231781,0.06637421995401382,0.24558131396770477,0.25932684540748596,0.09834969788789749,-0.1288910210132599,-0.2692908048629761,-0.22825466096401215,-0.033430859446525574,0.18391713500022888,0.2773500978946686,0.18391713500022888,-0.033430859446525574,-0.22825466096401215,-0.2692908048629761,-0.1288910210132599,0.09834969788789749,0.25932684540748596,0.24558131396770477,0.06637421995401382,-0.1575528085231781,-0.2753278911113739,-0.20759953558444977],[-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215,4.337912797388764e-15,-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215],[-0.24558131396770477,-0.22825466096401215,0.033430859446525574,0.25932684540748596,0.20759953558444977,-0.06637421995401382,-0.2692908048629761,-0.18391713500022888,0.09834969788789749,0.2753278911113739,0.1575528085231781,-0.1288910210132599,-0.2773500978946686,-0.1288910210132599,0.1575528085231781,0.2753278911113739,0.09834969788789749,-0.18391713500022888,-0.2692908048629761,-0.06637421995401382,0.20759953558444977,0.25932684540748596,0.033430859446525574,-0.22825466096401215,-0.24558131396770477],[-0.25932684540748596,-0.18391713500022888,0.1288910210132599,0.2753278911113739,0.06637421995401382,-0.22825466096401215,-0.22825466096401215,0.06637421995401382,0.2753278911113739,0.1288910210132599,-0.18391713500022888,-0.25932684540748596,-2.6265288907570752e-15,0.25932684540748596,0.18391713500022888,-0.1288910210132599,-0.2753278911113739,-0.06637421995401382,0.22825466096401215,0.22825466096401215,-0.06637421995401382,-0.2753278911113739,-0.1288910210132599,0.18391713500022888,0.25932684540748596],[0.2692908048629761,0.1288910210132599,-0.20759953558444977,-0.22825466096401215,0.09834969788789749,0.2753278911113739,0.033430859446525574,-0.25932684540748596,-0.1575528085231781,0.18391713500022888,0.24558131396770477,-0.06637421995401382,-0.2773500978946686,-0.06637421995401382,0.24558131396770477,0.18391713500022888,-0.1575528085231781,-0.25932684540748596,0.033430859446525574,0.2753278911113739,0.09834969788789749,-0.22825466096401215,-0.20759953558444977,0.1288910210132599,0.2692908048629761],[0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739,-2.224606886845463e-15,0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739],[0.2773500978946686,1.2625047254649028e-16,-0.2773500978946686,-6.312523627324514e-16,0.2773500978946686,8.83753307825432e-16,-0.2773500978946686,-8.83753307825432e-16,0.2773500978946686,1.5781309068311285e-15,-0.2773500978946686,-4.734392720493385e-16,0.2773500978946686,2.0200075607438445e-15,-0.2773500978946686,-1.7990691808479273e-15,0.2773500978946686,1.6728188141805554e-15,-0.2773500978946686,-1.4518804342846382e-15,0.2773500978946686,-3.4718879950284827e-16,-0.2773500978946686,1.2625047254649028e-15,0.2773500978946686],[-0.2753278911113739,0.06637421995401382,0.25932684540748596,-0.1288910210132599,-0.22825466096401215,0.18391713500022888,0.18391713500022888,-0.22825466096401215,-0.1288910210132599,0.25932684540748596,0.06637421995401382,-0.2753278911113739,-1.0026396759284933e-15,0.2753278911113739,-0.06637421995401382,-0.25932684540748596,0.1288910210132599,0.22825466096401215,-0.18391713500022888,-0.18391713500022888,0.22825466096401215,0.1288910210132599,-0.25932684540748596,-0.06637421995401382,0.2753278911113739],[0.2692908048629761,-0.1288910210132599,-0.20759953558444977,0.22825466096401215,0.09834969788789749,-0.2753278911113739,0.033430859446525574,0.25932684540748596,-0.1575528085231781,-0.18391713500022888,0.24558131396770477,0.06637421995401382,-0.2773500978946686,0.06637421995401382,0.24558131396770477,-0.18391713500022888,-0.1575528085231781,0.25932684540748596,0.033430859446525574,-0.2753278911113739,0.09834969788789749,0.22825466096401215,-0.20759953558444977,-0.1288910210132599,0.2692908048629761],[-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596,1.770693656524247e-16,-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596],[0.24558131396770477,-0.22825466096401215,-0.033430859446525574,0.25932684540748596,-0.20759953558444977,-0.06637421995401382,0.2692908048629761,-0.18391713500022888,-0.09834969788789749,0.2753278911113739,-0.1575528085231781,-0.1288910210132599,0.2773500978946686,-0.1288910210132599,-0.1575528085231781,0.2753278911113739,-0.09834969788789749,-0.18391713500022888,0.2692908048629761,-0.06637421995401382,-0.20759953558444977,0.25932684540748596,-0.033430859446525574,-0.22825466096401215,0.24558131396770477],[0.22825466096401215,-0.25932684540748596,0.06637421995401382,0.18391713500022888,-0.2753278911113739,0.1288910210132599,0.1288910210132599,-0.2753278911113739,0.18391713500022888,0.06637421995401382,-0.25932684540748596,0.22825466096401215,9.870699398085384e-16,-0.22825466096401215,0.25932684540748596,-0.06637421995401382,-0.18391713500022888,0.2753278911113739,-0.1288910210132599,-0.1288910210132599,0.2753278911113739,-0.18391713500022888,-0.06637421995401382,0.25932684540748596,-0.22825466096401215],[-0.20759953558444977,0.2753278911113739,-0.1575528085231781,-0.06637421995401382,0.24558131396770477,-0.25932684540748596,0.09834969788789749,0.1288910210132599,-0.2692908048629761,0.22825466096401215,-0.033430859446525574,-0.18391713500022888,0.2773500978946686,-0.18391713500022888,-0.033430859446525574,0.22825466096401215,-0.2692908048629761,0.1288910210132599,0.09834969788789749,-0.25932684540748596,0.24558131396770477,-0.06637421995401382,-0.1575528085231781,0.2753278911113739,-0.20759953558444977],[-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888,8.371955066048889e-16,-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888],[-0.1575528085231781,0.25932684540748596,-0.2692908048629761,0.18391713500022888,-0.033430859446525574,-0.1288910210132599,0.24558131396770477,-0.2753278911113739,0.20759953558444977,-0.06637421995401382,-0.09834969788789749,0.22825466096401215,-0.2773500978946686,0.22825466096401215,-0.09834969788789749,-0.06637421995401382,0.20759953558444977,-0.2753278911113739,0.24558131396770477,-0.1288910210132599,-0.033430859446525574,0.18391713500022888,-0.2692908048629761,0.25932684540748596,-0.1575528085231781],[-0.1288910210132599,0.22825466096401215,-0.2753278911113739,0.25932684540748596,-0.18391713500022888,0.06637421995401382,0.06637421995401382,-0.18391713500022888,0.25932684540748596,-0.2753278911113739,0.22825466096401215,-0.1288910210132599,-3.0802549003271684e-16,0.1288910210132599,-0.22825466096401215,0.2753278911113739,-0.25932684540748596,0.18391713500022888,-0.06637421995401382,-0.06637421995401382,0.18391713500022888,-0.25932684540748596,0.2753278911113739,-0.22825466096401215,0.1288910210132599],[-0.09834969788789749,0.18391713500022888,-0.24558131396770477,0.2753278911113739,-0.2692908048629761,0.22825466096401215,-0.1575528085231781,0.06637421995401382,0.033430859446525574,-0.1288910210132599,0.20759953558444977,-0.25932684540748596,0.2773500978946686,-0.25932684540748596,0.20759953558444977,-0.1288910210132599,0.033430859446525574,0.06637421995401382,-0.1575528085231781,0.22825466096401215,-0.2692908048629761,0.2753278911113739,-0.24558131396770477,0.18391713500022888,-0.09834969788789749],[-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382,6.798085926082532e-17,-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382],[0.033430859446525574,-0.06637421995401382,0.09834969788789749,-0.1288910210132599,0.1575528085231781,-0.18391713500022888,0.20759953558444977,-0.22825466096401215,0.24558131396770477,-0.25932684540748596,0.2692908048629761,-0.2753278911113739,0.2773500978946686,-0.2753278911113739,0.2692908048629761,-0.25932684540748596,0.24558131396770477,-0.22825466096401215,0.20759953558444977,-0.18391713500022888,0.1575528085231781,-0.1288910210132599,0.09834969788789749,-0.06637421995401382,0.033430859446525574]]
 
   RLambda = [4.6419172286987305,15.514562606811523,33.45938491821289,58.21471405029297,89.4195556640625,126.61888122558594,169.27023315429688,216.7516632080078,268.37078857421875,323.3748474121094,380.9618225097656,440.29193115234375,500.5,560.7080688476562,620.0381469726562,677.6251220703125,732.6292114257812,784.2483520507812,831.7297973632812,874.381103515625,911.5804443359375,942.7852783203125,967.5405883789062,985.4854125976562,996.3580932617188]
 
@@ -1445,7 +1473,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   colorMap( d3.select("#rosen_colorbar2"),
             180,
             jet,
-            d3.scaleLinear().domain([0.2,1.5]).range([0, 180]) )})()
+            d3.scaleLinear().domain([0.2,1.5]).range([0, 180]) );
+
+
+  callback(null);
+  });
 
   </script>
   <p>
@@ -1715,8 +1747,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   url={http://www.iro.umontreal.ca/~bengioy/talks/DL-Tutorial-NIPS2015.pdf}
 }
 
-
-
 </script>
 
 <!-- Katex -->
@@ -1730,4 +1760,26 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
             ]
         }
     );
+</script>
+
+<!-- Figure render queue -->
+<script>
+  setTimeout(function() {
+    var q = d3.queue(1);
+    renderQueue.forEach(function(fn) {
+      q.defer(fn);
+      q.defer(function(callback) {
+        setTimeout(function() {
+          callback(null);
+        }, 50);
+      });
+    });
+    q.await(function(error) {
+      if (error) {
+        console.error("Render error.")
+      } else {
+        console.log("Render done.")
+      }
+    });
+  }, 50);
 </script>

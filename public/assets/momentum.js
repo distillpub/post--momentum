@@ -98,7 +98,7 @@ function renderTaxonomy(div) {
   function getTrace(alpha, beta, xy, coord) {
     var m = []
     var lambda = [1,100]
-    var iter = geniterMomentum([[1, 0],[0, 1]], lambda, lambda, alpha, beta)
+    var iter = geniterMomentum([[1, 0],[0, 1]], lambda, lambda, alpha, beta).iter
     // run for 500 iterations
     for (var i = 0; i <= num_iters; i++) { 
       if (xy == 1) {  m.push(numeric.add(iter(i)[xy],-1)) }

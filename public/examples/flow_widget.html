@@ -1,15 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
-  <script src = "../assets/lib/d3.v4.min.js"></script>
-  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
-  <script src = "../assets/utils.js"></script>  
-  <script src = "../assets/data/Sigma.json"></script> 
-  <script src = "../assets/data/matrix.json"></script>
-  <script src = "../assets/data/Uval.json"></script>
-  <script src = "../assets/flow.js"></script>
-  <script src = "../assets/lib/tooltip.js"></script>  
-
+  <script src="../assets/lib/lib.js"></script>
+  <script src="../assets/utils.js"></script>
 <style>
 .d3-tip {
   line-height: 1;
@@ -46,6 +41,20 @@
 </style>
 </head>
 <body>
-	<div id = "flow"></div>
-  <script>renderFlowWidget(d3.select("#flow"))</script>
+  <figure id = "flow"></figure>
+  <script src="../assets/flow.js"></script>
+  <script>
+    d3.queue()
+      .defer(d3.json, "../assets/data/Sigma.json")
+      .defer(d3.json, "../assets/data/matrix.json")
+      .defer(d3.json, "../assets/data/Uval.json")
+      .await(function(error, FlowSigma, M, FlowU) {
+        if (error) {
+          console.error("Error loading data files");
+        }
+        else {
+          renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
+        }
+      });
+  </script>
 </body>

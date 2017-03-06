@@ -40,7 +40,7 @@
   var alpha = 0.003
   var beta = 0.8
   var b = zeros(25); b[0] =  249.75
-  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta) 
+  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
   var res = function(i) { return iter(i)[0] }
 
   var sampleSVG = d3.select("#iterates")
@@ -121,7 +121,7 @@
     Disps4.push(disp)
   } 
   function update(alpha, beta) {
-    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta) 
+    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
     for (var j = 0; j < numIters; j++) {
       var iterj = iter(j)
       Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })

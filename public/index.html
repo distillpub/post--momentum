@@ -1107,8 +1107,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
   var update = renderMilestones(svg, function() {})
-
-  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) })
+  var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 4.6, 996.35)
 
   // Swoopy Annotator
   var annotations = [
@@ -1362,7 +1361,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   var alpha = 0.003
   var beta = 0.8
   var b = zeros(25); b[0] =  249.75
-  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta)
+  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
   var res = function(i) { return iter(i)[0] }
 
   var sampleSVG = d3.select("#iterates")
@@ -1430,7 +1429,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     Disps4.push(disp)
   }
   function update(alpha, beta) {
-    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta)
+    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
     for (var j = 0; j < numIters; j++) {
       var iterj = iter(j)
       Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })

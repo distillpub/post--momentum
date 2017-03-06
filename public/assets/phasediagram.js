@@ -7,7 +7,7 @@ function phaseDiagram(divin) {
   function getTrace(alpha, beta, coord, sign) {
     var m = []
     var lambda = [1,100]
-    var iter = geniterMomentum([[1, 0],[0, 1]], lambda, [1,sign*100], alpha, beta)
+    var iter = geniterMomentum([[1, 0],[0, 1]], lambda, [1,sign*100], alpha, beta).iter
     // run for 500 iterations
     for (var i = 0; i <= totalIters; i++) { 
       var x = numeric.add(iter(i)[1],-sign*1)

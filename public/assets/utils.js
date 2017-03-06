@@ -624,7 +624,7 @@ function renderHeatmap(canvas, f, cmap) {
 }
 
 
-function slider2D(div, onChange) {
+function slider2D(div, onChange,lambda1, lambdan) {
 	var panel = div.append("svg")
 	              .append("g")
 	              .attr("transform", "translate(25,30)")
@@ -742,9 +742,6 @@ function slider2D(div, onChange) {
 	      .attr("transform", function(i) { return "translate(" + (-8) + "," + (Y(i) - tickwidth/2 + 5) + ")" })
 	      .html(function(d,i) { return d})
 
-
-	var lambda1 = 4.6
-	var lambdan = 996.35
 	var beta = (Math.sqrt(lambda1) - Math.sqrt(lambdan))/(Math.sqrt(lambda1) + Math.sqrt(lambdan)); beta = beta*beta
 	var alpha = 2/(Math.sqrt(lambda1) + Math.sqrt(lambdan))
 	alpha = alpha*alpha
@@ -856,14 +853,18 @@ function matSum(R,b) {
   var U      = eR["E"]; fix(U)
   var bc     = new numeric.T(numeric.transpose([b]), zeros2D(b.length,1))
   var Uinvb  = U.inv().dot(bc); fix(Uinvb)    
-  return function(k) {
+  // console.log(numeric.prettyPrint(R))
+  // console.log(numeric.prettyPrint(lambda))
+  // console.log(1-numeric.norm2([lambda.y[0],lambda.x[0]]), 1-numeric.norm2([lambda.y[1],lambda.x[1]]))
+  return {matSum: function(k) {
     var topv  = pow(lambda,k).mul(-1).add(1)
     var botv  = lambda.mul(-1).add(1)
     var sumk = topv.mul(pow(botv,-1))
     if (lambda.getRow(0)["x"] == 1) { sumk["x"][0] = k; sumk["y"][0] = 0}
     if (lambda.getRow(1)["x"] == 1) { sumk["x"][1] = k; sumk["x"][1] = 0}
     return numeric.transpose(U.dot(diag(sumk)).dot(Uinvb)["x"])[0]
-  }
+  }, lambda:(numeric.norm2([lambda.y[0],lambda.x[0]]))}
+
 }
 
 /*
@@ -892,17 +893,20 @@ function geniterMomentum(U, Lambda, b, alpha, beta) {
   var S = numeric.inv( [[1, 0], [alpha, 1]])
 
   var fcoll = []
+  var maxLambda = []
   for (var i = 0; i < b.length; i++) { 
-    fcoll.push(matSum(Rmat(i),numeric.dot(S,[Ub[i],0]))) 
+  	m = matSum(Rmat(i),numeric.dot(S,[Ub[i],0]))
+    fcoll.push(m.matSum) 
+    maxLambda.push(m.lambda)
   }
 
-  return function(k) {
+  return {iter: function(k) {
     var o = []
     for (var i = 0; i < b.length; i++) {
       o.push(fcoll[i](k))
     }
     return numeric.dot(numeric.transpose(o),U)
-  }
+  }, maxLambda:maxLambda}
 }
 
 /* Returns the path and coordinates of annotation for a circle-annotation */

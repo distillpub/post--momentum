@@ -3,19 +3,13 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]);
 
   var colorBar = divin.append("div").style("position", "absolute").style("left","490px").style("top", "5px").style("height","45px")
-  colorMap(colorBar,
-  180,
-  d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]),
-  d3.scaleLinear().domain([0,100]).range([0, 180])
-  )
-
+  
   divin.append("figcaption")
        .style("position", "absolute")
        .style("left", "500px")
        .style("width", "300px")
        .style("top", "70px")
        .html("Each represents a node (and a weight $w_i$), and edges connect neighboring squares.")
-
 
   divin.append("figcaption")
        .style("position", "absolute")
@@ -25,23 +19,14 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
        .attr("class", "figtext")
        .html("Weights")
 
+  // sliderGen([320, 130])
+  //     .ticks([0,2/FlowSigma[1119]])
+  //     .cRadius(5)
+  //     .startxval(4)
+  //     .shifty(10)
+  //     .change(changeStep)(divin.append("div").style("position","relative").style("left", "100px"))
 
-  var stepCaption = divin.append("figcaption")
-       .style("position", "absolute")
-       .style("left", "153px")
-       .style("width", "300px")
-       .style("top", "45px")
-       .attr("class", "figtext")
-       .html("Step size α = 0.02")
-
-
-  sliderGen([320, 130])
-      .ticks([0,2/FlowSigma[1119]])
-      .cRadius(5)
-      .startxval(4)
-      .shifty(10)
-      .change(changeStep)(divin.append("div").style("position","relative").style("left", "100px"))
-
+  var slider = divin.append("div").style("position","relative").style("left", "100px")
   /*
   Generate coordinates for 2D Laplacian based on input matrix
   V[i] = (x,y) coordinate of node in 2D space.
@@ -54,17 +39,16 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   /* Generate b in optimization problem x'Ax - b'x */
   var b = zeros(FlowU[0].length); b[448] = 10;  b[560] = 10
   var step = 1.9/(FlowSigma[1119])
-  var iter = geniter(FlowU, FlowSigma, b, step)
+  //var iter = geniter(FlowU, FlowSigma, b, step)
   var Ub = numeric.dot(FlowU, b)
 
   // We can also run this on momentum.
-  //var iterf = geniterMomentum(U, FlowSigma, b, 2/8, 1)
-  //var iter = function(k) { return iterf(k)[1] }
+  var iterf = geniterMomentum(FlowU, FlowSigma, b, step, 0.999).iter
+  var iter = function(k) { return iterf(k)[1] }
 
   /**************************************************************************
     START VISUALIZATION
   ***************************************************************************/
-
   divin.style("position", "relative")
 
   /* Render the 2D grid of pixels, given a div as input
@@ -146,14 +130,19 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
 
   slideControl.slidera.init()
 
-  function changeStep(step) {
-    var barLengths = getStepsConvergence(FlowSigma,Math.max(step,0.000001))
-      .map( function(i) {return Math.log(Math.max(i,1))} ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
+  function changeStep(alpha, beta) {
+    var iteration = geniterMomentum(FlowU, FlowSigma, b, alpha/FlowSigma[1119], beta)
+    iterf = iteration.iter
+    var barLengths = getStepsConvergence(iteration.maxLambda.map(function(i) { return 1- i}), 1)
+      .map( function(i) {return Math.log(Math.max(i,1))} )
+      .filter( function(d,i) { return (i < 50) || i%20 == 0 } )
     slideControl.update(barLengths)
-    iter = geniter(FlowU, FlowSigma, b, Math.max(step, 0.000001))
+    iter = function(k) { return iterf(k)[1] }
+    cacheval = -1
     slideControl.slidera.init()
-    stepCaption.html("Step size α = " + step.toPrecision(3))
   }
+
+  slider2D(slider, changeStep, FlowSigma[0], FlowSigma[1119])
 
 }
 

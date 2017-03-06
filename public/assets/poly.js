@@ -61,7 +61,7 @@ function renderPolyFit(divin) {
   /*
     We can see the progress of the iterates for the momentum iterations too.
   */
-  // var iterf = geniterMomentum(U, Lambda, b, 1/320, 0.999999)
+  // var iterf = geniterMomentum(U, Lambda, b, 1/320, 0.999999).iter
   // var iter = function(k) { return iterf(k)[1] }
 
   /* 

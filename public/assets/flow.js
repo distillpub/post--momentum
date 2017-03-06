@@ -142,7 +142,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
     slideControl.slidera.init()
   }
 
-  slider2D(slider, changeStep, FlowSigma[0], FlowSigma[1119])
+  slider2D(slider, changeStep, FlowSigma[0], FlowSigma[1119], [1.9,0.00001])
 
 }
 

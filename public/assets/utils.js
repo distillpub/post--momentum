@@ -624,7 +624,8 @@ function renderHeatmap(canvas, f, cmap) {
 }
 
 
-function slider2D(div, onChange,lambda1, lambdan) {
+function slider2D(div, onChange,lambda1, lambdan, start) {
+
 	var panel = div.append("svg")
 	              .append("g")
 	              .attr("transform", "translate(25,30)")
@@ -758,7 +759,11 @@ function slider2D(div, onChange,lambda1, lambdan) {
 	  .style("cursor", "pointer")
 	  .on("click", function(d) { changeMouse(X(d[0]), Y(d[1]) ) })
 
-	changeMouse(X(alpha*lambdan),Y(beta))
+	if  (!(start === undefined)) {
+		changeMouse(X(start[0]),Y(start[1]))
+	} else {
+	  changeMouse(X(alpha*lambdan),Y(beta))
+	}
 }
 
 /****************************************************************************

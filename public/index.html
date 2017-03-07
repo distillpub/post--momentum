@@ -110,7 +110,7 @@
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
     </div>
     <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 50px; left: 520px; top: 320px;">
-      Find something to put here. Find something to put here. Gradient Descent (β = 0), Momentum (β = 0.99). Find something to put here. Find something to put here.
+      The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm.
     </figcaption>
   </figure>
 
@@ -165,20 +165,29 @@
   <p>
   If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, you start to get a nagging feeling you're not making as much progress as you should be. You're iterating hard, but the loss isn't getting smaller. Should you keep iterating, and hope for the best?
   </p>
+ When optimizing a smooth function $f$, gradient descent
+
+  $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
+
+  Your choice of step-size, $\alpha$ seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things begin quite well - with an impressive, almost immediate decrease in the loss. But after a time, you notice something amiss. The improvements begin to slow. The loss isn't getting smaller. And convergence is nowhere in sight. Something is wrong, but what?
 
   <p>
   The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
   </p> -->
   <p>
-  Gradient descent has many virtues, but speed is not one of them. When optimizing a smooth function $f$, gradient descent
+  Consider the problem of minimizing a smooth function $f$. At each point, we will assume access to both the function's value $f(w)$ (if the iterate is bad) and its gradient $\nabla f(w)$ (where the iterate can improve). To find a better point, it seems reasonable to make a small step in the direction of the gradient:
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  Your choice of step-size, $\alpha$ seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things begin quite well - with an impressive, almost immediate decrease in the loss. But after a time, you notice something amiss. The improvements begin to slow. The loss isn't getting smaller. And convergence is nowhere in sight. Something is wrong, but what? -->
+  This process of refinement, gradient descent, and comes a few satisfying guarantees. For a step size small enough, it is makes an improvement at every iteration ($f(w^{k+1}) < f(w)$). It always converges (to a local minimum), and under a few weak curvature conditions it can even go there at an exponential rate. 
   </p>
 
   <p>
-  You may have encountered the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  But for all its virtues, speed is not one of them. The exponential decrease, though appealing in theory, can often be infuriatingly small. And though the iterates often begin with a large, impressive decrease in the stepsize, things often slow down with increasing $k$, grinding to a crawl while still far from the optimum.
+  </p>
+
+  <p>
+  The problem may be the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
 
@@ -659,11 +668,11 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And thus, it would be useful if there were a decomposition of our model into the parts which fit the data, and the parts which fit the noise. The eigenfeatures are in a sense are exactly such a decomposition. In the eigenfeature basis, the most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues). And with a small perturbation to the observations, it is the smallest eigenvalues which jump around the most, while the largest eigenvalues remain stable.
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. The eigenfeatures decompose our polynomials into exactly such a basis - there the most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues). 
   </p>
 
   <p>
-  Now this measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Lets see how this plays out in gradient descent.
+  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Lets see how this plays out in gradient descent.
   </p>
 
   <figure id = "poly2" style="width:940px; height:360px"></figure>
@@ -843,7 +852,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   -\alpha\beta & 1-\alpha\lambda_{i}
   \end{array}\!\!\right).
   $$
-  We are almost there. We need a second trick. There are many ways of taking a matrix to the $k^{th}$ power. But for the $2 \times 2$ case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvectors of $R$, $\sigma_1$ and $\sigma_2$.
+  There are many ways of taking a matrix to the $k^{th}$ power. But for the $2 \times 2$ case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvectors of $R$, $\sigma_1$ and $\sigma_2$.
 
   $$
 \color{#AAA}{\color{black}{R^{k}}=\begin{cases}
@@ -945,7 +954,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time.
+  Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite> - it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
   <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1014,7 +1023,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   renderMath(document.getElementById("momentum_annotations"))
   </script>
   <p>
-  Lets break apart what this equation means. For $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
+  We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
@@ -1085,7 +1094,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
     });
   </script>
   <p>
-  The momentum iteration, therefore, can be seen as a discretization of a damped harmonic oscilator. This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equlibrium.
+  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equlibrium.
   </p>
   <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
@@ -1101,12 +1110,12 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
 
   </p>
   <p>
-  The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of $1 - \sqrt{\alpha\lambda_i}.$ A square root improvement over gradient descent, $1-\alpha\lambda_i$! This is our first quadratic speedup. Alas, this only applies to the error in the $i^{th}$ eigenspace.
+  The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of $1 - \sqrt{\alpha\lambda_i}.$ A square root improvement over gradient descent, $1-\alpha\lambda_i$! Alas, this only applies to the error in the $i^{th}$ eigenspace, with $\alpha$ fixed.
   </p>
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair, <dt-fn> and involves an optimization problem over
+  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair <dt-fn> and involves an optimization problem over
   $$
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
@@ -1116,7 +1125,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   -\alpha\beta & 1-\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   $$
-  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, so let's take it as a given that the critical point is
+  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, but let's take it as a given that the critical point is
   $$
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   $$
@@ -1297,11 +1306,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     });
   </script>
   <p>
-  The acceleration that momentum provides is clear, creating a massive wavefront in the sequence, allowing the system to converge must faster.
+  Momentum reinforces these local corrections, sometimes overshooting the target, but creates a distinctive wavefront which spreads much faster across the graph.
   </p>
-  <h3>Optimization on Graph Laplacians</h3>
+  <h3>Colorization on General Graphs</h3>
   <p>
-  In the colorization problem, the smoother, which defines the couplings between vertices, dominates the behavior of the function. We can define a slightly more general smoother on a $G=(V,E)$,
+  We can generalize the colorization problem to one on general graphs. The smoother, which defines the couplings between vertices, dominates the behavior of the function, can be defined on any graph $G=(V,E)$ 
   $$
   w \mapsto \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
   $$

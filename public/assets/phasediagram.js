@@ -142,7 +142,7 @@ function phaseDiagram(divin) {
 
   }
 
-  var linesvg = d3.select("#phasediagram")
+  var linesvg = divin
     .append("svg")
 
   // Axis

@@ -3,7 +3,6 @@
 <script src="assets/lib/template.js"></script>
 <script type="text/front-matter">
   title: Why Momentum Works.
-  description: And why gradient descent fails.
   authors:
     - Gabriel Goh: http://gabgoh.github.io
   affiliations:
@@ -21,6 +20,34 @@
 <script src="assets/utils.js"></script>
 <script>
   var renderQueue = [];
+  function renderMath(elem) {
+  renderMathInElement(
+      elem,
+      {
+          delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right: "$", display: false},
+          ]
+      }
+  );
+  }
+
+  var deleteQueue = [];
+  function renderLoading(figure) {
+    var loadingScreen = figure.append("svg")
+    .style("width", figure.style("width"))
+    .style("height", figure.style("height"))
+    .style("position","absolute")
+    .style("top", "0px")
+    .style("left","0px")
+    .style("background","white")
+    .style("border", "1px dashed #DDD")
+    .style("opacity", 1)
+
+    return function(callback) { loadingScreen
+                                  .remove() }
+  }
+
 </script>
 <svg style="display: none;">
   <g id="pointerThingy">
@@ -72,7 +99,7 @@
 </svg>
 
 <dt-article class="centered">
-  <h1>Why Momentum Works <br>And Why Gradient Descent Fails [DRAFT]</h1>
+  <h1>Why Momentum Works [DRAFT]</h1>
 
   <figure style = "position:relative; width:920px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
@@ -153,7 +180,7 @@
   <p>
   You may have encountered the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
-  But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - all we do is give gradient descent a short term memory:
+  But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
 
   $$
   \begin{aligned}
@@ -196,12 +223,13 @@
 
   Here's the trick. There is a very natural space to view gradient descent where the iterates all act independently - the eigenvalues of $A$.
   </p>
-  <div style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "change_of_variables">
   <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
   <div id = "mom2" style="width:400px; position:absolute; left:400px; top:0px"></div>
-  </div>
+  </svg>
+  </figure>
   <script>
-
+  deleteQueue.push(renderLoading(d3.select("#change_of_variables")))
   renderQueue.push(function(callback) {
     var U = givens(Math.PI/4)
     var Ut = numeric.transpose(U)
@@ -244,7 +272,6 @@
   // Initalize
   c2.control(0.018,0,[-2.5,1])
   c1.control(0.018,0,numeric.dot(Ut,[-2.5,1]));
-
   callback(null);
 });
 
@@ -282,7 +309,7 @@
   $$
   we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
   </p>
-  <figure style="position:relative; width:920px; height:350px">
+  <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
   <figcaption style="position:absolute; text-align:left; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
 
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
@@ -299,6 +326,7 @@
   </figure>
   <script src="assets/milestones.js"></script>
   <script>
+    deleteQueue.push(renderLoading(d3.select("#milestones_gd")))  
     renderQueue.push(function(callback) {
       var graphDiv = d3.select("#obj")
                       .style("width",  920 + "px")
@@ -377,7 +405,9 @@
  <h3>Choosing A Step-size</h3>
   <p>
   The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. <dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
-  $$\begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left(|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right) \end{aligned}$$
+  $$
+  \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
+  $$
   </p>
   <p>
   This overall rate is minimized when the rates for $\lambda_0$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvector to converge at the same time. If we work this through we get:
@@ -446,9 +476,10 @@
   to our data. This model, though nonlinear in the input ($\xi$) is linear in the weights, i.e. we can write the model as a linear combination of monomials, like:
   </p>
 
-  <figure id = "polydisplay" style="height:165px"></figure>
+  <figure id = "poly0" style="width:940px; height:165px"></figure>
   <script src="assets/eigensum.js"></script>
   <script>
+  deleteQueue.push(renderLoading(d3.select("#poly0")))  
   renderQueue.push(function(callback) {
 
     // Preprocess x, get eigendecomposition, etc
@@ -466,7 +497,7 @@
     var step = 1.8/lambda[0]
     var iter = geniter(U, lambda, Dtb, step)
 
-    var eigensum = d3.select("#polydisplay")
+    var eigensum = d3.select("#poly0")
 
     var wi = [2,2,2,2,2,2]
 
@@ -512,9 +543,10 @@
   </p>
 
 
-  <figure id = "eigendisplay" style="height:285px"></figure>
+  <figure id = "poly1" style="width:940px; height:285px"></figure>
 
   <script>
+  deleteQueue.push(renderLoading(d3.select("#poly1")))    
   renderQueue.push(function(callback) {
     var inv = function(lambda) { return 1/lambda }
     var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
@@ -534,7 +566,7 @@
     var step = 1.8/lambda[0]
     var iter = geniter(U, lambda, Dtb, step)
 
-    var eigensum = d3.select("#eigendisplay")
+    var eigensum = d3.select("#poly1")
 
     var wi = lambda.slice(0).map(scal)
 
@@ -576,9 +608,9 @@
     .style("padding", "10px")
     .html("Finally, jagged polynomials which differ wildly on neighboring points. ");
 
-    var figwidth = d3.select("#eigendisplay").style("width")
-    var figheight = d3.select("#eigendisplay").style("height")
-    var svg = d3.select("#eigendisplay")
+    var figwidth = d3.select("#poly1").style("width")
+    var figheight = d3.select("#poly1").style("height")
+    var svg = d3.select("#poly1")
                         .append("svg")
                         .style("width", figwidth)
                         .style("height", figheight)
@@ -607,7 +639,7 @@
         .draggable(false)
         .annotations(annotations)
 
-    var svg = d3.select("#eigendisplay").selectAll("svg")
+    var svg = d3.select("#poly1").selectAll("svg")
     var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
 
     svg.append('marker')
@@ -634,9 +666,10 @@
   Now this measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Lets see how this plays out in gradient descent.
   </p>
 
-  <figure id = "eigensum2" style="height:360px"></figure>
+  <figure id = "poly2" style="width:940px; height:360px"></figure>
 
   <script>
+  deleteQueue.push(renderLoading(d3.select("#poly2")))  
   renderQueue.push(function(callback) {
     var inv = function(lambda) { return 1/lambda }
     var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
@@ -657,7 +690,7 @@
     var step = 1.8/lambda[0]
     var iter = geniter(U, lambda, Dtb, step)
 
-    var eigensum = d3.select("#eigensum2")
+    var eigensum = d3.select("#poly2")
 
     var wi = lambda.slice(0).map(scal)
 
@@ -675,9 +708,9 @@
       eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
     }
 
-    var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#eigensum2"))
+    var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#poly2"))
 
-    d3.select("#eigensum2").append("figcaption")
+    d3.select("#poly2").append("figcaption")
           .style("width", "120px")
           .style("position", "absolute")
           .style("left", "820px")
@@ -686,9 +719,9 @@
 
     sliderControl.slidera.init()
 
-    var figwidth = d3.select("#eigensum2").style("width")
-    var figheight = d3.select("#eigensum2").style("height")
-    var svgannotate = d3.select("#eigensum2")
+    var figwidth = d3.select("#poly2").style("width")
+    var figheight = d3.select("#poly2").style("height")
+    var svgannotate = d3.select("#poly2")
                         .append("svg")
                         .style("width", figwidth)
                         .style("height", figheight)
@@ -845,6 +878,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </figure>
   <script src="assets/momentum.js"></script>
   <script>
+  deleteQueue.push(renderLoading(d3.select("#momentum2D")))    
   renderQueue.push(function(callback) {
     var defaults = [[0.0015, 0.9],
                     [0.0015, 0.125],
@@ -914,7 +948,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite>. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
-  <figure style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
   <div style="position:relative; top:-35px">
 
@@ -975,13 +1009,17 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
 
   </div>
   </figure>
+
+  <script>
+  renderMath(document.getElementById("momentum_annotations"))
+  </script>
   <p>
   Lets break apart what this equation means. For $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
-  <figure id = "phasediagram_" style="position:relative; width:450px; height:700px;margin-left:auto; margin-right:auto">
-
+  <figure id = "phasediagram0" style="position:relative; width:550px; height:720px;margin-left:auto; margin-right:auto">
+  <div id = "phasediagram0div"; style="position:absolute; left:80px; top:10px">
   <figcaption style="width:200px; top:190px; position:absolute">
   $$
   \begin{aligned}
@@ -1037,20 +1075,25 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <figcaption style="width:220px; left:-70px; top:440px; position:absolute">
   $\lambda_i = 1$
   </figcaption>
-
+  </div>
   </figure>
   <script>
-  phaseDiagram_dec(d3.select("#phasediagram_"))
+    deleteQueue.push(renderLoading(d3.select("#phasediagram0")))
+    renderQueue.push(function(callback) {
+      phaseDiagram_dec(d3.select("#phasediagram0div"))
+      callback(null);
+    });
   </script>
   <p>
   The momentum iteration, therefore, can be seen as a discretization of a damped harmonic oscilator. This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equlibrium.
   </p>
-  <figure id = "phasediagram" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
+  <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
   <script src="assets/phasediagram.js"></script>
   <script>
+    deleteQueue.push(renderLoading(d3.select("#phasediagram1")))  
     renderQueue.push(function(callback) {
-      phaseDiagram(d3.select("#phasediagram"));
+      phaseDiagram(d3.select("#phasediagram1"));
       callback(null);
     });
   </script>
@@ -1061,6 +1104,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of $1 - \sqrt{\alpha\lambda_i}.$ A square root improvement over gradient descent, $1-\alpha\lambda_i$! This is our first quadratic speedup. Alas, this only applies to the error in the $i^{th}$ eigenspace.
   </p>
 
+  <h3>Optimal parameters</h3>
   <p>
   To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair, <dt-fn> and involves an optimization problem over
   $$
@@ -1078,7 +1122,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   $$
   Plug this in, and you get
   </p>
-  <figure style="width:530px; height:19px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure id = "conv_rate_comparisons" style="width:530px; height:19px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
 
   <span style="position:absolute; left:16px">
@@ -1099,11 +1143,14 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </figcaption>
   </div>
   </figure>
+  <script>
+  renderMath(document.getElementById("conv_rate_comparisons"))
+  </script>
   <p>
   With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. For ill conditioned problems, set $\beta$ as close to $1$ as you can, and make the $\alpha$ as high as possible. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
 
-  <figure style="position:relative; width:920px; height:460px">
+  <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
   <figcaption style="position:absolute; text-align:left; top:30px; left:140px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:5px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:120px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
@@ -1115,6 +1162,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <div id = "milestonesMomentum"></div>
   </figure>
   <script>
+    deleteQueue.push(renderLoading(d3.select("#milestonesMomentumFig")))  
     renderQueue.push(function(callback) {
       var graphDiv = d3.select("#milestonesMomentum")
                    .style("width",  920 + "px")
@@ -1177,9 +1225,9 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <h3>Example: The Colorization Problem</h3>
 
   <p>
-  Lets look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices's as pixels and $E$ be the set of edges connecting neighboring pixels. Let $D$ be a set of a few distinguished vertices. Then we try to minimize a sum of two sums,
+  Lets look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices as pixels, $E$ be the set of edges connecting each pixel to its four neighboring pixels, and $D$ be a small set of a few distinguished vertices. Consider the problem of minimizing
   </p>
-<figure style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure id = "colorizer_equation" style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
   <span style="position:absolute; top:10px">
   $$\text{minimize} $$
@@ -1207,8 +1255,11 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </figcaption>
   </div>
   </figure>
+  <script>
+  renderMath(document.getElementById("colorizer_equation"))
+  </script>
   <p>
-  This is the colorization problem. It is clear the optimal solution is the vector of all ones, and a simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The above optimization problem is bounded from below by $0$, and thus the optimal solution is the vector of all $1$'s. A simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   $$
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
@@ -1219,15 +1270,16 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious.
   </p>
-  <figure id = "flow">
+  <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
-  <figcaption style="left:800px; top:430px; position:absolute; width:130px">
+  <figcaption style="left:790px; top:430px; position:absolute; width:130px">
       The eigenvectors of the colorization problem form a generalized Fourier basis for $R^n$. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
   </figcaption>
 
   </figure>
   <script src="assets/flow.js"></script>
   <script>
+    deleteQueue.push(renderLoading(d3.select("#flow")))    
     renderQueue.push(function(callback) {
       d3.queue()
         .defer(d3.json, "assets/data/Sigma.json")
@@ -1245,23 +1297,27 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     });
   </script>
   <p>
-  Momentum helps by ...
+  The acceleration that momentum provides is clear, creating a massive wavefront in the sequence, allowing the system to converge must faster.
   </p>
-
+  <h3>Optimization on Graph Laplacians</h3>
   <p>
-  In the colorization problem, the smoother dominates the behavior of the function. We can generalize our smoother a little, and define it on a general graph $G=(V,E)$,
+  In the colorization problem, the smoother, which defines the couplings between vertices, dominates the behavior of the function. We can define a slightly more general smoother on a $G=(V,E)$,
   $$
   w \mapsto \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
   $$
   The matrix $L_G$ is the Laplacian matrix
-  <dt-fn>This can be written explicitly
+  <dt-fn>This can be written explicitly as
   $$
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   $$
   </dt-fn>.
-  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. The first eigenvalue of $L_G$ is always $0$, but more surprisingly, the conditioning of $L_G$, the ratio of the second eigenvector to the last, is directly connected to the connectivity of the graph.
+  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$.
   </p>
-  <figure style="width:900px; height:250px">
+
+  <p>
+  One fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvector is always 0), is directly connected to the connectivity of the graph.
+  </p>
+  <figure id="laplacianConditioning" style="width:900px; height:265px">
   <svg width="900" height="300" id="graph"></svg>
   <figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
 
@@ -1272,6 +1328,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
   <script src="assets/graph.js"></script>
   <script>
+    deleteQueue.push(renderLoading(d3.select("#laplacianConditioning")))    
     renderQueue.push(function(callback) {
       var g1 = d3.select("#graph").append("g")
       genExpander(g1)
@@ -1286,15 +1343,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </script>
   <p>
 
-  The intuition behind this should be clear. Well connected graphs allow rapid diffusion through the edges, while long paths do not. But surprisingly, these functions, taken to an extreme, are in some sense the hardest functions to optimize amongst all functions. This gives us the lower bound which shows that Momentum is some sense optimal.
-
+  The intuition behind this should be clear. Well connected graphs allow rapid diffusion of information through the edges, while graphs with poor connectivity do not. And this principle, taken to the extreme, furnish a class of functions so hard to optimize they reveal the limits of the first order optimization.
   </p>
 <hr>
   <h2>
   The Resisting Oracle
   </h2>
   <p>
-  If a single auxiliary sequence provides a quadratic speedup, what would two sequences give? Could one perhaps choose the alphas and betas intelligently and adaptively to do even better? It is tempting to ride this wave of optimism - to the cube root and beyond! Now, improvements to the momentum algorithm do exist - but they all run up to a certain, critical, almost inescapable lower bound.
+  If a single auxiliary sequence provides a quadratic speedup, what would two sequences give? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively to do even better? It is tempting to ride this wave of optimism - to the cube root and beyond! Now, improvements to the momentum algorithm do exist - but they all run up to a certain, critical, almost inescapable lower bound.
   </p>
   <h3>Adventures in Algorthmic Space</h3>
   <p>
@@ -1312,7 +1368,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   we can write gradient descent as:
 
   $$
-  w^{k} ~~=~~ w^{0} ~-~ \alpha\sum_{i}\nabla f(w^{i})
+  w^{k} ~~=~~ w^{0} ~-~ \alpha\sum\nabla f(w^{i})
   $$
 
   A similar trick can be done with momentum,
@@ -1330,21 +1386,21 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   contains momentum, gradient descent and a whole bunch of other iterations you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
 
   $$
-  w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
+  w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \quad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
   $$
 
-  This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods". Now comes the Achille's heel of all methods of this kind.
+  This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods", and we will show a single function all these methods must ultimately fail on.
 
   </p>
   <h3>The Convex Rosenbrock</h3>
   <p>
-  Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world".
+  Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem,
 
   $$
-  f^n(w) ~~=~~ \frac{(\kappa-1)}{8}\left(\left(w_{1}-1\right)^{2}+\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}\right)~+~\frac{1}{2}\|w\|^{2}
+  f^n(w) = \frac{\kappa-1}{8}\left(w_{1}-1\right)^{2}+\frac{\kappa-1}{8}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}+\frac{1}{2}\|w\|^{2}
   $$
 
-  The function looks rather innocent. It is a quadratic. It is simple to express. And it is surprisingly explicable. In fact, we've seen it once before already. This is just a variation on the colorization problem, one with a small regularization term which determines how well behaved it is. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function.
+  except with a small regularization term at the end. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function.
   </p>
 
   <p>
@@ -1357,7 +1413,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   and the condtion number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
   </p>
 
-  <figure style="width:950px; height:770px">
+  <figure id="rosenViz" style="width:950px; height:780px">
     <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
@@ -1375,7 +1431,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     </div>
   </figure>
   <script>
-
+  deleteQueue.push(renderLoading(d3.select("#rosenViz")))    
   renderQueue.push(function(callback) {
     var RQ = [[0.033430859446525574,0.06637421995401382,0.09834969788789749,0.1288910210132599,0.1575528085231781,0.18391713500022888,0.20759953558444977,0.22825466096401215,0.24558131396770477,0.25932684540748596,0.2692908048629761,0.2753278911113739,0.2773500978946686,0.2753278911113739,0.2692908048629761,0.25932684540748596,0.24558131396770477,0.22825466096401215,0.20759953558444977,0.18391713500022888,0.1575528085231781,0.1288910210132599,0.09834969788789749,0.06637421995401382,0.033430859446525574],[-0.06637421995401382,-0.1288910210132599,-0.18391713500022888,-0.22825466096401215,-0.25932684540748596,-0.2753278911113739,-0.2753278911113739,-0.25932684540748596,-0.22825466096401215,-0.18391713500022888,-0.1288910210132599,-0.06637421995401382,-1.917815576756455e-14,0.06637421995401382,0.1288910210132599,0.18391713500022888,0.22825466096401215,0.25932684540748596,0.2753278911113739,0.2753278911113739,0.25932684540748596,0.22825466096401215,0.18391713500022888,0.1288910210132599,0.06637421995401382],[0.09834969788789749,0.18391713500022888,0.24558131396770477,0.2753278911113739,0.2692908048629761,0.22825466096401215,0.1575528085231781,0.06637421995401382,-0.033430859446525574,-0.1288910210132599,-0.20759953558444977,-0.25932684540748596,-0.2773500978946686,-0.25932684540748596,-0.20759953558444977,-0.1288910210132599,-0.033430859446525574,0.06637421995401382,0.1575528085231781,0.22825466096401215,0.2692908048629761,0.2753278911113739,0.24558131396770477,0.18391713500022888,0.09834969788789749],[0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599,-1.2834394835694717e-14,0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599],[-0.1575528085231781,-0.25932684540748596,-0.2692908048629761,-0.18391713500022888,-0.033430859446525574,0.1288910210132599,0.24558131396770477,0.2753278911113739,0.20759953558444977,0.06637421995401382,-0.09834969788789749,-0.22825466096401215,-0.2773500978946686,-0.22825466096401215,-0.09834969788789749,0.06637421995401382,0.20759953558444977,0.2753278911113739,0.24558131396770477,0.1288910210132599,-0.033430859446525574,-0.18391713500022888,-0.2692908048629761,-0.25932684540748596,-0.1575528085231781],[-0.18391713500022888,-0.2753278911113739,-0.22825466096401215,-0.06637421995401382,0.1288910210132599,0.25932684540748596,0.25932684540748596,0.1288910210132599,-0.06637421995401382,-0.22825466096401215,-0.2753278911113739,-0.18391713500022888,-4.583645525716709e-15,0.18391713500022888,0.2753278911113739,0.22825466096401215,0.06637421995401382,-0.1288910210132599,-0.25932684540748596,-0.25932684540748596,-0.1288910210132599,0.06637421995401382,0.22825466096401215,0.2753278911113739,0.18391713500022888],[-0.20759953558444977,-0.2753278911113739,-0.1575528085231781,0.06637421995401382,0.24558131396770477,0.25932684540748596,0.09834969788789749,-0.1288910210132599,-0.2692908048629761,-0.22825466096401215,-0.033430859446525574,0.18391713500022888,0.2773500978946686,0.18391713500022888,-0.033430859446525574,-0.22825466096401215,-0.2692908048629761,-0.1288910210132599,0.09834969788789749,0.25932684540748596,0.24558131396770477,0.06637421995401382,-0.1575528085231781,-0.2753278911113739,-0.20759953558444977],[-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215,4.337912797388764e-15,-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215],[-0.24558131396770477,-0.22825466096401215,0.033430859446525574,0.25932684540748596,0.20759953558444977,-0.06637421995401382,-0.2692908048629761,-0.18391713500022888,0.09834969788789749,0.2753278911113739,0.1575528085231781,-0.1288910210132599,-0.2773500978946686,-0.1288910210132599,0.1575528085231781,0.2753278911113739,0.09834969788789749,-0.18391713500022888,-0.2692908048629761,-0.06637421995401382,0.20759953558444977,0.25932684540748596,0.033430859446525574,-0.22825466096401215,-0.24558131396770477],[-0.25932684540748596,-0.18391713500022888,0.1288910210132599,0.2753278911113739,0.06637421995401382,-0.22825466096401215,-0.22825466096401215,0.06637421995401382,0.2753278911113739,0.1288910210132599,-0.18391713500022888,-0.25932684540748596,-2.6265288907570752e-15,0.25932684540748596,0.18391713500022888,-0.1288910210132599,-0.2753278911113739,-0.06637421995401382,0.22825466096401215,0.22825466096401215,-0.06637421995401382,-0.2753278911113739,-0.1288910210132599,0.18391713500022888,0.25932684540748596],[0.2692908048629761,0.1288910210132599,-0.20759953558444977,-0.22825466096401215,0.09834969788789749,0.2753278911113739,0.033430859446525574,-0.25932684540748596,-0.1575528085231781,0.18391713500022888,0.24558131396770477,-0.06637421995401382,-0.2773500978946686,-0.06637421995401382,0.24558131396770477,0.18391713500022888,-0.1575528085231781,-0.25932684540748596,0.033430859446525574,0.2753278911113739,0.09834969788789749,-0.22825466096401215,-0.20759953558444977,0.1288910210132599,0.2692908048629761],[0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739,-2.224606886845463e-15,0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739],[0.2773500978946686,1.2625047254649028e-16,-0.2773500978946686,-6.312523627324514e-16,0.2773500978946686,8.83753307825432e-16,-0.2773500978946686,-8.83753307825432e-16,0.2773500978946686,1.5781309068311285e-15,-0.2773500978946686,-4.734392720493385e-16,0.2773500978946686,2.0200075607438445e-15,-0.2773500978946686,-1.7990691808479273e-15,0.2773500978946686,1.6728188141805554e-15,-0.2773500978946686,-1.4518804342846382e-15,0.2773500978946686,-3.4718879950284827e-16,-0.2773500978946686,1.2625047254649028e-15,0.2773500978946686],[-0.2753278911113739,0.06637421995401382,0.25932684540748596,-0.1288910210132599,-0.22825466096401215,0.18391713500022888,0.18391713500022888,-0.22825466096401215,-0.1288910210132599,0.25932684540748596,0.06637421995401382,-0.2753278911113739,-1.0026396759284933e-15,0.2753278911113739,-0.06637421995401382,-0.25932684540748596,0.1288910210132599,0.22825466096401215,-0.18391713500022888,-0.18391713500022888,0.22825466096401215,0.1288910210132599,-0.25932684540748596,-0.06637421995401382,0.2753278911113739],[0.2692908048629761,-0.1288910210132599,-0.20759953558444977,0.22825466096401215,0.09834969788789749,-0.2753278911113739,0.033430859446525574,0.25932684540748596,-0.1575528085231781,-0.18391713500022888,0.24558131396770477,0.06637421995401382,-0.2773500978946686,0.06637421995401382,0.24558131396770477,-0.18391713500022888,-0.1575528085231781,0.25932684540748596,0.033430859446525574,-0.2753278911113739,0.09834969788789749,0.22825466096401215,-0.20759953558444977,-0.1288910210132599,0.2692908048629761],[-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596,1.770693656524247e-16,-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596],[0.24558131396770477,-0.22825466096401215,-0.033430859446525574,0.25932684540748596,-0.20759953558444977,-0.06637421995401382,0.2692908048629761,-0.18391713500022888,-0.09834969788789749,0.2753278911113739,-0.1575528085231781,-0.1288910210132599,0.2773500978946686,-0.1288910210132599,-0.1575528085231781,0.2753278911113739,-0.09834969788789749,-0.18391713500022888,0.2692908048629761,-0.06637421995401382,-0.20759953558444977,0.25932684540748596,-0.033430859446525574,-0.22825466096401215,0.24558131396770477],[0.22825466096401215,-0.25932684540748596,0.06637421995401382,0.18391713500022888,-0.2753278911113739,0.1288910210132599,0.1288910210132599,-0.2753278911113739,0.18391713500022888,0.06637421995401382,-0.25932684540748596,0.22825466096401215,9.870699398085384e-16,-0.22825466096401215,0.25932684540748596,-0.06637421995401382,-0.18391713500022888,0.2753278911113739,-0.1288910210132599,-0.1288910210132599,0.2753278911113739,-0.18391713500022888,-0.06637421995401382,0.25932684540748596,-0.22825466096401215],[-0.20759953558444977,0.2753278911113739,-0.1575528085231781,-0.06637421995401382,0.24558131396770477,-0.25932684540748596,0.09834969788789749,0.1288910210132599,-0.2692908048629761,0.22825466096401215,-0.033430859446525574,-0.18391713500022888,0.2773500978946686,-0.18391713500022888,-0.033430859446525574,0.22825466096401215,-0.2692908048629761,0.1288910210132599,0.09834969788789749,-0.25932684540748596,0.24558131396770477,-0.06637421995401382,-0.1575528085231781,0.2753278911113739,-0.20759953558444977],[-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888,8.371955066048889e-16,-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888],[-0.1575528085231781,0.25932684540748596,-0.2692908048629761,0.18391713500022888,-0.033430859446525574,-0.1288910210132599,0.24558131396770477,-0.2753278911113739,0.20759953558444977,-0.06637421995401382,-0.09834969788789749,0.22825466096401215,-0.2773500978946686,0.22825466096401215,-0.09834969788789749,-0.06637421995401382,0.20759953558444977,-0.2753278911113739,0.24558131396770477,-0.1288910210132599,-0.033430859446525574,0.18391713500022888,-0.2692908048629761,0.25932684540748596,-0.1575528085231781],[-0.1288910210132599,0.22825466096401215,-0.2753278911113739,0.25932684540748596,-0.18391713500022888,0.06637421995401382,0.06637421995401382,-0.18391713500022888,0.25932684540748596,-0.2753278911113739,0.22825466096401215,-0.1288910210132599,-3.0802549003271684e-16,0.1288910210132599,-0.22825466096401215,0.2753278911113739,-0.25932684540748596,0.18391713500022888,-0.06637421995401382,-0.06637421995401382,0.18391713500022888,-0.25932684540748596,0.2753278911113739,-0.22825466096401215,0.1288910210132599],[-0.09834969788789749,0.18391713500022888,-0.24558131396770477,0.2753278911113739,-0.2692908048629761,0.22825466096401215,-0.1575528085231781,0.06637421995401382,0.033430859446525574,-0.1288910210132599,0.20759953558444977,-0.25932684540748596,0.2773500978946686,-0.25932684540748596,0.20759953558444977,-0.1288910210132599,0.033430859446525574,0.06637421995401382,-0.1575528085231781,0.22825466096401215,-0.2692908048629761,0.2753278911113739,-0.24558131396770477,0.18391713500022888,-0.09834969788789749],[-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382,6.798085926082532e-17,-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382],[0.033430859446525574,-0.06637421995401382,0.09834969788789749,-0.1288910210132599,0.1575528085231781,-0.18391713500022888,0.20759953558444977,-0.22825466096401215,0.24558131396770477,-0.25932684540748596,0.2692908048629761,-0.2753278911113739,0.2773500978946686,-0.2753278911113739,0.2692908048629761,-0.25932684540748596,0.24558131396770477,-0.22825466096401215,0.20759953558444977,-0.18391713500022888,0.1575528085231781,-0.1288910210132599,0.09834969788789749,-0.06637421995401382,0.033430859446525574]]
 
@@ -1751,23 +1807,16 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
 <!-- Katex -->
 <script>
-    renderMathInElement(
-        document.body,
-        {
-            delimiters: [
-                {left: "$$", right: "$$", display: true},
-                {left: "$", right: "$", display: false},
-            ]
-        }
-    );
+renderMath(document.body)
 </script>
 
 <!-- Figure render queue -->
 <script>
   setTimeout(function() {
     var q = d3.queue(1);
-    renderQueue.forEach(function(fn) {
-      q.defer(fn);
+
+    d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
+      q.defer(function(callback) { fn[1](callback); fn[0](callback) });
       q.defer(function(callback) {
         setTimeout(function() {
           callback(null);
@@ -1782,4 +1831,9 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       }
     });
   }, 50);
+  
+// DEBUG  
+// renderQueue.forEach( function (fn) { fn( function() {}) } )
+
+
 </script>

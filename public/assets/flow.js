@@ -4,10 +4,10 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
 
   var colorBar = divin.append("div").style("position", "absolute").style("left","490px").style("top", "5px").style("height","45px")
   
-  colorMap( colorBar,
-           180,
-           jetc,
-           d3.scaleLinear().domain([0,1.5]).range([0, 180]) )
+  // colorMap( colorBar,
+  //          180,
+  //          jetc,
+  //          d3.scaleLinear().domain([0,1]).range([0, 100]) )
 
   divin.append("figcaption")
        .style("position", "absolute")

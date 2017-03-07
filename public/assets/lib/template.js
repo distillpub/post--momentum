@@ -5235,7 +5235,7 @@ var banner = function(dom, data) {
 
 var logo = "<svg viewBox=\"-607 419 64 64\">\n  <path d=\"M-573.4,478.9c-8,0-14.6-6.4-14.6-14.5s14.6-25.9,14.6-40.8c0,14.9,14.6,32.8,14.6,40.8S-565.4,478.9-573.4,478.9z\"/>\n</svg>\n";
 
-var html$2 = "\n<style>\ndt-header {\n  display: block;\n  position: relative;\n  height: 60px;\n  background-color: hsl(223, 9%, 25%);\n  width: 100%;\n  box-sizing: border-box;\n  z-index: 2;\n  color: rgba(0, 0, 0, 0.8);\n  border-bottom: 1px solid rgba(0, 0, 0, 0.08);\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);\n}\ndt-header .content {\n  height: 70px;\n}\ndt-header a {\n  font-size: 16px;\n  height: 60px;\n  line-height: 60px;\n  text-decoration: none;\n  color: rgba(255, 255, 255, 0.8);\n  padding: 22px 0;\n}\ndt-header a:hover {\n  color: rgba(255, 255, 255, 1);\n}\ndt-header svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\n\n@media(min-width: 1080px) {\n  dt-header {\n    height: 70px;\n  }\n  dt-header a {\n    height: 70px;\n    line-height: 70px;\n    padding: 28px 0;\n  }\n  dt-header .logo {\n  }\n}\n\ndt-header svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-header .logo {\n  font-size: 13px;\n  font-weight: 300;\n  text-transform: uppercase;\n}\ndt-header .nav {\n  float: right;\n  font-weight: 300;\n}\ndt-header .nav a {\n  font-size: 14px;\n}\n</style>\n\n<div class=\"content l-page\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a>\n  <div class=\"nav\">\n    <a href=\"/faq\">About</a>\n    <!-- https://twitter.com/distillpub -->\n  </div>\n</div>\n";
+var html$2 = "\n<style>\ndt-header {\n  display: block;\n  position: relative;\n  height: 60px;\n  background-color: hsl(200, 60%, 15%);\n  width: 100%;\n  box-sizing: border-box;\n  z-index: 2;\n  color: rgba(0, 0, 0, 0.8);\n  border-bottom: 1px solid rgba(0, 0, 0, 0.08);\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);\n}\ndt-header .content {\n  height: 70px;\n}\ndt-header a {\n  font-size: 16px;\n  height: 60px;\n  line-height: 60px;\n  text-decoration: none;\n  color: rgba(255, 255, 255, 0.8);\n  padding: 22px 0;\n}\ndt-header a:hover {\n  color: rgba(255, 255, 255, 1);\n}\ndt-header svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\n@media(min-width: 1080px) {\n  dt-header {\n    height: 70px;\n  }\n  dt-header a {\n    height: 70px;\n    line-height: 70px;\n    padding: 28px 0;\n  }\n  dt-header .logo {\n  }\n}\ndt-header svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-header .logo {\n  font-size: 17px;\n  font-weight: 200;\n}\ndt-header .nav {\n  float: right;\n  font-weight: 300;\n}\ndt-header .nav a {\n  font-size: 12px;\n  margin-left: 24px;\n  text-transform: uppercase;\n}\n</style>\n\n<div class=\"content l-page\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a>\n  <div class=\"nav\">\n    <a href=\"/faq\">About</a>\n    <a href=\"https://github.com/distillpub\">GitHub</a>\n    <!-- https://twitter.com/distillpub -->\n  </div>\n</div>\n";
 
 var header = function(dom, data) {
   var el = dom.querySelector("dt-header");
@@ -5930,7 +5930,7 @@ var appendix = function(dom, data) {
 
 };
 
-var html$5 = "\n<style>\ndt-footer {\n  display: block;\n  color: rgba(255, 255, 255, 0.4);\n  font-weight: 300;\n  padding: 40px 0;\n  border-top: 1px solid rgba(0, 0, 0, 0.1);\n  background-color: hsl(223, 9%, 25%);\n  text-align: center;\n}\ndt-footer .logo svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\ndt-footer .logo svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-footer .logo {\n  font-size: 13px;\n  font-weight: 300;\n  text-transform: uppercase;\n  color: rgba(255, 255, 255, 0.8);\n  text-decoration: none;\n  margin-right: 6px;\n}\n</style>\n\n<div class=\"l-screen-inset\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a> is dedicated to clear explanations of machine learning\n</div>\n";
+var html$5 = "\n<style>\ndt-footer {\n  display: block;\n  color: rgba(255, 255, 255, 0.4);\n  font-weight: 300;\n  padding: 40px 0;\n  border-top: 1px solid rgba(0, 0, 0, 0.1);\n  background-color: hsl(200, 60%, 15%);\n  text-align: center;\n}\ndt-footer .logo svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\ndt-footer .logo svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-footer .logo {\n  font-size: 17px;\n  font-weight: 200;\n  color: rgba(255, 255, 255, 0.8);\n  text-decoration: none;\n  margin-right: 6px;\n}\n</style>\n\n<div class=\"l-screen-inset\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a> is dedicated to clear explanations of machine learning\n</div>\n";
 
 var footer = function(dom, data) {
   var el = dom.querySelector("dt-footer");
@@ -8339,7 +8339,6 @@ var typeset = function(dom, data) {
     if (text && acceptNode(n)) {
       text = quotes(text);
       text = punctuation(text);
-      text = ligatures(text);
       n.nodeValue = text;
     }
   }
@@ -8419,14 +8418,6 @@ function quotes(text) {
   return text;
 }
 
-function ligatures(text){
-
-    text = text.replace(/fi/g, 'ﬁ');
-    text = text.replace(/fl/g, 'ﬂ');
-
-    return text;
-}
-
 var code$2 = "// DistillHoverBox\n//=====================================\n\nfunction DistillHoverBox(key, pos){\n\n  if (!(key in DistillHoverBox.contentMap)){\n    console.error(\"No DistillHoverBox content registered for key\", key);\n  }\n  if (key in DistillHoverBox.liveBoxes) {\n    console.error(\"There already exists a DistillHoverBox for key\", key);\n  } else {\n    for (var k in DistillHoverBox.liveBoxes)\n      DistillHoverBox.liveBoxes[k].remove();\n    DistillHoverBox.liveBoxes[key] = this;\n  }\n  this.key = key;\n\n  var pretty = window.innerWidth > 600;\n\n  var padding = pretty? 18 : 12;\n  var outer_padding = pretty ? 18 : 0;\n  var bbox = document.querySelector(\"body\").getBoundingClientRect();\n  var left = pos[0] - bbox.left, top = pos[1] - bbox.top;\n  var width = Math.min(window.innerWidth-2*outer_padding, 648);\n  left = Math.min(left, window.innerWidth-width-outer_padding);\n  width = width - 2*padding;\n\n  var str = `<div style=\"position: absolute;\n                          background-color: #FFF;\n                          white-s\n                          opacity: 0.95;\n                          max-width: ${width}px;\n                          top: ${top}px;\n                          left: ${left}px;\n                          border: 1px solid rgba(0, 0, 0, 0.25);\n                          padding: ${padding}px;\n                          border-radius: ${pretty? 3 : 0}px;\n                          box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.2);\n                          z-index: ${1e6}\" >\n              ${DistillHoverBox.contentMap[key]}\n              </div>`;\n\n  this.div = appendBody(str);\n\n  DistillHoverBox.bind (this.div, key);\n}\n\nDistillHoverBox.prototype.remove = function remove(){\n  if (this.div) this.div.remove();\n  if (this.timeout) clearTimeout(this.timeout);\n  delete DistillHoverBox.liveBoxes[this.key];\n}\n\nDistillHoverBox.prototype.stopTimeout = function stopTimeout() {\n  if (this.timeout) clearTimeout(this.timeout);\n}\n\nDistillHoverBox.prototype.extendTimeout = function extendTimeout(T) {\n  //console.log(\"extend\", T)\n  var this_ = this;\n  this.stopTimeout();\n  this.timeout = setTimeout(() => this_.remove(), T);\n}\n\nDistillHoverBox.liveBoxes = {};\nDistillHoverBox.contentMap = {};\n\nDistillHoverBox.bind = function bind(node, key) {\n  if (typeof node == \"string\"){\n    node = document.querySelector(node);\n  }\n  node.addEventListener(\"mouseover\", () => {\n    var bbox = node.getBoundingClientRect();\n    if (!(key in DistillHoverBox.liveBoxes)){\n      new DistillHoverBox(key, [bbox.right, bbox.bottom]);\n    }\n    DistillHoverBox.liveBoxes[key].stopTimeout();\n  });\n  node.addEventListener(\"mouseout\", () => {\n    if (key in DistillHoverBox.liveBoxes){\n      DistillHoverBox.liveBoxes[key].extendTimeout(250);\n    }\n  });\n\n}\n\n\nfunction appendBody(str){\n  var node = nodeFromString(str);\n  var body = document.querySelector(\"body\");\n  body.appendChild(node);\n  return node;\n}\n\nfunction nodeFromString(str) {\n  var div = document.createElement(\"div\");\n  div.innerHTML = str;\n  return div.firstChild;\n}\n\nvar hover_es = document.querySelectorAll(\"span[data-hover]\");\nhover_es = [].slice.apply(hover_es);\nhover_es.forEach((e,n) => {\n  var key = \"hover-\"+n;\n  var content = e.getAttribute(\"data-hover\");\n  DistillHoverBox.contentMap[key] = content;\n  DistillHoverBox.bind(e, key);\n});\n";
 
 var hoverBox = function(dom) {
@@ -8471,6 +8462,7 @@ var generateCrossref = function(data) {
           {journal_metadata: [
             {full_title: data.journal.full_title || data.journal.title},
             {abbrev_title: data.journal.abbrev_title || data.journal.title || data.journal.full_title},
+            {issn: data.journal.issn},
             {doi_data: [
               {doi: data.journal.doi},
               {resource: data.journal.url} ]} ]},

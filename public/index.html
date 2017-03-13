@@ -319,7 +319,7 @@
   we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
   </p>
   <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
-  <figcaption style="position:absolute; text-align:left; left:140px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
+  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
 
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
  -->
@@ -347,7 +347,11 @@
                       .attr("width", 920)
                       .attr("height", 500)
 
-      var svg = graphDiv.append("svg").attr("width", 920).attr("height", 300)
+      var svg = graphDiv.append("svg")
+                        .attr("width", 920)
+                        .attr("height", 300)
+                        .style("position","absolute")
+                        .style("left", "15px")
 
       var updateSliderGD = renderMilestones(svg, function() {})
 
@@ -367,9 +371,9 @@
                   .margins(20,20)(d3.select("#sliderStep"))
 
 
-      renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.4)
-      renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.4)
-      renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.4)
+      renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.1)
+      renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.1)
+      renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.1)
 
 
       svg.append("text")
@@ -403,9 +407,10 @@
         .attr("x", 420)
         .attr("y", 270)
         .attr("dy", 0)
-        .attr("text-anchor", "end")
+        .attr("dx", -295)
+        .attr("text-anchor", "start")
         .attr("fill", "gray")
-        .text("At the initial point, the error in each component is equal.")
+        .text("At the optimum, the rates of convergence of the largest and smallest eigenvalues equalize.")
 
       callback(null);
     });

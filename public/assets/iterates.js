@@ -14,7 +14,7 @@ function genIterDiagram(f, xstar, axis) {
   /*
     Configurable Parameters
   */
-  var w = 900
+  var w = 984
   var h = 300
   var totalIters = 150
   var state_beta = 0.0
@@ -96,7 +96,7 @@ function genIterDiagram(f, xstar, axis) {
     if (showOptimum) {
       // Append x^s var showSolution = falsetar
       var pxstar = ringPathGen(7,50,14)([X(xstar[0]), Y(xstar[1])],
-                                        [X(xstar[0]), Y(xstar[1]) - 20])
+                                        [X(xstar[0]), Y(xstar[1]) - 15])
       svg.append("circle").attr("cx", X(xstar[0])).attr("cy", Y(xstar[1])).attr("r", 7).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
       svg.append("path").attr("d", pxstar.d).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
       svg.append("text")

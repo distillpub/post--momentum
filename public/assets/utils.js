@@ -965,10 +965,10 @@ function ringPathGen(radius, width, height) {
     // if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
     // if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }    
 
-    if (dir == "S") { top  = (p2[1] + height/2 + padding); left = (p2[0] - width/2) } 
-    if (dir == "N") { top  = (p2[1] - padding); left = (p2[0] - width/2) }
-    if (dir == "W") { top  = (p2[1] + height/4); left = (p2[0] - width - padding) }
-    if (dir == "E") { top  = (p2[1] + height/4); left = (p2[0] + padding) }    
+    if (dir == "S") { top  = (p2[1] + height/2 + padding) - 10; left = (p2[0] - width/2) } 
+    if (dir == "N") { top  = (p2[1] - padding) - 10; left = (p2[0] - width/2) }
+    if (dir == "W") { top  = (p2[1] + height/4 - 10); left = (p2[0] - width - padding) }
+    if (dir == "E") { top  = (p2[1] + height/4 - 10); left = (p2[0] + padding) }    
 
     return {d:d, label:[left, top]} 
 

@@ -101,15 +101,15 @@
 <dt-article class="centered">
   <h1>Why Momentum Works [DRAFT]</h1>
 
-  <figure style = "position:relative; width:920px; height:400px;">
+  <figure style = "position:relative; width:984px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
-    <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:0px; top: 320px;">
+    <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step size α = 0.02</text>
     </div>
-    <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 240px; top: 320px;;">
+    <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 300px; top: 320px;;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
     </div>
-    <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 50px; left: 520px; top: 320px;">
+    <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 90px; left: 580px; top: 320px;">
       The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm.
     </figcaption>
   </figure>
@@ -253,7 +253,7 @@
               .showSolution(false)
               .pathWidth(1)
               .circleRadius(1.5)
-              .pointerScale(0.5)
+              .pointerScale(0.8)
               .showStartingPoint(false)
               .drag(function() {
                 c2.control(c1.alpha(),
@@ -270,7 +270,7 @@
               .showSolution(false)
               .pathWidth(1)
               .circleRadius(1.5)
-              .pointerScale(0.5)
+              .pointerScale(0.8)
               .showStartingPoint(false)
               .drag(function() {
                 c1.control(c2.alpha(),
@@ -347,7 +347,7 @@
                       .attr("width", 920)
                       .attr("height", 500)
 
-      var svg = graphDiv.append("svg").attr("width", 920).attr("height", 500)
+      var svg = graphDiv.append("svg").attr("width", 920).attr("height", 300)
 
       var updateSliderGD = renderMilestones(svg, function() {})
 

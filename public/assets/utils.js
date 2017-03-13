@@ -13,7 +13,7 @@ var divergent = d3.scaleLinear().domain([-0.03,0,0.03]).range(["#d7191c", "#ffff
 
 /* Custom slider with ticks, tooltips and all that jazz. */
 function sliderGen(dims) {
-  
+
   var onMouseover = function() {}
   var onMouseout  = function() {}
   var onChange    = function() {}
@@ -68,15 +68,15 @@ function sliderGen(dims) {
         .attr("class", "track-overlay")
         .call(d3.drag()
           .on("start.interrupt", function() { slidersvg.interrupt(); })
-          .on("start drag", function() { 
+          .on("start drag", function() {
             var xval = x.invert(d3.event.x)
-            handle.attr("transform", "translate(" + x(xval) + ",0)" ); 
+            handle.attr("transform", "translate(" + x(xval) + ",0)" );
             curr_xval = xval
             onChange(xval, handle)
           }));
 
     var ticksvg = slidersvg.append("g")
-    
+
     if (showticks) {
 	    ticksvg.selectAll("rect")
 	      .data(ticks, function(d,i) {return i})
@@ -104,34 +104,34 @@ function sliderGen(dims) {
       .attr("cy", 0)
       .attr("r", 3)
       .attr("opacity", 0.0)
-      .on("mouseover", function(i,k) { 
-        this.setAttribute("opacity", "0.2"); 
-        if (!(tooltipcallback === undefined)) { 
+      .on("mouseover", function(i,k) {
+        this.setAttribute("opacity", "0.2");
+        if (!(tooltipcallback === undefined)) {
           var tooltip = tooltipcallback(k)
           if (tooltip != false) { tip.show('<span>' + tooltip + '</span>') }
         }
         onMouseover(i,k)
       })
-      .on("mouseout", function(i,k) { 
+      .on("mouseout", function(i,k) {
         if (!(tooltipcallback === undefined)) { tip.hide() }
-        this.setAttribute("opacity", "0"); 
+        this.setAttribute("opacity", "0");
         onMouseout(i,k)
       })
       .on("click", function(lambda){
         var xval = lambda
         curr_xval = xval
-        handle.attr("transform", "translate(" + x(xval) + ",0)" ); 
+        handle.attr("transform", "translate(" + x(xval) + ",0)" );
         onChange(xval, handle)
       })
 
-    /* 
-      Update the ticks     
+    /*
+      Update the ticks
     */
     var updateTicks = function(newticks) {
 
       var d1 = ticksvg.selectAll("rect")
         .data(newticks,function(d,i) {return i})
-      
+
       d1.exit().remove()
       d1.merge(d1).transition().duration(50)
         .attr("x", function(i) { return isNaN(i) ? -100: x(i) - 0.5})
@@ -145,7 +145,7 @@ function sliderGen(dims) {
     }
 
     var handle = slidersvg.insert("g", ".track-overlay")
-        .attr("transform", "translate(" + x(curr_xval) + ",0)" ); 
+        .attr("transform", "translate(" + x(curr_xval) + ",0)" );
 
     handle.insert("circle")
         .attr("class", "handle")
@@ -155,10 +155,10 @@ function sliderGen(dims) {
         .style("stroke", "white")
         .call(d3.drag()
           .on("start.interrupt", function() { slidersvg.interrupt(); })
-          .on("start drag", function() { 
+          .on("start drag", function() {
             var xval = x.invert(d3.mouse(dragger.node())[0])
-            handle.attr("transform", "translate(" + x(xval) + ",0)" ); 
-            curr_xval = xval          	
+            handle.attr("transform", "translate(" + x(xval) + ",0)" );
+            curr_xval = xval
             onChange(xval, handle)
           }));
 
@@ -168,8 +168,8 @@ function sliderGen(dims) {
           .style("font-size", "10px")
 
     handle.moveToFront()
-    return {xval: function() { return curr_xval }, tick:updateTicks, init:function() { 
-        handle.attr("transform", "translate(" + x(curr_xval) + ",0)" ); 
+    return {xval: function() { return curr_xval }, tick:updateTicks, init:function() {
+        handle.attr("transform", "translate(" + x(curr_xval) + ",0)" );
         onChange(curr_xval, handle)}
     }
 
@@ -193,7 +193,7 @@ function sliderGen(dims) {
   renderSlider.change = function(f) {
     onChange = f
     return renderSlider
-  }  
+  }
 
   renderSlider.margin = function(m) {
     margin = m
@@ -204,7 +204,7 @@ function sliderGen(dims) {
     ticks = m
     return renderSlider
   }
-  
+
   renderSlider.startxval = function(m) {
     curr_xval = m
     return renderSlider
@@ -234,7 +234,7 @@ function sliderGen(dims) {
 
   renderSlider.shifty = function(_) {
   	shifty = _
-    return renderSlider  	
+    return renderSlider
   }
 
   renderSlider.showticks = function(_) {
@@ -250,9 +250,9 @@ function sliderGen(dims) {
 
 /* Generate "stick" graph */
 function stemGraphGen(graphWidth, graphHeight, n) {
-  
+
   var borderTop = 20
-  var borderLeft = 5
+  var borderLeft = -5
   var axis = [-1, 1]
   var ylabel = "$x_i^k - x_i^*$"
   var ylabelsize = "13px"
@@ -290,7 +290,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
     var valueline = d3.line()
       .x(function(d,i) { return x(i); })
       .y(function(d)   { return y(d); });
-    
+
     // Initialize the data
 
     function initData(color, r) {
@@ -304,7 +304,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
         .attr("r", r)
         .style("fill", "darkblue")
 
-      dotsdata.enter()		
+      dotsdata.enter()
         .append("line")
         .attr("x1", function(d,i) { return x(i) })
         .attr("x2", function(d,i) { return x(i) })
@@ -313,7 +313,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
         .style("stroke",color )
         .attr("opacity", 1)
         .style("stroke-width",1.5)
-      
+
       return dots;
     }
 
@@ -334,7 +334,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
     }
 
     // Add x axis
-    svg.append("g")     
+    svg.append("g")
       .attr("class", "grid")
       .attr("transform", "translate(0," + y(0) + ")")
       .call(d3.axisBottom(x)
@@ -346,10 +346,10 @@ function stemGraphGen(graphWidth, graphHeight, n) {
   }
 
   renderGraph.borderTop = function(_) {
-  	borderTop = _; 
+  	borderTop = _;
   	return renderGraph;
   }
-  
+
   renderGraph.axis = function(a) {
     axis = a;
     return renderGraph
@@ -358,20 +358,20 @@ function stemGraphGen(graphWidth, graphHeight, n) {
   renderGraph.ylabel = function(a) {
     ylabel = a;
     return renderGraph
-  }  
+  }
 
   renderGraph.radius1 = function(a) {
     r1 = a;
     return renderGraph
-  }  
+  }
 
   renderGraph.labelSize = function(s) {
-  	ylabelsize = s; 
+  	ylabelsize = s;
   	return renderGraph
   }
 
   renderGraph.numTicks = function(s) {
-  	ticks = s; 
+  	ticks = s;
   	return renderGraph
   }
 
@@ -413,7 +413,7 @@ function stackedBarchartGen(n, m) {
 		//         .style("top", (height/2) + "px")
 		//         .style("left", "-5px")
 		//         .style("transform", "rotate(270deg)")
-		//         .style("font-size", "12px")          
+		//         .style("font-size", "12px")
 		//         .text("loss")
 
 		var stack = zeros2D(n,m)
@@ -480,7 +480,7 @@ function stackedBarchartGen(n, m) {
 
 		}
 
-		graphsvg.append("g")     
+		graphsvg.append("g")
 			.attr("class", "grid")
 			.attr("transform", "translate(0," + (height+10) + ")")
 			.attr("opacity", 0.25)
@@ -488,7 +488,7 @@ function stackedBarchartGen(n, m) {
 			  .ticks(5)
 			  .tickSize(2))
 
-		graphsvg.append("g")     
+		graphsvg.append("g")
 			.attr("class", "grid")
 			.attr("transform", "translate(12,0)")
 			.attr("opacity", 0.25)
@@ -501,15 +501,15 @@ function stackedBarchartGen(n, m) {
 	}
 
   renderStackedGraph.translatex = function(_) {
-  	translatex = _; 
+  	translatex = _;
   	return renderStackedGraph;
   }
-  
+
   renderStackedGraph.translatey = function(_) {
-  	translatey = _; 
+  	translatey = _;
   	return renderStackedGraph;
   }
-  
+
   return renderStackedGraph
 }
 
@@ -553,7 +553,7 @@ function plot2dGen(X, Y, iterColor) {
         svgdata.merge(svgdata)
           .attr("cx", function (d) { return X(d[0]) })
           .attr("cy", function (d) { return Y(d[1]) })
-          .attr("r", cradius )      
+          .attr("r", cradius )
           .attr("opacity", copacity)
           .attr("fill", function(d,i) { return iterColor(i)})
         svgdata.exit().remove()
@@ -577,7 +577,7 @@ function plot2dGen(X, Y, iterColor) {
 
   plot2d.stroke = function(_) {
     strokecolor = _; return plot2d
-  }  
+  }
 
   plot2d.circleOpacity = function(_) {
     copacity = _; return plot2d
@@ -687,8 +687,8 @@ function slider2D(div, onChange,lambda1, lambdan, start) {
 	}
 
 	function changeMouse(x,y) {
-	  circle.attr("cx",x) 
-	  circle.attr("cy",y) 
+	  circle.attr("cx",x)
+	  circle.attr("cy",y)
 	  ly.attr("y1", y).attr("y2",y).attr("x1", 0).attr("x2",2*width-y)
 	  lx.attr("x1", x).attr("x2",x).attr("y1", 0).attr("y2",(x>width) ? (width - (x-width)) : width)
 	  onChange(X.invert(x),Y.invert(y))
@@ -781,8 +781,8 @@ function getStepsConvergence(Lambda, alpha) {
   })
 }
 
-/* 
-  Run Momentum the good old fashioned way - by iterating. 
+/*
+  Run Momentum the good old fashioned way - by iterating.
   > runMomentum(bananaf, [0,0], 0.00001, 0.5, 100)
 */
 function runMomentum(f, w0, alpha, beta, totalIters) {
@@ -792,7 +792,7 @@ function runMomentum(f, w0, alpha, beta, totalIters) {
   for (var i = 0; i < totalIters; i++) {
     var z = numeric.add(numeric.mul(beta, z), gx)
     var w = numeric.add(w, numeric.mul(-alpha, z))
-    fx = f(w); gx = fx[1]    
+    fx = f(w); gx = fx[1]
     if (w.every(isFinite)) {
       W.push(w); Obj.push(fx[0])
     } else{ break; }
@@ -857,7 +857,7 @@ function matSum(R,b) {
   var lambda = eR["lambda"]; fix(lambda)
   var U      = eR["E"]; fix(U)
   var bc     = new numeric.T(numeric.transpose([b]), zeros2D(b.length,1))
-  var Uinvb  = U.inv().dot(bc); fix(Uinvb)    
+  var Uinvb  = U.inv().dot(bc); fix(Uinvb)
   // console.log(numeric.prettyPrint(R))
   // console.log(numeric.prettyPrint(lambda))
   // console.log(1-numeric.norm2([lambda.y[0],lambda.x[0]]), 1-numeric.norm2([lambda.y[1],lambda.x[1]]))
@@ -890,18 +890,18 @@ function geniterMomentum(U, Lambda, b, alpha, beta) {
 
   var Ub = numeric.mul(-1,numeric.dot(U,b))
 
-  var Rmat = function f(i) { 
-    return [[ beta          , Lambda[i]          ], 
-            [ -1*alpha*beta , 1 - alpha*Lambda[i]]] 
+  var Rmat = function f(i) {
+    return [[ beta          , Lambda[i]          ],
+            [ -1*alpha*beta , 1 - alpha*Lambda[i]]]
   }
 
   var S = numeric.inv( [[1, 0], [alpha, 1]])
 
   var fcoll = []
   var maxLambda = []
-  for (var i = 0; i < b.length; i++) { 
+  for (var i = 0; i < b.length; i++) {
   	m = matSum(Rmat(i),numeric.dot(S,[Ub[i],0]))
-    fcoll.push(m.matSum) 
+    fcoll.push(m.matSum)
     maxLambda.push(m.lambda)
   }
 
@@ -922,8 +922,8 @@ function ringPathGen(radius, width, height) {
   function ringPath(p1, p2) {
 
     // Generate Paths
-    var x = -(p1[0] - p2[0])  
-        y = -(p1[1] - p2[1]) 
+    var x = -(p1[0] - p2[0])
+        y = -(p1[1] - p2[1])
         xSign = (x > 0) - (x < 0),
         ySign = (y > 0) - (y < 0),
         r = radius,
@@ -937,22 +937,22 @@ function ringPathGen(radius, width, height) {
     } else if (c < r) {
       if (Math.abs(x) > Math.abs(y)) {
         dir = xSign > 0 ? "E" : "W"
-        d = "M" + (p1[0] + xSign * b) + "," + (p1[1] + y) 
+        d = "M" + (p1[0] + xSign * b) + "," + (p1[1] + y)
           + ",L" + (p1[0] + x) + "," + (p1[1] + y)
       } else {
         dir = ySign > 0 ? "S" : "N"
-        d = "M" + (p1[0] + x) + "," + (p1[1] + ySign * b) 
+        d = "M" + (p1[0] + x) + "," + (p1[1] + ySign * b)
          + ",L" + (p1[0] + x) + "," + (p1[1] + y)
       }
     } else if (Math.abs(x) > Math.abs(y)){
       dir = xSign > 0 ? "E" : "W"
-      d = "M"  + (p1[0] + xSign * a)           + "," + (p1[1] + ySign * a) + 
-          ",L" + (p1[0] + xSign * Math.abs(y)) + "," + (p1[1] + y) + 
+      d = "M"  + (p1[0] + xSign * a)           + "," + (p1[1] + ySign * a) +
+          ",L" + (p1[0] + xSign * Math.abs(y)) + "," + (p1[1] + y) +
           "L"  + (p1[0] + x)                   + "," + (p1[1] + y);
     } else {
       dir = ySign > 0 ? "S" : "N"
-      d = "M"  + (p1[0] + xSign * a) + "," + (p1[1] + ySign * a) + 
-          ",L" + (p1[0] + x)         + "," + (p1[1] + ySign * Math.abs(x)) + 
+      d = "M"  + (p1[0] + xSign * a) + "," + (p1[1] + ySign * a) +
+          ",L" + (p1[0] + x)         + "," + (p1[1] + ySign * Math.abs(x)) +
           "L"  + (p1[0] + x)         + "," + (p1[1] + y);
     }
 
@@ -960,17 +960,17 @@ function ringPathGen(radius, width, height) {
     var left = 0
 
     // Generate Paths
-    // if (dir == "S") { top  = (p2[1] + padding); left = (p2[0] - width/2) } 
+    // if (dir == "S") { top  = (p2[1] + padding); left = (p2[0] - width/2) }
     // if (dir == "N") { top  = (p2[1] - height - padding); left = (p2[0] - width/2) }
     // if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
-    // if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }    
+    // if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }
 
     if (dir == "S") { top  = (p2[1] + height/2 + padding) - 10; left = (p2[0] - width/2) } 
     if (dir == "N") { top  = (p2[1] - padding) - 10; left = (p2[0] - width/2) }
     if (dir == "W") { top  = (p2[1] + height/4 - 10); left = (p2[0] - width - padding) }
     if (dir == "E") { top  = (p2[1] + height/4 - 10); left = (p2[0] + padding) }    
 
-    return {d:d, label:[left, top]} 
+    return {d:d, label:[left, top]}
 
   }
 
@@ -1026,7 +1026,7 @@ function sliderBarGen(barlengths) {
 	  var slider = div.append("div")
 	                 .style("position", "relative")
 
-	  var updateEverything = function(i, circ) { 
+	  var updateEverything = function(i, circ) {
 	      step.html("Step k = " + numberWithCommas(Math.floor(Math.exp(i-0.1))) )
 
 	      if (!(circ === undefined) ){
@@ -1034,15 +1034,15 @@ function sliderBarGen(barlengths) {
 	        setTM(line.node(), ctm)
 	        var barnodes = bars.nodes()
 	        for (var j = 0; j < barlengths.length; j++) {
-	          var r = d3.scaleLinear().domain([0,barlengths[j]-0.01,barlengths[j]-0.01,barlengths[j], 1/0]).range([1,1,1,0.2, 0.2])        
+	          var r = d3.scaleLinear().domain([0,barlengths[j]-0.01,barlengths[j]-0.01,barlengths[j], 1/0]).range([1,1,1,0.2, 0.2])
 	          d3.select(barnodes[j]).attr("opacity",r(i))
 	          if (i > barlengths[j]) {
 	             d3.select(barnodes[j]).style("stroke","black")
 	          } else{
-	             d3.select(barnodes[j]).style("stroke","black")          
+	             d3.select(barnodes[j]).style("stroke","black")
 	          }
 	        }
-	      } 
+	      }
 
 	      update(i)
 	    }
@@ -1083,7 +1083,7 @@ function sliderBarGen(barlengths) {
 	                 .style("top", "30px")
 	                 .append("g")
 	                 .attr("transform", "translate(50, " + (gap+60) +" )")
-	                 
+
 
 	  chart.selectAll("rect").data(barlengths)
 	     .enter()
@@ -1167,7 +1167,7 @@ function renderDraggable(svg, p1, p2, radius, text) {
               .attr("cy", p1[1])
               .attr("r", radius)
               .attr("fill", "white").attr("fill-opacity",0).attr("stroke","black").attr("stroke-width", 1)
-              .call(d3.drag().on("drag", function() { 
+              .call(d3.drag().on("drag", function() {
                   var x = d3.mouse(this)[0]
                   var y = d3.mouse(this)[1]
                   p1 = [x,y]
@@ -1180,7 +1180,7 @@ function renderDraggable(svg, p1, p2, radius, text) {
               .attr("cy", p2[1])
               .attr("r", 4)
               .attr("fill", "white").attr("fill-opacity",0).attr("stroke","black").attr("stroke-width", 0)
-              .call(d3.drag().on("drag", function() { 
+              .call(d3.drag().on("drag", function() {
                   var x = d3.mouse(this)[0]
                   var y = d3.mouse(this)[1]
                   p2 = [x,y]
@@ -1223,7 +1223,7 @@ function parseColor(input) {
 }
 
 /* Rosenbrok Function banana function */
-function bananaf(xy) {   
+function bananaf(xy) {
   var s = 3
   var x = xy[0]; var y = xy[1]*s
   var fx   = (1-x)*(1-x) + 20*(y - x*x )*(y - x*x )
@@ -1233,7 +1233,7 @@ function bananaf(xy) {
 }
 
 /* Nonsmooth variation on Rosenbrok Banana Function */
-function bananaabsf(xy) {   
+function bananaabsf(xy) {
   var x = xy[0]; var y = xy[1]
   var fx   = (1-x)*(1-x) + 20*(y - Math.abs(x) )*(y - Math.abs(x) )
   var dfx  = [-2*(1-x) - 20*((x > 0) ? 1 : -1)*(y - Math.abs(x)), 20*(y - Math.abs(x)) ]
@@ -1247,7 +1247,7 @@ function quadf(xy) {
   var A = numeric.dot(numeric.transpose(U),numeric.dot(lambda, U))
   var dfx = numeric.dot(A,xy)
   var fx  = 0.5*numeric.dot(dfx,xy)
-  return [fx, dfx] 
+  return [fx, dfx]
 }
 
 /* Identity */
@@ -1257,7 +1257,7 @@ function eyef(xy) {
   var A = numeric.dot(numeric.transpose(U),numeric.dot(lambda, U))
   var dfx = numeric.dot(A,xy)
   var fx  = 0.5*numeric.dot(dfx,xy)
-  return [fx, dfx] 
+  return [fx, dfx]
 }
 
 /* Givens rotations */
@@ -1273,19 +1273,19 @@ function round(x) {
 }
 
 /* Moves a svg element to the front */
-d3.selection.prototype.moveToFront = function() {  
+d3.selection.prototype.moveToFront = function() {
   return this.each(function(){
     this.parentNode.appendChild(this);
   });
 };
 
-d3.selection.prototype.moveToBack = function() { 
-    return this.each(function() { 
-        var firstChild = this.parentNode.firstChild; 
-        if (firstChild) { 
-            this.parentNode.insertBefore(this, firstChild); 
-        } 
-    }); 
+d3.selection.prototype.moveToBack = function() {
+    return this.each(function() {
+        var firstChild = this.parentNode.firstChild;
+        if (firstChild) {
+            this.parentNode.insertBefore(this, firstChild);
+        }
+    });
 };
 
 /*
@@ -1314,8 +1314,8 @@ function zeros2D(n,m) {
 }
 
 
-/* 
-Create Vandermonde matrix of size x and order degree 
+/*
+Create Vandermonde matrix of size x and order degree
 */
 function vandermonde(x, degree){
 	A = zeros2D(x.length,degree + 1)
@@ -1324,11 +1324,11 @@ function vandermonde(x, degree){
 	    A[i][j] = Math.pow(x[i],j)
 	  }
 	}
-	return A 
+	return A
 }
 
-/* 
-Evaluate a 1D polynomial 
+/*
+Evaluate a 1D polynomial
 w[0]x[0] + ... + w[k]x[k], k = w.length
 */
 function poly(w,x) {
@@ -1338,7 +1338,7 @@ function poly(w,x) {
 }
 
 
-/* 
+/*
 Evaluates the polynomial in range [-1.1, 1.1] at 1800 intervals
 */
 function evalPoly(w) {

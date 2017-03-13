@@ -2,7 +2,6 @@
   Render an overlay layer
 */
 
-var colorscheme = colorbrewer.Set1
 function renderOverlay(svg, nodes) {
 
   var ringPath = ringPathGen(5, 0, 0)
@@ -18,8 +17,8 @@ function renderOverlay(svg, nodes) {
     var line = svg.append("line")
       .style("stroke", "grey")
       .style("stroke-width", "1px")
-      .attr("stroke-dasharray", "5,2")
-      .attr("opacity", 0.7)    
+      .attr("stroke-dasharray", "2,2")
+      .attr("opacity", 0.7)
       .attr("x1", x1)
       .attr("y1", y1)
       .attr("x2", x1)
@@ -30,7 +29,7 @@ function renderOverlay(svg, nodes) {
                   .style("stroke", "grey")
                   .style("stroke-width", "1px")
                   .style("fill", "none")
-                  .attr("stroke-dasharray", "5,2")
+                  .attr("stroke-dasharray", "2,2")
                   .attr("opacity", 0.7)
 
     var circ = svg.append("circle")
@@ -40,7 +39,7 @@ function renderOverlay(svg, nodes) {
                    .attr("fill","none")
                    .attr("stroke", "black")
                    .attr("stroke-width", "1px")
-    
+
     n = nodes
     var updatePath =  (function(xin, yin, pathin, circin,i, aline) {
       return function(x2, y2, bold) {
@@ -48,27 +47,27 @@ function renderOverlay(svg, nodes) {
         if (!bold) {
           d3.select(nodes[i]).style("opacity", 0.1)
         } else {
-          d3.select(nodes[i]).style("opacity", 1)          
+          d3.select(nodes[i]).style("opacity", 1)
         }
-        
-        circin.attr("cx", x2).attr("cy", y2).attr("stroke-width", bold? 2 : 1).attr("stroke", colorscheme[5][i])
+
+        circin.attr("cx", x2).attr("cy", y2).attr("stroke-width", bold? 2 : 1).attr("stroke", "rgb(255, 102, 0)")
         if (i < 2) {
           pathin.attr("d", ringPath([x2, y2],[xin, yin]).d)
                 .attr("opacity", bold? 1 : 0.7)
                 .style("stroke-width", bold? 1:1)
-                .style("stroke", colorscheme[5][i])
+                .style("stroke", "rgb(150, 150, 150)")
         } else {
           pathin.attr("d", ringPath([xin, yin],[x2, y2]).d)
                 .attr("opacity", bold? 1 : 0.7)
                 .style("stroke-width", bold? 1:1)
-                .style("stroke", colorscheme[5][i])
+                .style("stroke", "rgb(150, 150, 150)")
         }
-        aline.attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 1:1).style("stroke", colorscheme[5][i]) 
+        aline.attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 1:1).style("stroke", "rgb(150, 150, 150)")
       }
     })(x1, y1, path, circ,i,line)
 
     updates.push(updatePath)
-  } 
+  }
 
   return updates
 }
@@ -100,7 +99,7 @@ function renderTaxonomy(div) {
     var lambda = [1,100]
     var iter = geniterMomentum([[1, 0],[0, 1]], lambda, lambda, alpha, beta).iter
     // run for 500 iterations
-    for (var i = 0; i <= num_iters; i++) { 
+    for (var i = 0; i <= num_iters; i++) {
       if (xy == 1) {  m.push(numeric.add(iter(i)[xy],-1)) }
       if (xy == 0) {  m.push(numeric.mul(iter(i)[xy],0.005)) }
     }
@@ -112,7 +111,7 @@ function renderTaxonomy(div) {
      .style("margin-right","auto")
      .style("position", "relative")
      .style("border-radius", "5px")
-     
+
   var divs = []
   function genPhase(i,t,l, range,title,text) {
 
@@ -122,7 +121,7 @@ function renderTaxonomy(div) {
                 .style("left", l +"px")
                 .style("width", "180px")
                 .style("height", "300px")
-                .style("border-top", "2px solid " + colorscheme[5][i])
+                .style("border-top", "1px solid grey")
 
     divs.push(outdiv.node())
 
@@ -137,21 +136,19 @@ function renderTaxonomy(div) {
     outdiv.append("span")
       .style("position", "absolute")
       .style("top","5px")
-      .style("left", "10px")
       .style("width", "150px")
       .style("height", "130px")
       .style("font-size", "13px")
       .attr("class", "figtext")
-      .style("text-align", "left")                
+      .style("text-align", "left")
       .html("<b>"+title+"</b>")
 
     outdiv.append("figcaption")
       .style("position", "absolute")
       .style("top","160px")
-      .style("left", "10px")
       .style("width", "160px")
       .style("height", "130px")
-      .style("text-align", "left")                
+      .style("text-align", "left")
       .html(text)
 
 
@@ -194,7 +191,7 @@ function renderTaxonomy(div) {
 /*
   Render 2D slider thingy to the right.
 */
-function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD, 
+function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
                            defaults) {
 
   var slider2Dtop = 10           // Margin at top
@@ -204,7 +201,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
   function render2DSlider(divin){
 
     function getEigs(alpha, beta,lambda) {
-      var E = [[ beta          , lambda          ], 
+      var E = [[ beta          , lambda          ],
               [ -1*alpha*beta , 1 - alpha*lambda]]
       return numeric.eig(E)["lambda"]
     }
@@ -238,13 +235,13 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
           var pt = d3.mouse(this)
 
           var alpha = Math.max(0,xalpha.invert(pt[0]))
-          var beta  = ybeta.invert(pt[1])  	
+          var beta  = ybeta.invert(pt[1])
 
           var xy = convert(alpha, beta)
 
-          xAxis.select("circle").attr("cx", pt[0])      
+          xAxis.select("circle").attr("cx", pt[0])
           yAxis.select("circle").attr("cy", pt[1])
-          
+
           var e = getEigs(alpha,beta, 100)
           var n1 = 0
           var n2 = 0
@@ -255,9 +252,9 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
             n2 = Math.abs(e.x[1])
             regime = "real"
           } else {
-            n1 = numeric.norm2(e.x[0], e.y[0])    
-            n2 = numeric.norm2(e.x[1], e.y[1]) 
-            regime = "complex"               
+            n1 = numeric.norm2(e.x[0], e.y[0])
+            n2 = numeric.norm2(e.x[1], e.y[1])
+            regime = "complex"
           }
 
           if (Math.max(n1,n2) < 1.0001) {
@@ -332,14 +329,14 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
         .node();
 
     var convert = function(alpha, beta) {
-      return [xalpha(alpha) + canvas.offsetLeft + divin.node().offsetLeft, 
+      return [xalpha(alpha) + canvas.offsetLeft + divin.node().offsetLeft,
               ybeta(beta) + canvas.offsetTop  + divin.node().offsetTop]
     }
 
-    renderHeatmap(canvas, function(i,j) { 
+    renderHeatmap(canvas, function(i,j) {
       var e = getEigs(4*i,1-j, 1)
-      return Math.max(e.getRow(0).norm2(), e.getRow(1).norm2()); 
-    }, d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.Spectral[5].concat(["black"])))
+      return Math.max(e.getRow(0).norm2(), e.getRow(1).norm2());
+    }, d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.YlGnBu[5].concat(["black"])))
 
     // /* Axis */
     var canvasaxis = divin.append("svg").style("z-index", 0)
@@ -352,7 +349,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
     var xAxis = canvasaxis.append("g")
     xAxis.append("circle").attr("fill", "black").attr("r", 2)
     xAxis.attr("class", "grid figtext")
-      .attr("transform", "translate(51,"+(slider2D_size + 25) +")")  
+      .attr("transform", "translate(51,"+(slider2D_size + 25) +")")
       .call(d3.axisBottom(d3.scaleLinear().domain([0,4]).range([0, 2*slider2D_size]))
           .ticks(2)
           .tickSize(4))

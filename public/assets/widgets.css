@@ -209,13 +209,26 @@
   font-weight: bold;
 }
 
-
 .figtext2{
   font-size:13px;
   line-height:18px;
   font-family:Helvetica;      
   text-align:left;
   color:gray;  
+}
+
+
+.annotatetext{
+  font-size:12px;
+  line-height:18px;
+  font-family:Helvetica;      
+  color:gray;
+}
+
+.annotatetext path{ 
+    stroke: black;
+    stroke-width:1;
+    fill: none;
 }
 
 

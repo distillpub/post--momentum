@@ -41,11 +41,12 @@
     .style("top", "0px")
     .style("left","0px")
     .style("background","white")
-    .style("border", "1px dashed #DDD")
+    .style("border", "0px dashed #DDD")
     .style("opacity", 1)
 
     return function(callback) { loadingScreen
                                   .remove() }
+
   }
 
 </script>
@@ -175,11 +176,11 @@
   The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
   </p> -->
   <p>
-  Consider the problem of minimizing a smooth function $f$. At each point, we will assume access to both the function's value $f(w)$ (if the iterate is bad) and its gradient $\nabla f(w)$ (where the iterate can improve). To find a better point, it seems reasonable to make a small step in the direction of the gradient:
+  Consider the problem of minimizing a smooth function $f$. At each point, we will assume access to both the function's value $f(w)$ and its gradient $\nabla f(w)$. To find a better point, it seems reasonable to make a small step in the direction of the gradient:
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  This process of refinement, gradient descent, and comes a few satisfying guarantees. For a step size small enough, it is makes an improvement at every iteration ($f(w^{k+1}) < f(w)$). It always converges (to a local minimum), and under a few weak curvature conditions it can even go there at an exponential rate.
+  This process of refinement, gradient descent, and comes a few satisfying guarantees. For a step size small enough, it is makes an improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even go there at an exponential rate.
   </p>
 
   <p>
@@ -490,7 +491,9 @@
   to our data. This model, though nonlinear in the input ($\xi$) is linear in the weights, i.e. we can write the model as a linear combination of monomials, like:
   </p>
 
-  <figure id = "poly0" style="width:940px; height:165px"></figure>
+  <figure id = "poly0f" style="width:940px; height:200px">
+    <div id = "poly0" style="width:940px; height:185px; position:absolute; top:20px"></div>
+  </figure>
   <script src="assets/eigensum.js"></script>
   <script>
   deleteQueue.push(renderLoading(d3.select("#poly0")))
@@ -523,6 +526,22 @@
     }
 
     var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit);
+
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 37,6 A 14.124 14.124 0 0 0 26.000001907348633,32.000003814697266",
+        "text": "scrub values",
+        "textOffset": [
+          40,
+          10
+        ]
+      }
+    ]
+
+    drawAnnotations(d3.select("#poly0f"), annotations)
 
     callback(null);
   });
@@ -598,18 +617,16 @@
     annotate.append("figcaption")
     .style("width", 200 + "px")
     .style("height", 150 + "px")
-    .style("left", "30px")
+    .style("left", "10px")
     .style("position", "absolute")
-    .style("border-top", "1px solid black")
       .style("padding", "10px")
     .html("The first 2 eigenfeatures, the largest components, captures variations between the clusters. ")
 
     annotate.append("figcaption")
     .style("width", 200 + "px")
     .style("height", 150 + "px")
-    .style("left", "300px")
+    .style("left", "290px")
     .style("position", "absolute")
-    .style("border-top", "1px solid black")
     .style("padding", "10px")
     .html("Next there are smooth variations within clusters, peaks within clusters,")
 
@@ -618,20 +635,8 @@
     .style("height", 150 + "px")
     .style("left", 300+270+"px")
     .style("position", "absolute")
-    .style("border-top", "1px solid black")
     .style("padding", "10px")
     .html("Finally, jagged polynomials which differ wildly on neighboring points. ");
-
-    var figwidth = d3.select("#poly1").style("width")
-    var figheight = d3.select("#poly1").style("height")
-    var svg = d3.select("#poly1")
-                        .append("svg")
-                        .style("width", figwidth)
-                        .style("height", figheight)
-                        .style("position", "absolute")
-                        .style("top","0px")
-                        .style("left","0px")
-                        .style("pointer-events","none")
 
     // Swoopy Annotator
     var annotations = [
@@ -644,30 +649,9 @@
         799,
         214
       ]
-    }
-    ]
+    }]
 
-    var swoopy = d3.swoopyDrag()
-      .x(function(d){ return (d.x) })
-      .y(function(d){ return (d.y) })
-        .draggable(false)
-        .annotations(annotations)
-
-    var svg = d3.select("#poly1").selectAll("svg")
-    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
-
-    svg.append('marker')
-        .attr('id', 'arrow')
-        .attr('viewBox', '-10 -10 20 20')
-        .attr('markerWidth', 20)
-        .attr('markerHeight', 20)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-        .attr("transform", "scale(0.5)")
-
-    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
-
+    drawAnnotations(eigensum, annotations)
     callback(null);
   });
 
@@ -677,7 +661,7 @@
   </p>
 
   <p>
-  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Lets see how this plays out in gradient descent.
+  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
   </p>
 
   <figure id = "poly2" style="width:940px; height:360px"></figure>
@@ -733,22 +717,39 @@
 
     sliderControl.slidera.init()
 
-    var figwidth = d3.select("#poly2").style("width")
-    var figheight = d3.select("#poly2").style("height")
-    var svgannotate = d3.select("#poly2")
-                        .append("svg")
-                        .style("width", figwidth)
-                        .style("height", figheight)
-                        .style("position", "absolute")
-                        .style("top","0px")
-                        .style("left","0px")
-                        .style("pointer-events","none")
+    // var figwidth = d3.select("#poly2").style("width")
+    // var figheight = d3.select("#poly2").style("height")
+    // var svgannotate = d3.select("#poly2")
+    //                     .append("svg")
+    //                     .style("width", figwidth)
+    //                     .style("height", figheight)
+    //                     .style("position", "absolute")
+    //                     .style("top","0px")
+    //                     .style("left","0px")
+    //                     .style("pointer-events","none")
 
-    renderDraggable(svgannotate,
-                    [139.88888549804688, 243.77951049804688],
-                    [121.88888549804688, 200.77951049804688],
-                    5,
-                    "We begin at x=w=0");
+    // renderDraggable(svgannotate,
+    //                 [139.88888549804688, 243.77951049804688],
+    //                 [121.88888549804688, 200.77951049804688],
+    //                 5,
+    //                 "We begin at x=w=0");
+
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 74,202 A 52.274 52.274 0 0 0 134,245",
+        "text": "We begin at x=w=0",
+        "textOffset": [
+          21,
+          198
+        ]
+      }
+    ]
+
+    drawAnnotations(d3.select("#poly2"), annotations)
+
 
     callback(null);
   });
@@ -1032,70 +1033,33 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
-  <figure id = "phasediagram0" style="position:relative; width:550px; height:720px;margin-left:auto; margin-right:auto">
-  <div id = "phasediagram0div"; style="position:absolute; left:80px; top:10px">
-  <figcaption style="width:200px; top:190px; position:absolute">
-  $$
-  \begin{aligned}
-  z_i^{k+1}&=z_i^{k}\\
-  w_i^{k+1}&=w_i^{k}- 0.01 z_i^{k+1},
-  \end{aligned}
-  $$
-  When $\lambda_i = 0$ and $\beta=1$, this is Newton's first law. An object in motion stays in motion. The object moves at constant speed.
-  </figcaption>
-
-  <figcaption style="width:200px; left:260px; top:190px; position:absolute">
-  $$
-  \begin{aligned}
-  z^{k+1}&= 0.95 z^{k}\\
-  w^{k+1}&=w^{k}- 0.01 z^{k+1},
-  \end{aligned}
-  $$
-  With a damping coefficient $\beta$ less than 1, the particle decelerates. $\beta$ is the amount of kinetic energy the particle loses at each tick.   </figcaption>
-
-
-  <figcaption style="width:200px; top:530px; position:absolute">
-  $$
-  \begin{aligned}
-  z_i^{k+1}&=z_i^{k}+ x_i^k\\
-  w_i^{k+1}&=w_i^{k}- 0.01 z_i^{k+1},
-  \end{aligned}
-  $$
-
-  Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$. The object moves in a periodic trajectory. </figcaption>
-
-
-  <figcaption style="width:200px; left:260px; top:530px; position:absolute">
-  $$
-  \begin{aligned}
-  z_i^{k+1}&= 0.95 z_i^{k}+ x_i^k\\
-  w_i^{k+1}&=w_i^{k}- 0.01 z_i^{k+1},
-  \end{aligned}
-  $$
-
-  Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium. </figcaption>
-  <figcaption style="width:220px; left:80px; top:-13px; position:absolute">
-  $\beta = 1$
-  </figcaption>
-
-  <figcaption style="width:220px; left:320px; top:-13px; position:absolute">
-  $\beta = 0.95$
-  </figcaption>
-
-  <figcaption style="width:220px; left:-70px; top:88px; position:absolute">
-  $\lambda_i = 0$
-  </figcaption>
-
-  <figcaption style="width:220px; left:-70px; top:440px; position:absolute">
-  $\lambda_i = 1$
-  </figcaption>
-  </div>
+  <figure id = "phasediagram0" style="position:relative; width:970px; height:480px;margin-left:auto; margin-right:auto">
+  <div id = "phasediagram0div"; style="position:absolute; left:80px; top:10px"></div>
   </figure>
   <script>
     deleteQueue.push(renderLoading(d3.select("#phasediagram0")))
     renderQueue.push(function(callback) {
       phaseDiagram_dec(d3.select("#phasediagram0div"))
+      renderMath(d3.select("#phasediagram0div").node())
+
+      var figure = d3.select("#phasediagram0")
+      var figwidth = figure.style("width")
+      var figheight = figure.style("height")
+
+      var svg = figure.append("svg")
+                .style("width", figwidth)
+                .style("height", figheight)
+                .style("position", "absolute")
+                .style("top","0px")
+                .style("left","0px")
+
+      renderDraggable(svg, [216, 116], [240, 176], 4, "constant speed").attr("opacity", 0.5)
+      renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
+      renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)      
+      renderDraggable(svg, [181, 266], [150, 326], 4, "particle returns slowly").attr("opacity", 0.5)
+      renderDraggable(svg, [152, 437], [224, 470], 4, "particle returns quickly").attr("opacity", 0.5)
       callback(null);
+
     });
   </script>
   <p>
@@ -1130,11 +1094,11 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   -\alpha\beta & 1-\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   $$
-  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, but let's take it as a given that the critical point is
+  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, but they work out to be
   $$
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   $$
-  Plug this in, and you get
+  Plug this into the convergence rate, and you get
   </p>
   <figure id = "conv_rate_comparisons" style="width:530px; height:19px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
@@ -1161,19 +1125,19 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   renderMath(document.getElementById("conv_rate_comparisons"))
   </script>
   <p>
-  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. For ill conditioned problems, set $\beta$ as close to $1$ as you can, and make the $\alpha$ as high as possible. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
+  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. When $\lambda_1/\lambda_n$ is small, the optimal $\alpha$ is approximately twice that of gradient descent, and the momentum term is close to $1$. So set $\beta$ as close to $1$ as you can, and then find the highest $\alpha$ which still converges. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
 
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:140px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:5px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:120px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
   <div id = "sliderStep2D" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
-  <div id = "milestonesMomentum"></div>
+  <div id = "milestonesMomentum" style="position:relative; left:15px"></div>
   </figure>
   <script>
     deleteQueue.push(renderLoading(d3.select("#milestonesMomentumFig")))
@@ -1282,7 +1246,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{cases}
   $$
 
-  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious.
+  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. Fortunately, momentum comes speeds things up significantly.
   </p>
   <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
@@ -1311,25 +1275,19 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     });
   </script>
   <p>
-  Momentum reinforces these local corrections, sometimes overshooting the target, but creates a distinctive wavefront which spreads much faster across the graph.
-  </p>
-  <h3>Colorization on General Graphs</h3>
-  <p>
-  We can generalize the colorization problem to one on general graphs. The smoother, which defines the couplings between vertices, dominates the behavior of the function, can be defined on any graph $G=(V,E)$
+  We can write the colorization problem in an equivalant, vectorized way:
   $$
-  w \mapsto \frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2 = \frac{1}{2}w^T L_G w.
+  \text{minimize}\qquad \frac{1}{2} x^T \left( \sum_{i\in D} e_i e_i^T + L_G \right) x - e_i^T x
   $$
-  The matrix $L_G$ is the Laplacian matrix
+  The smoother $L_G$ is the Laplacian matrix
   <dt-fn>This can be written explicitly as
   $$
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   $$
-  </dt-fn>.
-  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$.
+  </dt-fn>, and the colorizer is a small low rank correction to it. We will ignore the colorizer for now, as the behavior of the quadratic is dominated by the Laplacian, $L_G$. 
   </p>
-
   <p>
-  One fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvector is always 0), is directly connected to the connectivity of the graph.
+  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. One fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
   </p>
   <figure id="laplacianConditioning" style="width:900px; height:265px">
   <svg width="900" height="300" id="graph"></svg>
@@ -1826,25 +1784,30 @@ renderMath(document.body)
 
 <!-- Figure render queue -->
 <script>
-  setTimeout(function() {
-    var q = d3.queue(1);
 
-    d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-      q.defer(function(callback) { fn[1](callback); fn[0](callback) });
-      q.defer(function(callback) {
-        setTimeout(function() {
-          callback(null);
-        }, 50);
-      });
-    });
-    q.await(function(error) {
-      if (error) {
-        console.error("Render error.")
-      } else {
-        console.log("Render done.")
-      }
-    });
-  }, 50);
+for (var i = 0; i < renderQueue.length; i++) {
+  renderQueue[i](function() {})
+  deleteQueue[i](function() {})
+}
+  // setTimeout(function() {
+  //   var q = d3.queue(1);
+
+  //   d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
+  //     q.defer(function(callback) { fn[1](callback); fn[0](callback) });
+  //     q.defer(function(callback) {
+  //       setTimeout(function() {
+  //         callback(null);
+  //       }, 50);
+  //     });
+  //   });
+  //   q.await(function(error) {
+  //     if (error) {
+  //       console.error("Render error.")
+  //     } else {
+  //       console.log("Render done.")
+  //     }
+  //   });
+  // }, 50);
 
 // DEBUG
 // renderQueue.forEach( function (fn) { fn( function() {}) } )

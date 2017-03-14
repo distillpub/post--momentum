@@ -1,6 +1,6 @@
 function phaseDiagram_dec(divin) {
 
-  var totalIters = 150
+  var totalIters = 250
   var default_underdamp = 0.97
   var default_overdamp = 0.05
 
@@ -38,8 +38,8 @@ function phaseDiagram_dec(divin) {
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
 
-  var w = 170
-  var h = 170
+  var w = 110
+  var h = 110
   var a = 1.0
 
   var axis = [[-a*5,a*5],[-a,a]]
@@ -58,46 +58,136 @@ function phaseDiagram_dec(divin) {
        .style("pointer-events", "none")
 
   // Draw the three phases
-  for (var i = 0; i < 4; i ++ ) {
 
-    var div = divin.append("div")
+  var lambdas = [0, 0.011, 0.25]
+  var betas = [1, 0.985, 0.95, 0.8, 0]
+
+  for (var i = 0; i < 5; i ++ ) {
+    divin.append("figcaption")
       .style("position","absolute")
-      .style("width",w + "px")
+      .style("width",(w-10) + "px")
+      .style("height",20 + "px")
+      .style("left", 70+135*i + "px")
+      .style("top", 0 + "px")
+      .attr("class", "figtext")
+      .style("border-bottom", "1px solid black" )
+      .html((i != 0 ? "" : "β = ") + betas[i])
+  }
+
+  for (var j = 0; j < 3; j ++ ) {
+    divin.append("figcaption")
+      .style("position","absolute")
+      .style("width",35 + "px")
       .style("height",h + "px")
-      .style("left", [15, 265, 15, 265][i] + "px")
-      .style("top", [10, 10, 360, 360][i] + "px")
+      .style("left", 0 + "px")
+      .style("top", 50+150*j + "px")
+      .attr("class", "figtext")      
+      .style("border-right", "1px solid black" )
+      .html( (j != 0 ? "" : "<br>λ = ") + lambdas[j])
+  }
 
-    var svg = div.append("svg")
-                .style("position", 'absolute')
-                .style("left", 0)
-                .style("top", "0px")
-                .style("width", w)
-                .style("height", h)
-      .style("border-radius", "5px")
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",35 + "px")
+    .style("height",h + "px")
+    .style("left", 94 + "px")
+    .style("top", 27 + "px")
+    .html( "Velocity")
 
-    svg.append("g").attr("class", "grid")
-      .attr("transform", "translate(0," + h/2 +")")
-      .attr("opacity", 0.5)
-      .call(d3.axisBottom(X).ticks(0).tickSize(4))
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",100 + "px")
+    .style("height",h + "px")
+    .style("left", 70 + "px")
+    .style("top", -17 + "px")
+    .attr("class", "figtext")
+    .html( "Damping")
 
-    svg.append("g").attr("class", "grid")
-      .attr("transform", "translate(" + w/2 + ",0)")
-      .attr("opacity", 0.5)      
-      .call(d3.axisLeft(X).ticks(0).tickSize(4))
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",100 + "px")
+    .style("height",h + "px")
+    .style("left", -55 + "px")
+    .style("top", 50 + "px")
+    .attr("class", "figtext")
+    .html( "External Force")
 
-    var colorRange = d3.scaleLinear().domain([0, totalIters/16, totalIters/2]).range(colorbrewer.OrRd[3])
-    
-    var Xaxis = d3.scaleLinear().domain(axis[0]).range([0, w])
-    var Yaxis = d3.scaleLinear().domain(axis[1]).range([0, h])
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",35 + "px")
+    .style("height",h + "px")
+    .style("left", 80 + "px")
+    .style("top", 56 + "px")
+    .style("transform","rotate(-90deg)")
+    .html( "Position")
 
-    var update = plot2dGen(Xaxis, Yaxis, colorRange)
-                  .pathOpacity(1)
-                  .pathWidth(1.5)
-                  .circleRadius(1.5) 
-                  .stroke(colorbrewer.OrRd[3][0])(svg)
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",160 + "px")
+    .style("height",h + "px")
+    .style("left", 730 + "px")
+    .style("top", 40 + "px")
+    .style("font-size", "12px")
+    .html("When $\\lambda_i = 0$ and $\\beta=1$, the object moves at constant speed. As $\\beta$ goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
 
-    update(getTrace(0.02, [1,0.97,1,0.97][i], [0,0,0.25,0.25][i]))
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",160 + "px")
+    .style("height",h + "px")
+    .style("left", 730 + "px")
+    .style("top", (150 + 45) + "px")
+    .style("font-size", "12px")
+    .html("Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$, and moves in a periodic trajectory.")
 
+  divin.append("figcaption")
+    .style("position","absolute")
+    .style("width",160 + "px")
+    .style("height",h + "px")
+    .style("left", 730 + "px")
+    .style("top", (150*2 + 50) + "px")
+    .style("font-size", "12px")
+    .html("Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
+
+  for (var i = 0; i < 5; i ++ ) {
+    for (var j = 0; j < 3; j ++) {
+      var div = divin.append("div")
+        .style("position","absolute")
+        .style("width", w + "px")
+        .style("height",h + "px")
+        .style("left", 65+135*i + "px")
+        .style("top", 50+150*j + "px")
+
+      var svg = div.append("svg")
+                  .style("position", 'absolute')
+                  .style("left", 0)
+                  .style("top", "0px")
+                  .style("width", w)
+                  .style("height", h)
+        .style("border-radius", "5px")
+
+      svg.append("g").attr("class", "grid")
+        .attr("transform", "translate(0," + h/2 +")")
+        .attr("opacity", 0.2)
+        .call(d3.axisBottom(X).ticks(0).tickSize(0))
+
+      svg.append("g").attr("class", "grid")
+        .attr("transform", "translate(" + w/2 + ",0)")
+        .attr("opacity", 0.2)      
+        .call(d3.axisLeft(X).ticks(0).tickSize(0))
+
+      var colorRange = d3.scaleLinear().domain([0, 10, 50, totalIters]).range(colorbrewer.OrRd[4])
+      
+      var Xaxis = d3.scaleLinear().domain(axis[0]).range([0, w])
+      var Yaxis = d3.scaleLinear().domain(axis[1]).range([0, h])
+
+      var update = plot2dGen(Xaxis, Yaxis, colorRange)
+                    .pathOpacity(1)
+                    .pathWidth(0.5)
+                    .circleRadius(1) 
+                    .stroke(colorbrewer.OrRd[5][2])(svg)
+
+      update(getTrace(0.02, betas[i], lambdas[j]))
+    }
   }
 
 

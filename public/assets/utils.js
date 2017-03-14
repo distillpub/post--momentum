@@ -965,10 +965,10 @@ function ringPathGen(radius, width, height) {
     // if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
     // if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }
 
-    if (dir == "S") { top  = (p2[1] + height/2 + padding) - 10; left = (p2[0] - width/2) } 
-    if (dir == "N") { top  = (p2[1] - padding) - 10; left = (p2[0] - width/2) }
-    if (dir == "W") { top  = (p2[1] + height/4 - 10); left = (p2[0] - width - padding) }
-    if (dir == "E") { top  = (p2[1] + height/4 - 10); left = (p2[0] + padding) }    
+    if (dir == "S") { top  = (p2[1] + height/2 + padding); left = (p2[0] - width/2) } 
+    if (dir == "N") { top  = (p2[1] - padding); left = (p2[0] - width/2) }
+    if (dir == "W") { top  = (p2[1] + height/4); left = (p2[0] - width - padding) }
+    if (dir == "E") { top  = (p2[1] + height/4); left = (p2[0] + padding) }    
 
     return {d:d, label:[left, top]}
 
@@ -1050,7 +1050,7 @@ function sliderBarGen(barlengths) {
 	  var slidera = sliderGen([940, 60])
 	    .ticks([0,maxX])
 	    .ticktitles(function(d) {return d})
-	    .cRadius(5)
+	    .cRadius(7)
 	    .startxval(4)
 	    .shifty(3)
 	    .margin({right: 160, left: 140})
@@ -1174,7 +1174,9 @@ function renderDraggable(svg, p1, p2, radius, text) {
                   var d = ringPath(p1, p2)
                   path.attr("d", d.d)
                   circlePointer.attr("cx",x).attr("cy",y)
+                  console.log(p1, p2)                  
               }));
+
   var circleDragger = svg.append("circle")
               .attr("cx", p2[0])
               .attr("cy", p2[1])
@@ -1188,6 +1190,7 @@ function renderDraggable(svg, p1, p2, radius, text) {
                   path.attr("d", d.d)
                   label.attr("transform", "translate(" + d.label[0] + "," + d.label[1]  + ")")
                   circleDragger.attr("cx",x).attr("cy",y)
+                  console.log(p1, p2)
               }));
 
   var label = svg.append("text")
@@ -1401,4 +1404,39 @@ function numberWithCommas(x) {
     var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return parts.join(".");
+}
+
+function drawAnnotations(figure, annotations) {
+
+    var figwidth = figure.style("width")
+    var figheight = figure.style("height")
+
+    var svg = figure.append("svg")
+                .style("width", figwidth)
+                .style("height", figheight)
+                .style("position", "absolute")
+                .style("top","0px")
+                .style("left","0px")
+                .style("pointer-events","none")
+
+    var swoopy = d3.swoopyDrag()
+      .x(function(d){ return (d.x) })
+      .y(function(d){ return (d.y) })
+        .draggable(false)
+        .annotations(annotations)
+
+    var swoopySel = svg.append("g").attr("class", "annotatetext").call(swoopy)
+
+    svg.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '-10 -10 20 20')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 20)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+        .attr("transform", "scale(0.5)")
+
+    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+
 }

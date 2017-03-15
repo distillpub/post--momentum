@@ -101,7 +101,7 @@ function genIterDiagram(f, xstar, axis) {
       svg.append("path").attr("d", pxstar.d).attr("stroke","#3f5b75").attr("stroke-width",1).attr("fill","none")
       svg.append("text")
         .attr("class","figtext")
-        .attr("transform", "translate(" + pxstar.label[0] + "," + (pxstar.label[1]+10) + ")" )
+        .attr("transform", "translate(" + pxstar.label[0] + "," + (pxstar.label[1]) + ")" )
         .html("Optimum")
     }
 
@@ -113,7 +113,7 @@ function genIterDiagram(f, xstar, axis) {
       var solpath = svg.append("path").attr("d", pxsol.d).attr("stroke",strokeColor).attr("stroke-width",1).attr("fill","none")
       var sollabel = svg.append("text")
                       .attr("class","figtext")
-                      .attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+                      .attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]) + ")" )
                       .html("Solution")
     }
     function updateSol(x,y) {
@@ -121,7 +121,7 @@ function genIterDiagram(f, xstar, axis) {
         var pxsol = ringPathGen(7,50,14)([X(x), Y(y)], [X(x), Y(y) + 15])
         solcirc.attr("cx", X(x)).attr("cy", Y(y))
         solpath.attr("d", pxsol.d)
-        sollabel.attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]+10) + ")" )
+        sollabel.attr("transform", "translate(" + pxsol.label[0] + "," + (pxsol.label[1]) + ")" )
       }
     }
 

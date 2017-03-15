@@ -21,64 +21,36 @@
   <dt-article class="centered">
   <p>
   Each row is a single iterate down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
+  \text{minimize}\qquad \frac{1}{2} x^T \left( \sum_{i\in D} e_i e_i^T + L_G \right) x - e_i^T x
   </p>
 
-  <figure style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure style="width:550px; height:110px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
   <div style="position:relative; top:-35px">
 
-  <span style="position:absolute; left:20px; top:0px">
-  $$y_{i}^{k+1}$$
+  <span style="position:absolute; left:0px; top:10px">
+  $$\text{minimize}$$
   </span>
 
-  <span style="position:absolute; left:160px; top:0px">
-  $$=$$
+  <figcaption style="position:absolute; left:150px; top:105px; width:140px;">
+  The <b>smoother</b>'s quadratic form is the <b>Laplacian</b>
+  </figcaption>
+
+  <span style="position:absolute; left:350px; top:0px">
+  $$\frac{1}{2}\sum_{i\in D}\left(x^{T}e_{i}e_{i}^{T}x-e_{i}^{T}x\right)$$
   </span>
 
 
-  <span style="position:absolute;left: 360px;top:0px;">
+  <span style="position:absolute; left:285px; top:10px">
   $$+$$
   </span>
 
-  <span style="position:absolute; left:410px; top:0px">
-  $$\lambda_{i}x_{i}^{k}$$
+  <span style="position:absolute; left:150px; top:0px">
+  $$\frac{1}{2}x^{T}L_{G}x$$
   </span>
 
-  <figcaption style="position:absolute;left:410px;top: 60px;width:150px;">
-  and perturbed by an external force field
-  </figcaption>
-
-  <figcaption style="position:absolute;left:20px;top: 60px;width:100px;">
-  We can think of $y_i^k$ as <b>velocity</b>
-  </figcaption>
-
-  <span style="position:absolute; left:200px; top:0px">
-  $$\beta y_{i}^{k}$$
-  </span>
-
-  <figcaption style="position:absolute;left:200px;top: 60px;width:150px;">
-  which is dampened at each step
-  </figcaption>
-
-
-  <span style="position:absolute;left: 20px;top: 100px;">
-  $$x_i^{k+1}$$
-  </span>
-
-  <span style="position:absolute;left:160px;top: 100px;">
-  $$=$$
-  </span>
-
-  <span style="position:absolute;left:200px;top: 100px;">
-  $$x_i^k - \alpha y_i^{k+1}$$
-  </span>
-
-  <figcaption style="position:absolute;left:20px;top:155px;width:120px;">
-  And $x$ is our particle's <b>position</b>
-  </figcaption>
-
-  <figcaption style="position:absolute;left:200px;top: 155px;width:300px;">
-  which is moved at each step by a small amount in the direction of the velocity $y^{k+1}_i$.
+  <figcaption style="position:absolute; left: 350px; top: 105px;width:250px;">
+  And the colorizer is a low rank correction with a linear term.
   </figcaption>
 
 

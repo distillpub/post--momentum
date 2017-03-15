@@ -176,19 +176,19 @@
   The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
   </p> -->
   <p>
-  Consider the problem of minimizing a smooth function $f$. At each point, we will assume access to both the function's value $f(w)$ and its gradient $\nabla f(w)$. To find a better point, it seems reasonable to make a small step in the direction of the gradient:
+  If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. Should you keep iterating, and hope for the best?
+  </p>
+  <h2>Why Gradient Descent Fails</h2>
+  <p>
+  Lets face it, gradient descent doesn't work quite as advertised. The iteration has many virtues. It is simple - when optimizing a smooth function $f$, we simply make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  This process of refinement, gradient descent, and comes a few satisfying guarantees. For a step size small enough, it is makes an improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even go there at an exponential rate.
+  For a step size small enough, it is makes a steady, monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even go there at an exponential rate.
   </p>
 
   <p>
-  But for all its virtues, speed is not one of them. The exponential decrease, though appealing in theory, can often be infuriatingly small. And though the iterates often begin with a large, impressive decrease in the stepsize, things often slow down with increasing $k$, grinding to a crawl while still far from the optimum.
-  </p>
-
-  <p>
-  The problem may be the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  But for all its advantages, speed is not one of them. The exponential decrease, though appealing in theory, can often be infuriatingly small. The problem may be the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
 
@@ -444,12 +444,12 @@
 
 <hr>
 
-  <h3>Example - Linear Regression</h3>
+  <h3>Example - Polynomial Regression</h3>
   <p>
-  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. Lets take apply this understanding on a few, simple examples.
+  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. Curiously, these directions often have meaning - and gives us an interesting perspective on the path an iterate takes to the minimum. 
   </p>
 
-  <p>
+<!--   <p>
   Linear Regression, conveniently a quadratic objective, provides a cartoon we need for understanding pathological curvature in deep learning. Let's do a quick refresher. In Linear Regression we fit $n$ features (the components of $z_i$) to observations $d_i$. Assume there are $m$ data points, stacked to form matrix $Z$. Then the optimization problem we're solving is
 
   $$
@@ -482,13 +482,16 @@
   <h4> Example: Polynomial Regression</h4>
 
   <p>
-  Lets understand this phenomena in the quadratic model. Consider polynomial regression. Given 1D data, $\xi_i$, we wish to fit the model
+  Lets understand this phenomena in the quadratic model. 
+  </p> -->
+  <p>
+  Given 1D data, $\xi_i$, our problem is to fit the model
 
   $$
 \text{model}(\xi)=w_{1}p_{1}(\xi)+\cdots+w_{n}p_{n}(\xi)\qquad p_{i}=\xi\mapsto\xi^{i-1}
   $$
 
-  to our data. This model, though nonlinear in the input ($\xi$) is linear in the weights, i.e. we can write the model as a linear combination of monomials, like:
+  to our data. This model, though nonlinear in the input $\xi$ is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
   </p>
 
   <figure id = "poly0f" style="width:940px; height:200px">
@@ -661,7 +664,7 @@
   </p>
 
   <p>
-  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! This property is easily exploited. Start at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
+  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! So starting at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
   </p>
 
   <figure id = "poly2" style="width:940px; height:360px"></figure>
@@ -756,7 +759,7 @@
 
   </script>
   <p>
-  The effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+  This effect has been noted and harnessed by people in machine learning for a long time. The heuristic, early stopping, notes that stopping the optimization early leads to better generalization results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
 $$
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\eta\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 $$
@@ -1276,18 +1279,45 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </script>
   <p>
   We can write the colorization problem in an equivalant, vectorized way:
-  $$
-  \text{minimize}\qquad \frac{1}{2} x^T \left( \sum_{i\in D} e_i e_i^T + L_G \right) x - e_i^T x
-  $$
-  The smoother $L_G$ is the Laplacian matrix
+  </p>
+
+  <figure style="width:550px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
+
+  <div style="position:relative; top:-35px">
+
+  <span style="position:absolute; left:0px; top:10px">
+  $$\text{minimize}$$
+  </span>
+
+  <figcaption style="position:absolute; left:130px; top:90px; width:140px;">
+  The <b>smoother</b>'s quadratic form is the <b>Laplacian</b>
+  </figcaption>
+
+  <span style="position:absolute; left:310px; top:0px">
+  $$\frac{1}{2}\sum_{i\in D}\left(x^{T}e_{i}e_{i}^{T}x-e_{i}^{T}x\right)$$
+  </span>
+
+
+  <span style="position:absolute; left:255px; top:10px">
+  $$+$$
+  </span>
+
+  <span style="position:absolute; left:130px; top:0px">
+  $$\frac{1}{2}x^{T}L_{G}x$$
+  </span>
+
+  <figcaption style="position:absolute; left: 310px; top: 90px;width:250px;">
+  And the colorizer is a small low rank correction with a linear term.
+  </figcaption>
+  </div>
+  </figure>
+  <p>
+  The Laplacian matrix $L_G$
   <dt-fn>This can be written explicitly as
   $$
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   $$
-  </dt-fn>, and the colorizer is a small low rank correction to it. We will ignore the colorizer for now, as the behavior of the quadratic is dominated by the Laplacian, $L_G$. 
-  </p>
-  <p>
-  The study of Laplacians and their quadratic forms form a rich field of mathematics, which relate the linear algebraic properties of the matrix $L_G$ and the graph $G$. One fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
+  </dt-fn> dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
   </p>
   <figure id="laplacianConditioning" style="width:900px; height:265px">
   <svg width="900" height="300" id="graph"></svg>
@@ -1390,16 +1420,16 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
-    <figcaption style="width:270px; position:absolute; left:180px; top:50px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
+    <figcaption style="width:270px; position:absolute; left:150px; top:30px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
     <div style="position:absolute; top:150px; left:-80px">
     <figcaption style="width:120px; position:absolute; left:670px; top:90px">Notice that this triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
     <figcaption style="width:120px; position:absolute; left:670px; top:360px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
     <div id = "iterates" style="position:absolute; top:60px; left:0"></div>
-    <div class="figtext" style="position:absolute; top:5px; width:300px; left:460px; height:100px">Error</div>
-    <div id = "rosen_colorbar1" style="position:absolute; top:5px; width:300px; left:448px; height:100px"></div>
-    <div class="figtext" style="position:absolute; top:5px; width:300px; left:240px; height:100px">Weights</div>
-    <div id = "rosen_colorbar2" style="position:absolute; top:5px; width:300px; left:228px; height:100px"></div>
+    <div class="figtext" style="position:absolute; top:-2px; width:300px; left:452px; height:100px">Error</div>
+    <div id = "rosen_colorbar1" style="position:absolute; top:0px; width:300px; left:440px; height:100px"></div>
+    <div class="figtext" style="position:absolute; top:-2px; width:300px; left:232px; height:100px">Weights</div>
+    <div id = "rosen_colorbar2" style="position:absolute; top:0px; width:300px; left:220px; height:100px"></div>
     </div>
   </figure>
   <script>
@@ -1494,14 +1524,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   update(0.0035,0.95)
 
   colorMap( d3.select("#rosen_colorbar1"),
-            180,
+            195,
             rosen,
-            d3.scaleLinear().domain([0,1.5]).range([0, 180]) )
+            d3.scaleLinear().domain([0,1]).range([0, 195]) )
 
   colorMap( d3.select("#rosen_colorbar2"),
-            180,
+            195,
             jet,
-            d3.scaleLinear().domain([0.2,1.5]).range([0, 180]) );
+            d3.scaleLinear().domain([0.0,1]).range([0, 195]) );
 
 
   callback(null);
@@ -1785,29 +1815,29 @@ renderMath(document.body)
 <!-- Figure render queue -->
 <script>
 
-for (var i = 0; i < renderQueue.length; i++) {
-  renderQueue[i](function() {})
-  deleteQueue[i](function() {})
-}
-  // setTimeout(function() {
-  //   var q = d3.queue(1);
+// for (var i = 0; i < renderQueue.length; i++) {
+//   renderQueue[i](function() {})
+//   deleteQueue[i](function() {})
+// }
+  setTimeout(function() {
+    var q = d3.queue(1);
 
-  //   d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-  //     q.defer(function(callback) { fn[1](callback); fn[0](callback) });
-  //     q.defer(function(callback) {
-  //       setTimeout(function() {
-  //         callback(null);
-  //       }, 50);
-  //     });
-  //   });
-  //   q.await(function(error) {
-  //     if (error) {
-  //       console.error("Render error.")
-  //     } else {
-  //       console.log("Render done.")
-  //     }
-  //   });
-  // }, 50);
+    d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
+      q.defer(function(callback) { fn[1](callback); fn[0](callback) });
+      q.defer(function(callback) {
+        setTimeout(function() {
+          callback(null);
+        }, 50);
+      });
+    });
+    q.await(function(error) {
+      if (error) {
+        console.error("Render error.")
+      } else {
+        console.log("Render done.")
+      }
+    });
+  }, 50);
 
 // DEBUG
 // renderQueue.forEach( function (fn) { fn( function() {}) } )

@@ -207,7 +207,7 @@
   </p>
 
   <p>
-  The new iteration, known best to machine learners as Momentum<dt-fn> also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new iteration, known best to machine learners as Momentum<dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
   <p>
@@ -761,7 +761,7 @@
   <p>
   This effect has been noted and harnessed by people in machine learning for a long time. The heuristic, early stopping, notes that stopping the optimization early leads to better generalization results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
 $$
-\text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\eta\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
+\text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 $$
 Recall that $Z^{T}Z=Q\text{diag}(\Lambda_{1},\ldots,\Lambda_{n})Q^T$. The solution to Tikhonov Regression is therefore
 $$
@@ -771,9 +771,7 @@ Rewrite the eigenvalues of $(Z^{T}Z+\eta I)^{-1}$ as
 $$
 \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
 $$
-Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize. For stepsizes
-close to the upper limit of convergence, the smallest eigenvalue may converge faster (or at the same rate) as the largest. These stepsizes,
-however, occupy a minuscule fraction of the set of acceptable stepsizes, and are almost never encountered in practice.
+Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize. 
 </dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
@@ -963,7 +961,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), Momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite> - it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating, like in a video game, in discrete time.
+  Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite> - it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
   <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1032,7 +1030,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   renderMath(document.getElementById("momentum_annotations"))
   </script>
   <p>
-  We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for $150$ iterates, we plot the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
+  We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for $150$ iterates, the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
@@ -1056,7 +1054,8 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
                 .style("top","0px")
                 .style("left","0px")
 
-      renderDraggable(svg, [216, 116], [240, 176], 4, "constant speed").attr("opacity", 0.5)
+      renderDraggable(svg, [216, 65], [233, 53], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
+      renderDraggable(svg, [216, 115], [234, 174], 4, "constant speed").attr("opacity", 0.5)
       renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
       renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)      
       renderDraggable(svg, [181, 266], [150, 326], 4, "particle returns slowly").attr("opacity", 0.5)
@@ -1087,7 +1086,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair <dt-fn> and involves an optimization problem over
+  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair <dt-fn> We must optimize over 
   $$
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
@@ -1097,7 +1096,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   -\alpha\beta & 1-\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   $$
-  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue). The optimum can be found with nothing more than high school algebra - and it occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, but they work out to be
+  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, but they work out to be
   $$
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   $$
@@ -1370,13 +1369,13 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   we can write gradient descent as:
 
   $$
-  w^{k} ~~=~~ w^{0} ~-~ \alpha\sum\nabla f(w^{i})
+  w^{k} ~~=~~ w^{0} ~-~ \alpha\sum_i^k\nabla f(w^{i})
   $$
 
   A similar trick can be done with momentum,
 
   $$
-  w^{k} ~~=~~ w^{0} ~+~ \alpha\sum\frac{(1-\beta^{k})}{1-\beta}\nabla f(w^{k})
+  w^{k} ~~=~~ w^{0} ~+~ \alpha\sum_i^k\frac{(1-\beta^{i})}{1-\beta}\nabla f(w^i)
   $$
 
   In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more can be written in (though not quite so neatly) this unrolled form. Therefore the class of algorithms for which
@@ -1583,7 +1582,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   The observations made in the above diagram are true for any Linear First Order algorithm. Let us prove this. First observe that each component of the gradient depends only on the values directly before and after it:
 
   $$
-\nabla f(x)_{i}=\frac{\kappa-1}{4}(2w_{i}-w_{i-1}-w_{i+1})+w_{i}, \qquad i \neq 1.
+\nabla f(x)_{i}=2w_{i}-w_{i-1}-w_{i+1} +\frac{4}{\kappa-1} w_{i}, \qquad i \neq 1.
   $$
 
   Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,

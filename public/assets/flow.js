@@ -4,17 +4,17 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
 
   var colorBar = divin.append("div").style("position", "absolute").style("left","490px").style("top", "5px").style("height","45px")
   
-  // colorMap( colorBar,
-  //          180,
-  //          jetc,
-  //          d3.scaleLinear().domain([0,1]).range([0, 100]) )
+  colorMap( colorBar,
+           180,
+           jetc,
+           d3.scaleLinear().domain([0,100]).range([0, 180]) )
 
   divin.append("figcaption")
        .style("position", "absolute")
        .style("left", "500px")
        .style("width", "300px")
        .style("top", "70px")
-       .html("Each represents a node (and a weight $w_i$), and edges connect neighboring squares.")
+       .html("Each square represents a node, colored by its weight. Edges connect each square to the four neighboring squares.")
 
   divin.append("figcaption")
        .style("position", "absolute")
@@ -119,7 +119,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   var barLengths = getStepsConvergence(FlowSigma,step)
     .map( function(i) {return Math.log(i+1)} ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
 
-  var slideControl = sliderBarGen(barLengths)
+  var slideControl = sliderBarGen(barLengths, function(x) { return Math.exp(x+1)} )
                     .height(281)
                     .linewidth(1.3)
                     .maxX(13.3)

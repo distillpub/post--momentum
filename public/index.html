@@ -709,7 +709,7 @@
       eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
     }
 
-    var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#poly2"))
+    var sliderControl = sliderBarGen(barlengths, function(i) {return Math.exp(i-0.1)}).update(onChange)(d3.select("#poly2"))
 
     d3.select("#poly2").append("figcaption")
           .style("width", "120px")
@@ -1823,7 +1823,7 @@ renderMath(document.body)
     var q = d3.queue(1);
 
     d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-      q.defer(function(callback) { fn[1](callback); fn[0](callback) });
+      q.defer(function(callback) { fn[1](callback); fn[0](callback); renderMath(document.body) });
       q.defer(function(callback) {
         setTimeout(function() {
           callback(null);

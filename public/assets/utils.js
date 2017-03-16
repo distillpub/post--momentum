@@ -1010,7 +1010,7 @@ function colorMap(root, width, colorScale, axisScale) {
 
 }
 
-function sliderBarGen(barlengths) {
+function sliderBarGen(barlengths, expfn) {
 
 	var update = function() {}
 	var height = 60
@@ -1027,7 +1027,7 @@ function sliderBarGen(barlengths) {
 	                 .style("position", "relative")
 
 	  var updateEverything = function(i, circ) {
-	      step.html("Step k = " + numberWithCommas(Math.floor(Math.exp(i-0.1))) )
+	      step.html("Step k = " + numberWithCommas(Math.floor(expfn(i))) )
 
 	      if (!(circ === undefined) ){
 	        var ctm = circ.node().getCTM()
@@ -1048,8 +1048,8 @@ function sliderBarGen(barlengths) {
 	    }
 
 	  var slidera = sliderGen([940, 60])
-	    .ticks([0, 1, 4, maxX])
-	    .ticktitles(function(d) {return Math.floor(Math.exp(d)) })
+	    .ticks([0, maxX/5, 2*maxX/5, 3*maxX/5, 4*maxX/5, maxX])
+	    .ticktitles(function(d) {return numberWithCommas(Math.floor(expfn(d))) })
 	    .cRadius(7)
 	    .startxval(4)
 	    .shifty(3)

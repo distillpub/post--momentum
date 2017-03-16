@@ -178,7 +178,6 @@
   <p>
   If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. Should you keep iterating, and hope for the best?
   </p>
-  <h2>Why Gradient Descent Fails</h2>
   <p>
   Gradient Descent as many  virtues, but speed is not one of them. The iteration is is simple - when optimizing a smooth function $f$, we simply make a small step in the gradient
 
@@ -1054,7 +1053,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
                 .style("top","0px")
                 .style("left","0px")
 
-      renderDraggable(svg, [216, 65], [233, 53], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
+      renderDraggable(svg, [216, 65], [237, 65], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
       renderDraggable(svg, [216, 115], [234, 174], 4, "constant speed").attr("opacity", 0.5)
       renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
       renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)      

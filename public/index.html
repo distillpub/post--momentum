@@ -639,7 +639,7 @@
     .style("left", 300+270+"px")
     .style("position", "absolute")
     .style("padding", "10px")
-    .html("Finally, jagged polynomials which differ wildly on neighboring points. ");
+    .html("and finally, jagged polynomials which differ wildly on neighboring points. ");
 
     // Swoopy Annotator
     var annotations = [
@@ -1398,7 +1398,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem,
   </p>
-  <figure style="width:610px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure style="width:610px; height:65px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
   <div style="position:relative; top:-35px">
 
@@ -1410,8 +1410,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$=$$
   </span>
 
-  <figcaption style="position:absolute; left:105px; top:90px; width:140px;">
-  colorizer
+  <figcaption style="position:absolute; left:105px; top:90px; width:120px;">
+  with a colorizer of one node
   </figcaption>
 
   <span style="position:absolute; left:105px; top:0px">
@@ -1426,8 +1426,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$\frac{1}{2}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}$$
   </span>
 
-  <figcaption style="position:absolute; left: 275px; top:90px;width:250px;">
-  smoother
+  <figcaption style="position:absolute; left: 275px; top:90px;width:210px;">
+  strong couplings between the variables in the smoother,
   </figcaption>
 
   <span style="position:absolute; left:475px; top:6px">
@@ -1437,8 +1437,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$\frac{2}{\kappa-1}\|w\|^{2}$$
   </span>
 
-  <figcaption style="position:absolute; left:505px; top:90px;width:250px;">
-  regularizer
+  <figcaption style="position:absolute; left:505px; top:90px;width:150px;">
+  and a small regularization term.
   </figcaption>
 
 
@@ -1446,10 +1446,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   </div>
   </figure>
-  <p>
-  except with a small regularization term at the end. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function.
-  </p>
-
   <p>
   The optimal solution of this problem is
 

@@ -180,7 +180,7 @@
   </p>
   <h2>Why Gradient Descent Fails</h2>
   <p>
-  Lets face it, gradient descent doesn't work quite as advertised. The iteration has many virtues. It is simple - when optimizing a smooth function $f$, we simply make a small step in the gradient
+  Gradient Descent as many  virtues, but speed is not one of them. The iteration is is simple - when optimizing a smooth function $f$, we simply make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
@@ -188,7 +188,7 @@
   </p>
 
   <p>
-  But for all its advantages, speed is not one of them. The exponential decrease, though appealing in theory, can often be infuriatingly small. The problem may be the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  But the exponential decrease, though appealing in theory, can often be infuriatingly small - and in practice appears to shrink with each iteration. Why does this happen? The problem may be the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
 
@@ -1134,7 +1134,7 @@ however, occupy a minuscule fraction of the set of acceptable stepsizes, and are
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
   <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
-  <figcaption style="position:absolute; text-align:left; top:430px; left:120px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
@@ -1420,7 +1420,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
-    <figcaption style="width:270px; position:absolute; left:150px; top:30px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
+    <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
     <div style="position:absolute; top:150px; left:-80px">
     <figcaption style="width:120px; position:absolute; left:670px; top:90px">Notice that this triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>

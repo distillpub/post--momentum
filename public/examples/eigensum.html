@@ -3,14 +3,13 @@
 <head>
 
 <link rel="stylesheet" href="../assets/lib/katex.min.css">
-<script src="../assets/lib/katex.min.js"></script>
+  <script src="../assets/lib/auto-render.min.js"></script>
+  <script src="../assets/lib/katex.min.js"></script>
   <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
-  <script src = "../assets/lib/d3.v4.min.js"></script>
   <script src="http://distill.pub/template.js"></script>  
-  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
-  <script src = "../assets/utils.js"></script>  
-  <script src = "../assets/eigensum.js"></script>  
-  <script src = "../assets/lib/tooltip.js"></script>  
+  <script src="../assets/lib/lib.js"></script>
+  <script src="../assets/utils.js"></script>
+  <script src="../assets/eigensum.js"></script>  
 </head> 
 <body>
   <dt-article class="centered">
@@ -19,38 +18,74 @@
   </p>
 
 
-  <figure id = "polydisplay" style="height:165px"></figure>
+  <figure id = "poly2" style="width:940px; height:360px"></figure>
 
   <script>
-  (function() { 
+  (function() {
+    var inv = function(lambda) { return 1/lambda }
+    var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
 
-  // Preprocess x, get eigendecomposition, etc
-  var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
-  var D = vandermonde(x, 5)
-  var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
-  var U = Eigs.U
-  var lambda = Eigs.lambda
+    // Preprocess x, get eigendecomposition, etc
+    var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+    var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
 
-  // Preprocess y
-  var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
-  var Dtb = numeric.dot(b,D)
-  var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
+    var D = vandermonde(x, 5)
+    var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+    var U = Eigs.U
+    var lambda = Eigs.lambda
 
-  var step = 1.8/lambda[0]
-  var iter = geniter(U, lambda, Dtb, step)
-
-  var eigensum = d3.select("#polydisplay")
-
-  var wi = [2,2,2,2,2,2]
-
-  function refit(b) {
+    // Preprocess y
     var Dtb = numeric.dot(b,D)
     var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-    var Utsol = numeric.dot(sol,U)
-    eigenControl.updateweights(Utsol)
-  }
 
-  var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit)
+    var step = 1.8/lambda[0]
+    var iter = geniter(U, lambda, Dtb, step)
+
+    var eigensum = d3.select("#poly2")
+
+    var wi = lambda.slice(0).map(scal)
+
+    function refit(b) {
+      var Dtb = numeric.dot(b,D)
+      iter = geniter(U, lambda, Dtb, step)
+      onChange(sliderControl.slidera.xval())
+    }
+
+    var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
+
+    var barlengths = getStepsConvergence(lambda, step).map(Math.log)
+
+    var onChange = function(i) {
+      eigenControl.updateweights(numeric.dot(U,iter(Math.floor(Math.exp(i-0.1)) )))
+    }
+
+    var sliderControl = sliderBarGen(barlengths).update(onChange)(d3.select("#poly2"))
+
+    d3.select("#poly2").append("figcaption")
+          .style("width", "120px")
+          .style("position", "absolute")
+          .style("left", "820px")
+          .style("top","200px")
+          .html("When an eigenspace has converged to three significant digits, the bar greys out. Drag the observations to change fit.")
+
+    sliderControl.slidera.init()
+
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 74,202 A 52.274 52.274 0 0 0 134,245",
+        "text": "We begin at x=w=0",
+        "textOffset": [
+          21,
+          198
+        ]
+      }
+    ]
+
+    drawAnnotations(d3.select("#poly2"), annotations)
+
   })()
 
   </script>

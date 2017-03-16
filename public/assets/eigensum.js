@@ -229,7 +229,14 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
 
   if (!(b === undefined)) {
 
-    var data = svg.append("g").selectAll("circle").data(d3.zip(xv,b))
+    var voronoi = d3.voronoi()
+      .x(function(d) { return x(d[0]); })
+      .y(function(d) { return y(d[1]); })
+      .extent([[0, 0], [110, 110]]);
+
+    var data = svg.append("g")
+
+    data.selectAll("circle").data(d3.zip(xv,b))
       .enter()
       .append("circle")
       .attr("cx", function(d,i) { return x(d[0]) })
@@ -250,11 +257,72 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
                 .attr("y1", function(d,i) { return y(d[1]) })
                 .attr("x2", function(d,i) { return x(d[0]) })
                 .attr("y2", function(d,i) { return y(poly(w, d[0])) })
-
             })
           )      
 
-    var datalines = svg.append("g").selectAll("line").data(d3.zip(xv,b))
+    console.log()
+
+    var vongroup = svg.append("g")
+
+    var dragging = false
+    vongroup.selectAll("path")
+      .data(voronoi.polygons(d3.zip(xv,b))) 
+      .enter().append("path")
+      .attr("d", function(d, i) { return "M" + d.join("L") + "Z"; })
+      .datum(function(d, i) { return d.point; })
+      .style("stroke", "#2074A0") //I use this to look at how the cells are dispersed as a check
+      .style("fill", "white")
+      .style("opacity", 0.001)
+      // .style("pointer-events", "all")
+      .on("mouseover", function(d,i) { 
+        if (!dragging){
+        d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "1px");
+        d3.select(data.selectAll("circle").nodes()[i]).style("fill", "red");
+        }
+      })
+      .on("mouseout", function(d,i) { 
+        if (!dragging) {
+        d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "0px");
+        d3.select(data.selectAll("circle").nodes()[i]).style("fill", "black");
+        }
+      })
+      // .on("mouseout",  removeTooltip);
+      .call(d3.drag()
+            .on("drag", function(d,i) {
+              dragging = true
+              d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "2px");
+              d3.select(data.selectAll("circle").nodes()[i]).style("fill", "pink");
+
+              var ypos = d3.event.y 
+              var yval = y.invert(ypos)
+              if (ypos < 0 || ypos > 110) {
+                return
+              }
+              var thisvar = data.selectAll("circle").nodes()[i]
+              thisvar.setAttribute("cy", ypos)
+              b[i] = yval
+              dragCallback(b)
+              datalines.data(d3.zip(xv,b)).merge(datalines)
+                .attr("x1", function(d,i) { return x(d[0]) })
+                .attr("y1", function(d,i) { return y(d[1]) })
+                .attr("x2", function(d,i) { return x(d[0]) })
+                .attr("y2", function(d,i) { return y(poly(w, d[0])) })
+              vongroup.selectAll("path")
+                .data(voronoi.polygons(d3.zip(xv,b))) 
+                .merge(vongroup)
+                .attr("d", function(d, i) { return "M" + d.join("L") + "Z"; })
+            })
+            .on("end", function(d,i) { 
+              console.log("end")
+              dragging = false
+              d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "0px");
+              d3.select(data.selectAll("circle").nodes()[i]).style("fill", "black");
+            })
+          )  
+
+    var datalinessvg = svg.append("g")
+
+    var datalines = datalinessvg.selectAll("line").data(d3.zip(xv,b))
       .enter()
       .append("line")
       .attr("x1", function(d,i) { return x(d[0]) })
@@ -262,7 +330,8 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
       .attr("x2", function(d,i) { return x(d[0]) })
       .attr("y2", function(d,i) { return y(0) })
       .style("stroke-width", "0px")
-      .style("stroke", colors[0])
+      .style("stroke", "red")
+
   }
 
   eigensvg.append("g")     

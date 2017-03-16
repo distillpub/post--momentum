@@ -1048,8 +1048,8 @@ function sliderBarGen(barlengths) {
 	    }
 
 	  var slidera = sliderGen([940, 60])
-	    .ticks([0,maxX])
-	    .ticktitles(function(d) {return d})
+	    .ticks([0, 1, 4, maxX])
+	    .ticktitles(function(d) {return Math.floor(Math.exp(d)) })
 	    .cRadius(7)
 	    .startxval(4)
 	    .shifty(3)

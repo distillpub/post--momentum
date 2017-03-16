@@ -1397,11 +1397,56 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h3>The Convex Rosenbrock</h3>
   <p>
   Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem,
+  </p>
+  <figure style="width:610px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
-  $$
-  f^n(w) = \frac{\kappa-1}{8}\left(w_{1}-1\right)^{2}+\frac{\kappa-1}{8}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}+\frac{1}{2}\|w\|^{2}
-  $$
+  <div style="position:relative; top:-35px">
 
+  <span style="position:absolute; left:0px; top:9px">
+  $$f^n(w)$$
+  </span>
+
+  <span style="position:absolute; left:72px; top:9px">
+  $$=$$
+  </span>
+
+  <figcaption style="position:absolute; left:105px; top:90px; width:140px;">
+  colorizer
+  </figcaption>
+
+  <span style="position:absolute; left:105px; top:0px">
+  $$\frac{1}{2}\left(w_{1}-1\right)^{2}$$
+  </span>
+
+  <span style="position:absolute; left:240px; top:6px">
+  $$+$$
+  </span>
+
+  <span style="position:absolute; left:275px; top:-10px">
+  $$\frac{1}{2}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}$$
+  </span>
+
+  <figcaption style="position:absolute; left: 275px; top:90px;width:250px;">
+  smoother
+  </figcaption>
+
+  <span style="position:absolute; left:475px; top:6px">
+  $$+$$
+  </span>
+  <span style="position:absolute; left:505px; top:-2px">
+  $$\frac{2}{\kappa-1}\|w\|^{2}$$
+  </span>
+
+  <figcaption style="position:absolute; left:505px; top:90px;width:250px;">
+  regularizer
+  </figcaption>
+
+
+
+
+  </div>
+  </figure>
+  <p>
   except with a small regularization term at the end. It contains strong couplings between the variables (proportional to $\kappa$), and a long path from $w_1$ to $w_n$ - as discussed earlier, a sign of a trench of bad curvature. Let's write out some facts about this function.
   </p>
 

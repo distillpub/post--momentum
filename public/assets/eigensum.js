@@ -50,7 +50,8 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
     } else{
       var html = katex.renderToString("\\text{model}")  
     }
-      
+    
+    if (i != 6) {
     var equation = mathdiv
       .append("span")
       .style("text-align","center")
@@ -74,6 +75,16 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         }} )(i) )
         .on("end", function() { wi = witemp })
            )
+    } else {
+      var equation = mathdiv
+        .append("span")
+        .style("text-align","center")
+        .style("display","inline-block")
+        .style("width", "110px")
+        .style("height", "50px")
+        .style("font-size", "16px")
+        .html(html)      
+    }
       
     equations.push(equation)
 

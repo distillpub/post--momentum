@@ -445,7 +445,7 @@
 
   <h3>Example - Polynomial Regression</h3>
   <p>
-  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. Curiously, these directions often have meaning - and gives us an interesting perspective on the path an iterate takes to the minimum. 
+  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. Lets see how this plays out in polynomial regression.
   </p>
 
 <!--   <p>
@@ -530,17 +530,17 @@
     var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit);
 
     // Swoopy Annotator
-    var annotations = [
-      {
-        "x": 0,
-        "y": 0,
-        "path": "M 37,6 A 14.124 14.124 0 0 0 26.000001907348633,32.000003814697266",
-        "text": "scrub values",
-        "textOffset": [
-          40,
-          10
-        ]
-      }
+    annotations = [
+    {
+      "x": 0,
+      "y": 0,
+      "path": "M 60,5 A 19.018 19.018 0 0 0 36,27",
+      "text": "scrub values",
+      "textOffset": [
+        64,
+        9
+      ]
+    }
     ]
 
     drawAnnotations(d3.select("#poly0f"), annotations)
@@ -1126,7 +1126,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
   renderMath(document.getElementById("conv_rate_comparisons"))
   </script>
   <p>
-  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. When $\lambda_1/\lambda_n$ is small, the optimal $\alpha$ is approximately twice that of gradient descent, and the momentum term is close to $1$. So set $\beta$ as close to $1$ as you can, and then find the highest $\alpha$ which still converges. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
+  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. When the problem's conditioning is poor, the optimal $\alpha$ is approximately twice that of gradient descent, and the momentum term is close to $1$. So set $\beta$ as close to $1$ as you can, and then find the highest $\alpha$ which still converges. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
 
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
@@ -1276,7 +1276,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     });
   </script>
   <p>
-  We can write the colorization problem in an equivalant, vectorized way:
+  The above example is a special case of a more general class of optimization problems. We can write the colorization problem in an equivalent, vectorized way, for a general graph $G$:
   </p>
 
   <figure style="width:550px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">

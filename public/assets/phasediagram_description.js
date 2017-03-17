@@ -9,14 +9,14 @@ function phaseDiagram_dec(divin) {
     z[1] = 1
     var gx = f(w0);
     W.push(w0); 
-    Z.push(z);
+    Z.push(numeric.mul(-1,z));
     for (var i = 0; i < totalIters; i++) {
       var z = numeric.add(numeric.mul(beta, z), gx)
       var w = numeric.add(w, numeric.mul(-alpha, z))
       gx = f(w); 
       if (w.every(isFinite)) {
         W.push(w)
-        Z.push(z)
+        Z.push(numeric.mul(-1, z))
       } else{ break; }
     }
     return [Z,W]

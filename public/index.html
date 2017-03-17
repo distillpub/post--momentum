@@ -1490,9 +1490,9 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       .attr("width", 770)
       .attr("height", 700)
 
-  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.6,0.8]).range(colorbrewer.RdPu[5]);
-  var jet = d3.scaleLinear().domain([-0.5,0,0.2,0.5,1.0,5]).range(colorbrewer.YlGnBu[6]);
-  var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.RdBu[3]);
+  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.6,0.8]).range(colorbrewer.YlGnBu[5]);
+  var jet = d3.scaleLinear().domain([-0,0.1,0.2,0.5,1.0,8]).range(colorbrewer.YlGnBu[5]);
+  var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.YlGnBu[3]);
 
   var xstar = iter(10000000)
   var numIters = 52
@@ -1580,14 +1580,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   update(0.003727862240900233, 0.8571428571428572)
 
   colorMap( d3.select("#rosen_colorbar1"),
-            195,
+            194,
             rosen,
-            d3.scaleLinear().domain([0,1]).range([0, 195]) )
+            d3.scaleLinear().domain([0,1]).range([0, 194]) )
 
   colorMap( d3.select("#rosen_colorbar2"),
-            195,
+            194,
             jet,
-            d3.scaleLinear().domain([0.0,1]).range([0, 195]) );
+            d3.scaleLinear().domain([0.0,1]).range([0, 194]) );
 
 
   callback(null);

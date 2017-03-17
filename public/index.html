@@ -1394,7 +1394,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
   <h3>The Convex Rosenbrock</h3>
   <p>
-  Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem,
+  Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrok. 
   </p>
   <figure style="width:610px; height:65px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
@@ -1454,7 +1454,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   and the condtion number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
   </p>
 
-  <figure id="rosenViz" style="width:950px; height:780px">
+  <figure id="rosenViz" style="width:950px; height:700px">
     <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
@@ -1462,8 +1462,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
     <div style="position:absolute; top:150px; left:-80px">
-    <figcaption style="width:120px; position:absolute; left:670px; top:90px">Notice that this triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
-    <figcaption style="width:120px; position:absolute; left:670px; top:360px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
+    <figcaption style="width:160px; position:absolute; left:670px; top:90px">Notice that this triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
+    <figcaption style="width:160px; position:absolute; left:670px; top:310px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
     <div id = "iterates" style="position:absolute; top:60px; left:0"></div>
     <div class="figtext" style="position:absolute; top:-2px; width:300px; left:452px; height:100px">Error</div>
     <div id = "rosen_colorbar1" style="position:absolute; top:0px; width:300px; left:440px; height:100px"></div>
@@ -1495,7 +1495,22 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.RdBu[3]);
 
   var xstar = iter(10000000)
-  var numIters = 72
+  var numIters = 60
+
+  var pathstr = "M 8,0"
+
+  for (var j = 0; j < 27; j++) {
+    if (j != 26 && j > 0) {
+      pathstr = pathstr + "L " + j*8 + "," + (j-1)*8 +  "L " + j*8 + "," + j*8
+    }
+    if (j == 0) {
+      //pathstr = pathstr + "L " + j*8 + "," + j*8      
+    }
+    if (j == 26) {
+      pathstr = pathstr + "L " + j*8 + "," + (j-1)*8       
+    }
+  }
+  pathstr = pathstr + "L "+ 26*8 + ",0 L 8,0 "
 
 
   var Disps3 = []
@@ -1516,7 +1531,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     Disps3.push(disp)
   }
 
-
+  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1.5px").attr("transform", "translate(2,0.5)")
 
   var Disps4 = []
   var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 220 + ",0)")
@@ -1533,9 +1548,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
         .attr("width", 7.7)
         .attr("x", function(d, i){return i*8+ 10})
         .attr("y", function(d, i){return j*8 })
-        // .attr("stroke", "black")
-        // .attr("stroke-width", function(d,i) { return (i == j) ? 1.5 : 0 })
-        // .attr("stroke-dasharray", "14.8, 14")
 
     if ((j % 10 == 0) || j == 0) {
     disp.append("text")
@@ -1548,8 +1560,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
     Disps4.push(disp)
   }
+
+  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1.5px").attr("transform", "translate(2,0.5)")
+
+
   function update(alpha, beta) {
-    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
+    var iter = geniterMomentum(RQ, RLambda, b, Math.max(alpha, 0.00001), Math.min(Math.max(beta, 0.00001), 0.999)).iter
     for (var j = 0; j < numIters; j++) {
       var iterj = iter(j)
       Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })

@@ -518,7 +518,7 @@
 
     var eigensum = d3.select("#poly0")
 
-    var wi = [2,2,2,2,2,2]
+    var wi = [-2,-2,2,2,2,-2]
 
     function refit(b) {
       var Dtb = numeric.dot(b,D)
@@ -758,7 +758,7 @@
 
   </script>
   <p>
-  This effect has been noted and harnessed by people in machine learning for a long time. The heuristic, early stopping, notes that stopping the optimization early leads to better generalization results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+  This effect is harnessed with the heuristic of early stopping - by noting that by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
 $$
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 $$
@@ -1064,7 +1064,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
     });
   </script>
   <p>
-  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equlibrium.
+  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equilibrium.
   </p>
   <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
@@ -1394,7 +1394,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
   <h3>The Convex Rosenbrock</h3>
   <p>
-  Earlier, when we talked about the colorizer problem, we observed that wirey graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrok. 
+  Earlier, when we talked about the colorizer problem, we observed that wiry graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrok. 
   </p>
   <figure style="width:610px; height:65px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
@@ -1451,7 +1451,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   w_{i}^{\star}=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}
   $$
 
-  and the condtion number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
+  and the condition number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
   </p>
 
   <figure id="rosenViz" style="width:950px; height:630px">
@@ -1531,7 +1531,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     Disps3.push(disp)
   }
 
-  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1.5px").attr("transform", "translate(2,0.5)")
+  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1px").attr("transform", "translate(2,0.5)")
 
   var Disps4 = []
   var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 220 + ",0)")
@@ -1561,7 +1561,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     Disps4.push(disp)
   }
 
-  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1.5px").attr("transform", "translate(2,0.5)")
+  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1px").attr("transform", "translate(2,0.5)")
 
 
   function update(alpha, beta) {
@@ -1577,7 +1577,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
 
-  update(0.003727862240900233, 0.8571428571428572)
+  update(0.0035749243028120182, 0.8095238095238095)
 
   colorMap( d3.select("#rosen_colorbar1"),
             194,
@@ -1587,7 +1587,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   colorMap( d3.select("#rosen_colorbar2"),
             194,
             jet,
-            d3.scaleLinear().domain([0.0,1]).range([0, 194]) );
+            d3.scaleLinear().domain([0,1]).range([0, 194]) );
 
 
   callback(null);
@@ -1628,7 +1628,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   As $n$ gets large, the final term going to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes to yield the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than.
   </p>
   <p>
-  Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favourite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum.
+  Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum.
   </p>
 
 <hr>
@@ -1643,7 +1643,18 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
 
 
-<dt-appendix class="centered"></dt-appendix>
+<dt-appendix class="centered">
+  
+
+  <h3>Acknowledgments</h3>
+
+  <p>
+  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations. 
+  </p>
+
+</dt-appendix>
+
+
 <script type="text/bibliography">
 @article{o2015adaptive,
   title={Adaptive restart for accelerated gradient schemes},

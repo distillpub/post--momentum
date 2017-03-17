@@ -1490,12 +1490,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       .attr("width", 770)
       .attr("height", 700)
 
-  var rosen = d3.scaleLinear().domain([0,0.2,0.5,1.4,5]).range(colorbrewer.RdPu[5]);
-  var jet = d3.scaleLinear().domain([-0.5,0,0.2,0.5,1.0,5]).range(colorbrewer.Spectral[6]);
+  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.8,1]).range(colorbrewer.RdPu[5]);
+  var jet = d3.scaleLinear().domain([-0.5,0,0.2,0.5,1.0,5]).range(colorbrewer.YlGnBu[6]);
   var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.RdBu[3]);
 
   var xstar = iter(10000000)
-  var numIters = 60
+  var numIters = 62
 
   var pathstr = "M 8,0"
 

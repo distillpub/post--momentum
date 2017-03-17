@@ -100,7 +100,7 @@
 </svg>
 
 <dt-article class="centered">
-  <h1>Why Momentum Works [DRAFT]</h1>
+  <h1>Why does Momentum Work?</h1>
 
   <figure style = "position:relative; width:984px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
@@ -111,7 +111,7 @@
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
     </div>
     <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 90px; left: 580px; top: 320px;">
-      The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm.
+      The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm. 
     </figcaption>
   </figure>
 
@@ -187,7 +187,7 @@
   </p>
 
   <p>
-  But the exponential decrease, though appealing in theory, can often be infuriatingly small - and in practice appears to shrink with each iteration. Why does this happen? The problem may be the optimizers old nemesis - pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  But the exponential decrease, though appealing in theory, can often be infuriatingly small - and in practice appears to shrink with each iteration. Why does this happen? The problem could be pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
 
@@ -1454,7 +1454,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   and the condtion number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
   </p>
 
-  <figure id="rosenViz" style="width:950px; height:700px">
+  <figure id="rosenViz" style="width:950px; height:630px">
     <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
@@ -1490,12 +1490,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       .attr("width", 770)
       .attr("height", 700)
 
-  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.8,1]).range(colorbrewer.RdPu[5]);
+  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.6,0.8]).range(colorbrewer.RdPu[5]);
   var jet = d3.scaleLinear().domain([-0.5,0,0.2,0.5,1.0,5]).range(colorbrewer.YlGnBu[6]);
   var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.RdBu[3]);
 
   var xstar = iter(10000000)
-  var numIters = 62
+  var numIters = 52
 
   var pathstr = "M 8,0"
 
@@ -1524,7 +1524,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
     denter.append("rect")
         .style("fill", function(d,i) { return rosen(d) })
-        .attr("height", 7)
+        .attr("height", 7.7)
         .attr("width", 7.7)
         .attr("x", function(d, i){return i*8+ 10})
         .attr("y", function(d, i){return j*8 })
@@ -1544,7 +1544,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
     denter.append("rect")
         .style("fill", function(d,i) { return jet(d) })
-        .attr("height", 7)
+        .attr("height", 7.7)
         .attr("width", 7.7)
         .attr("x", function(d, i){return i*8+ 10})
         .attr("y", function(d, i){return j*8 })
@@ -1565,6 +1565,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
 
   function update(alpha, beta) {
+    console.log(alpha,beta)
     var iter = geniterMomentum(RQ, RLambda, b, Math.max(alpha, 0.00001), Math.min(Math.max(beta, 0.00001), 0.999)).iter
     for (var j = 0; j < numIters; j++) {
       var iterj = iter(j)
@@ -1576,7 +1577,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
 
-  update(0.0035,0.95)
+  update(0.003727862240900233, 0.8571428571428572)
 
   colorMap( d3.select("#rosen_colorbar1"),
             195,

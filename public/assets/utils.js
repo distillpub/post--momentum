@@ -862,8 +862,8 @@ function matSum(R,b) {
   // console.log(numeric.prettyPrint(lambda))
   // console.log(1-numeric.norm2([lambda.y[0],lambda.x[0]]), 1-numeric.norm2([lambda.y[1],lambda.x[1]]))
   return {matSum: function(k) {
-    var topv  = pow(lambda,k).mul(-1).add(1)
-    var botv  = lambda.mul(-1).add(1)
+    var topv = pow(lambda,k).mul(-1).add(1)
+    var botv = lambda.mul(-1).add(1)
     var sumk = topv.mul(pow(botv,-1))
     if (lambda.getRow(0)["x"] == 1) { sumk["x"][0] = k; sumk["y"][0] = 0}
     if (lambda.getRow(1)["x"] == 1) { sumk["x"][1] = k; sumk["x"][1] = 0}

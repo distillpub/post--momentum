@@ -175,19 +175,24 @@
   <p>
   The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
   </p> -->
-  <p>
+<!--   <p>
   If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. Should you keep iterating, and hope for the best?
   </p>
+ -->  
   <p>
-  Gradient Descent as many  virtues, but speed is not one of them. The iteration is is simple - when optimizing a smooth function $f$, we simply make a small step in the gradient
+  Gradient descent as many virtues, but speed is not one of them. The iteration is is simple - when optimizing a smooth function $f$, we make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  For a step size small enough, it is makes a steady, monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even go there at an exponential rate.
+  For a step size small enough, gradient descent makes a steady, monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even go there at an exponential rate.
   </p>
 
   <p>
-  But the exponential decrease, though appealing in theory, can often be infuriatingly small - and in practice appears to shrink with each iteration. Why does this happen? The problem could be pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  But the exponential decrease, though appealing in theory, can often be infuriatingly small. Things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. What has gone wrong?
+  </p>
+
+  <p>
+  The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
 
@@ -295,7 +300,9 @@
   and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. Perform a change of variables, $x^{k} = Q^T(w^{k} - w^\star)$. And the iterations break apart, becoming
 
   $$
-  x_{i}^{k+1}=x_{i}^{k}-\alpha \lambda_ix_{i}^{k} = (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^kx^0_i
+  \begin{aligned}
+  x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\ &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^kx^0_i
+  \end{aligned}
   $$
 
   Moving back to our original space $w$, we can see that
@@ -309,7 +316,7 @@
   </p>
   <h3>Decomposing the Error</h3>
   <p>
-  The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of $Q$. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, at a rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
+  The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of $Q$. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
   </p>
   <p>
   For most step-sizes, the eigenvectors with largest eigenvectors converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's sub-optimality to the loss
@@ -445,7 +452,7 @@
 
   <h3>Example - Polynomial Regression</h3>
   <p>
-  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. Lets see how this plays out in polynomial regression.
+  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very interesting, concrete interpretation. 
   </p>
 
 <!--   <p>
@@ -484,13 +491,13 @@
   Lets understand this phenomena in the quadratic model. 
   </p> -->
   <p>
-  Given 1D data, $\xi_i$, our problem is to fit the model
+  Lets see how this plays out in polynomial regression. Given 1D data, $\xi_i$, our problem is to fit the model
 
   $$
 \text{model}(\xi)=w_{1}p_{1}(\xi)+\cdots+w_{n}p_{n}(\xi)\qquad p_{i}=\xi\mapsto\xi^{i-1}
   $$
 
-  to our data. This model, though nonlinear in the input $\xi$ is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
+  to our observations, $d_i$. This model, though nonlinear in the input $\xi$ is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
   </p>
 
   <figure id = "poly0f" style="width:940px; height:200px">
@@ -551,7 +558,7 @@
   </script>
   <p>
 
-  Because of the linearity, we can fit this model at our observed data $\xi_i$ by using linear regression on the model mismatch
+  Because of the linearity, we can fit this model at our data $\xi_i$ by using linear regression on the model mismatch
 
   $$
   \text{minimize}_w \qquad\frac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} = \tfrac{1}{2}\|Zw - d\|^2
@@ -574,7 +581,7 @@
   \text{model}(\xi)=x_{1}\bar{p}_{1}(\xi)+\cdots+x_{n}\bar{p}_{n}(\xi)\qquad p_{i}=\sum q_{ij}p_j.
   $$
 
-  This model is identical to the old one. But these new features $\bar{p}$ (which I call eigenfeatures) and weights have the pleasing property that each coordinate acts independently of the other. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. These independent features, which I call the eigenfeatures, are also much more informative,
+  This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the other. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative,
   </p>
 
 
@@ -659,7 +666,7 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. The eigenfeatures decompose our polynomials into exactly such a basis - there the most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principle components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in $d_i$'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>
@@ -867,11 +874,11 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
   $$
 
-   This formula may be a lot to take in, but I've highlighted the important bits. This formula plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two, which may have real or complex values. And since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now
+  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now
 
    $$\max \{|\sigma_1|, |\sigma_2|\} < 1.$$
 
-   The exact values of $\alpha$ and $\beta$ needed to achieve this is complicated. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior
+   This "coupled" iteration is hard to understand algebraically. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior
   </p>
 
   <figure id = "momentum2D" style="width:984px; height:540px">
@@ -1238,7 +1245,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
   renderMath(document.getElementById("colorizer_equation"))
   </script>
   <p>
-  The above optimization problem is bounded from below by $0$, and thus the optimal solution is the vector of all $1$'s. A simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The above optimization problem is bounded from below by $0$, and thus the optimal solution, which achieves this, is the vector of all $1$'s. A simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   $$
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
@@ -1276,7 +1283,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     });
   </script>
   <p>
-  The above example is a special case of a more general class of optimization problems. We can write the colorization problem in an equivalent, vectorized way, for a general graph $G$:
+  In vectorized form, the colorization problem is
   </p>
 
   <figure style="width:550px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1288,7 +1295,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <figcaption style="position:absolute; left:130px; top:90px; width:140px;">
-  The <b>smoother</b>'s quadratic form is the <b>Laplacian</b>
+  The <b>smoother</b>'s quadratic form is the <b>Graph Laplacian</b>
   </figcaption>
 
   <span style="position:absolute; left:310px; top:0px">
@@ -1305,7 +1312,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <figcaption style="position:absolute; left: 310px; top: 90px;width:250px;">
-  And the colorizer is a small low rank correction with a linear term.
+  And the colorizer is a small low rank correction with a linear term. $e_i$ is the $i^{th}$ unit vector.
   </figcaption>
   </div>
   </figure>
@@ -1343,16 +1350,16 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </script>
   <p>
 
-  The intuition behind this should be clear. Well connected graphs allow rapid diffusion of information through the edges, while graphs with poor connectivity do not. And this principle, taken to the extreme, furnish a class of functions so hard to optimize they reveal the limits of the first order optimization.
+  This observations carries through to the colorization problem, and the intuition behind this should be clear. Well connected graphs allow rapid diffusion of information through the edges, while graphs with poor connectivity do not. And this principle, taken to the extreme, furnish a class of functions so hard to optimize they reveal the limits of the first order optimization.
   </p>
 <hr>
   <h2>
-  The Resisting Oracle
+  The Limits of Descent
   </h2>
   <p>
-  If a single auxiliary sequence provides a quadratic speedup, what would two sequences give? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively to do even better? It is tempting to ride this wave of optimism - to the cube root and beyond! Now, improvements to the momentum algorithm do exist - but they all run up to a certain, critical, almost inescapable lower bound.
+  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond! Now, improvements to the momentum algorithm do exist - but they all run up to a certain, critical, almost inescapable lower bound.
   </p>
-  <h3>Adventures in Algorthmic Space</h3>
+  <h3>Adventures in Algorithmic Space</h3>
   <p>
   To understand the limits of what we can do, we must first formally define the algorithmic space in which we are searching. Here's one possible definition. The observation we will make is that both Gradient Descent and momentum can be "unrolled". Indeed, since
   $$
@@ -1392,9 +1399,9 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods", and we will show a single function all these methods must ultimately fail on.
 
   </p>
-  <h3>The Convex Rosenbrock</h3>
+  <h3>The Resisting Oracle</h3>
   <p>
-  Earlier, when we talked about the colorizer problem, we observed that wiry graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrok. 
+  Earlier, when we talked about the colorizer problem, we observed that wiry graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrok,
   </p>
   <figure style="width:610px; height:65px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
@@ -1459,10 +1466,10 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
-    <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 70 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
+    <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 50 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
     <div style="position:absolute; top:150px; left:-80px">
-    <figcaption style="width:160px; position:absolute; left:670px; top:90px">Notice that this triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
+    <figcaption style="width:160px; position:absolute; left:670px; top:90px">This triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
     <figcaption style="width:160px; position:absolute; left:670px; top:310px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
     <div id = "iterates" style="position:absolute; top:60px; left:0"></div>
     <div class="figtext" style="position:absolute; top:-2px; width:300px; left:452px; height:100px">Error</div>
@@ -1625,10 +1632,10 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{aligned}
   $$
 
-  As $n$ gets large, the final term going to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes to yield the lower bound, which no linear first order algorithm, not ADAM or AdaGrad or Conjugate Gradients, can do better than.
+  As $n$ gets large, the final term goes to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best momentum can do. And we arrive at the disappointing conclusion that on this iteration, this is the best any first order algorithm can do.
   </p>
   <p>
-  Like many such lower bounds, results like this must not be taken literally, but spiritually. Some of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. But it is a surprising and satisfying coincidence that this lower bound is exactly that achieved by gradient descent with momentum.
+  Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. Many of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. And this lower bound does not preclude the possibility of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
   </p>
 
 <hr>

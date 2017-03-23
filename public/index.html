@@ -180,7 +180,7 @@
   </p>
  -->
   <p>
-  Gradient descent as many virtues, but speed is not one of them. The iteration is is simple - when optimizing a smooth function $f$, we make a small step in the gradient
+  Gradient descent as many virtues, but speed is not one of them. The iteration is is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
@@ -188,7 +188,7 @@
   </p>
 
   <p>
-  But the exponential decrease, though appealing in theory, can often be infuriatingly small. Things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. What has gone wrong?
+  But the exponential decrease, though appealing in theory, can often be infuriatingly small. Things often begin quite well -- with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. What has gone wrong?
   </p>
 
   <p>
@@ -211,11 +211,11 @@
   </p>
 
   <p>
-  The new iteration, known best to machine learners as Momentum<dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new iteration, known best to machine learners as Momentum<dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
   <p>
-  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now - momentum is an algorithm for the book.
+  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
   </p>
 
 <hr>

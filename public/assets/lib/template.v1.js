@@ -28,7 +28,7 @@ var base = "html {\n  font: 400 16px/1.55em -apple-system, BlinkMacSystemFont, \
 
 var layout = "/*\n  Column: 60px\n  Gutter: 24px\n\n  Body: 648px\n    - 8 columns\n    - 7 gutters\n  Middle: 816px\n  Page: 984px\n    - 12 columns\n    - 11 gutters\n*/\n\n.l-body,\n.l-body-outset,\n.l-page,\n.l-page-outset,\n.l-middle,\n.l-middle-outset,\ndt-article > div,\ndt-article > p,\ndt-article > h1,\ndt-article > h2,\ndt-article > h3,\ndt-article > h4,\ndt-article > figure,\ndt-article > ul,\ndt-article > dt-byline,\ndt-article > dt-code,\ndt-article section > div,\ndt-article section > p,\ndt-article section > h1,\ndt-article section > h2,\ndt-article section > h3,\ndt-article section > h4,\ndt-article section > figure,\ndt-article section > ul,\ndt-article section > dt-byline,\ndt-article section > dt-code {\n  width: auto;\n  margin-left: 24px;\n  margin-right: 24px;\n  box-sizing: border-box;\n}\n\n@media(min-width: 768px) {\n  .l-body,\n  .l-body-outset,\n  .l-page,\n  .l-page-outset,\n  .l-middle,\n  .l-middle-outset,\n  dt-article > div,\n  dt-article > p,\n  dt-article > h1,\n  dt-article > h2,\n  dt-article > h3,\n  dt-article > h4,\n  dt-article > figure,\n  dt-article > ul,\n  dt-article > dt-byline,\n  dt-article > dt-code,\n  dt-article section > div,\n  dt-article section > p,\n  dt-article section > h1,\n  dt-article section > h2,\n  dt-article section > h3,\n  dt-article section > h4,\n  dt-article section > figure,\n  dt-article section > ul,\n  dt-article section > dt-byline,\n  dt-article section > dt-code {\n    margin-left: 72px;\n    margin-right: 72px;\n  }\n}\n\n@media(min-width: 1080px) {\n  .l-body,\n  dt-article > div,\n  dt-article > p,\n  dt-article > h2,\n  dt-article > h3,\n  dt-article > h4,\n  dt-article > figure,\n  dt-article > ul,\n  dt-article > dt-byline,\n  dt-article > dt-code,\n  dt-article section > div,\n  dt-article section > p,\n  dt-article section > h2,\n  dt-article section > h3,\n  dt-article section > h4,\n  dt-article section > figure,\n  dt-article section > ul,\n  dt-article section > dt-byline,\n  dt-article section > dt-code {\n    margin-left: calc(50% - 984px / 2);\n    width: 648px;\n  }\n  .l-body-outset,\n  dt-article .l-body-outset {\n    margin-left: calc(50% - 984px / 2 - 96px/2);\n    width: calc(648px + 96px);\n  }\n  .l-middle,\n  dt-article .l-middle {\n    width: 816px;\n    margin-left: calc(50% - 984px / 2);\n    margin-right: auto;\n  }\n  .l-middle-outset,\n  dt-article .l-middle-outset {\n    width: calc(816px + 96px);\n    margin-left: calc(50% - 984px / 2 - 48px);\n    margin-right: auto;\n  }\n  dt-article > h1,\n  dt-article section > h1,\n  .l-page,\n  dt-article .l-page,\n  dt-article.centered .l-page {\n    width: 984px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .l-page-outset,\n  dt-article .l-page-outset,\n  dt-article.centered .l-page-outset {\n    width: 1080px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n  .l-screen,\n  dt-article .l-screen,\n  dt-article.centered .l-screen {\n    margin-left: auto;\n    margin-right: auto;\n    width: auto;\n  }\n  .l-screen-inset,\n  dt-article .l-screen-inset,\n  dt-article.centered .l-screen-inset {\n    margin-left: 24px;\n    margin-right: 24px;\n    width: auto;\n  }\n  .l-gutter,\n  dt-article .l-gutter {\n    clear: both;\n    float: right;\n    margin-top: 0;\n    margin-left: 24px;\n    margin-right: calc((100vw - 984px) / 2 + 168px);\n    width: calc((984px - 648px) / 2 - 24px);\n  }\n\n  /* Side */\n  .side.l-body,\n  dt-article .side.l-body {\n    clear: both;\n    float: right;\n    margin-top: 0;\n    margin-left: 48px;\n    margin-right: calc((100vw - 984px + 648px) / 2);\n    width: calc(648px / 2 - 24px - 84px);\n  }\n  .side.l-body-outset,\n  dt-article .side.l-body-outset {\n    clear: both;\n    float: right;\n    margin-top: 0;\n    margin-left: 48px;\n    margin-right: calc((100vw - 984px + 648px - 48px) / 2);\n    width: calc(648px / 2 - 48px + 24px);\n  }\n  .side.l-middle,\n  dt-article .side.l-middle {\n    clear: both;\n    float: right;\n    width: calc(456px - 84px);\n    margin-left: 48px;\n    margin-right: calc((100vw - 984px) / 2 + 168px);\n  }\n  .side.l-middle-outset,\n  dt-article .side.l-middle-outset {\n    clear: both;\n    float: right;\n    width: 456px;\n    margin-left: 48px;\n    margin-right: calc((100vw - 984px) / 2 + 168px);\n  }\n  .side.l-page,\n  dt-article .side.l-page {\n    clear: both;\n    float: right;\n    margin-left: 48px;\n    width: calc(624px - 84px);\n    margin-right: calc((100vw - 984px) / 2);\n  }\n  .side.l-page-outset,\n  dt-article .side.l-page-outset {\n    clear: both;\n    float: right;\n    width: 624px;\n    margin-right: calc((100vw - 984px) / 2);\n  }\n}\n\n/* Centered */\n\n@media(min-width: 1080px) {\n  .centered .l-body,\n  .centered.l-body,\n  dt-article.centered > div,\n  dt-article.centered > p,\n  dt-article.centered > h2,\n  dt-article.centered > h3,\n  dt-article.centered > h4,\n  dt-article.centered > figure,\n  dt-article.centered > ul,\n  dt-article.centered > dt-byline,\n  dt-article.centered > dt-code,\n  dt-article.centered section > div,\n  dt-article.centered section > p,\n  dt-article.centered section > h2,\n  dt-article.centered section > h3,\n  dt-article.centered section > h4,\n  dt-article.centered section > figure,\n  dt-article.centered section > ul,\n  dt-article.centered section > dt-byline,\n  dt-article.centered section > dt-code,\n  dt-article section.centered > div,\n  dt-article section.centered > p,\n  dt-article section.centered > h2,\n  dt-article section.centered > h3,\n  dt-article section.centered > h4,\n  dt-article section.centered > figure,\n  dt-article section.centered > ul,\n  dt-article section.centered > dt-byline,\n  dt-article section.centered > dt-code {\n    margin-left: auto;\n    margin-right: auto;\n    width: 648px;\n  }\n  .centered .l-body-outset,\n  .centered.l-body-outset,\n  dt-article.centered .l-body-outset {\n    margin-left: auto;\n    margin-right: auto;\n    width: calc(648px + 96px);\n  }\n  dt-article.centered > h1,\n  dt-article.centered section > h1,\n  dt-article section.centered > h1,\n  .centered .l-middle,\n  .centered.l-middle,\n  dt-article.centered .l-middle {\n    width: 816px;\n    margin-left: auto;\n    margin-right: auto;\n  }\n\n  .centered .l-middle-outset,\n  .centered.l-middle-outset,\n  dt-article.centered .l-middle-outset {\n    width: calc(816px + 96px);\n    margin-left: auto;\n    margin-right: auto;\n  }\n\n  /* page and screen are already centered */\n\n  /* Side */\n\n  .centered .side.l-body,\n  .centered dt-article .side.l-body {\n    clear: both;\n    float: right;\n    margin-top: 0;\n    margin-left: 48px;\n    margin-right: calc((100vw - 648px) / 2);\n    width: calc(4 * 60px + 3 * 24px);\n  }\n  .centered .side.l-body-outset,\n  .centered dt-article .side.l-body-outset {\n    clear: both;\n    float: right;\n    margin-top: 0;\n    margin-left: 48px;\n    margin-right: calc((100vw - 648px) / 2);\n    width: calc(4 * 60px + 3 * 24px);\n  }\n  .centered .side.l-middle,\n  .centered dt-article .side.l-middle {\n    clear: both;\n    float: right;\n    width: 396px;\n    margin-left: 48px;\n    margin-right: calc((100vw - 984px) / 2 + 168px / 2);\n  }\n  .centered .side.l-middle-outset,\n  .centered dt-article .side.l-middle-outset {\n    clear: both;\n    float: right;\n    width: 456px;\n    margin-left: 48px;\n    margin-right: calc((100vw - 984px) / 2 + 168px);\n  }\n  .centered .side.l-page,\n  .centered dt-article .side.l-page {\n    clear: both;\n    float: right;\n    width: 480px;\n    margin-right: calc((100vw - 984px) / 2);\n  }\n  .centered .side.l-page-outset,\n  .centered dt-article .side.l-page-outset {\n    clear: both;\n    float: right;\n    width: 480px;\n    margin-right: calc((100vw - 984px) / 2);\n  }\n  .centered .l-gutter,\n  .centered.l-gutter,\n  dt-article.centered .l-gutter {\n    clear: both;\n    float: right;\n    margin-top: 0;\n    margin-left: 24px;\n    margin-right: calc((100vw - 984px) / 2);\n    width: calc((984px - 648px) / 2 - 24px);\n  }\n\n}\n\n/* Rows and Columns */\n\n.row {\n  display: flex;\n}\n.column {\n  flex: 1;\n  box-sizing: border-box;\n  margin-right: 24px;\n  margin-left: 24px;\n}\n.row > .column:first-of-type {\n  margin-left: 0;\n}\n.row > .column:last-of-type {\n  margin-right: 0;\n}\n";
 
-var article = "dt-article {\n  display: block;\n  color: rgba(0, 0, 0, 0.8);\n  font: 17px/1.55em -apple-system, BlinkMacSystemFont, \"Roboto\", sans-serif;\n  padding-bottom: 72px;\n  overflow: hidden;\n  background: white;\n  min-height: calc(100vh - 70px - 182px);\n}\n\n@media(min-width: 1024px) {\n  dt-article {\n    font-size: 20px;\n  }\n}\n\n/* H1 */\n\ndt-article h1 {\n  margin-top: 18px;\n  font-weight: 400;\n  font-size: 40px;\n  line-height: 1em;\n  font-family: HoeflerText-Regular, Cochin, Georgia, serif;\n}\n@media(min-width: 768px) {\n  dt-article h1 {\n    font-size: 46px;\n    margin-top: 48px;\n    margin-bottom: 12px;\n  }\n}\n\n@media(min-width: 1080px) {\n  .centered h1 {\n    text-align: center;\n  }\n\n  dt-article h1 {\n    font-size: 50px;\n    letter-spacing: -0.02em;\n  }\n\n  dt-article > h1:first-of-type,\n  dt-article section > h1:first-of-type {\n    margin-top: 80px;\n  }\n}\n\n\n@media(min-width: 1200px) {\n  dt-article h1 {\n    font-size: 56px;\n  }\n\n  dt-article > h1:first-of-type {\n    margin-top: 100px;\n  }\n}\n\n/* H2 */\n\ndt-article h2 {\n  font-family: HoeflerText-Regular, Cochin, Georgia, serif;\n  font-weight: 400;\n  font-size: 26px;\n  line-height: 1.25em;\n  margin-top: 36px;\n  margin-bottom: 24px;\n}\n\n@media(min-width: 1024px) {\n  dt-article h2 {\n    margin-top: 48px;\n    font-size: 30px;\n  }\n}\n\ndt-article h1 + h2 {\n  font-weight: 300;\n  font-size: 20px;\n  line-height: 1.4em;\n  margin-top: 8px;\n  font-style: normal;\n}\n\n\n@media(min-width: 1080px) {\n  .centered h1 + h2 {\n    text-align: center;\n  }\n  dt-article h1 + h2 {\n    margin-top: 12px;\n    font-size: 24px;\n  }\n}\n\n/* H3 */\n\ndt-article h3 {\n  font-family: HoeflerText-Regular, Georgia, serif;\n  font-weight: 400;\n  font-size: 20px;\n  line-height: 1.4em;\n  margin-top: 36px;\n  margin-bottom: 18px;\n  font-style: italic;\n}\n\ndt-article h1 + h3 {\n  margin-top: 48px;\n}\n\n@media(min-width: 1024px) {\n  dt-article h3 {\n    font-size: 26px;\n  }\n}\n\n/* H4 */\n\ndt-article h4 {\n  font-weight: 600;\n  text-transform: uppercase;\n  font-size: 14px;\n  line-height: 1.4em;\n}\n\ndt-article a {\n  color: inherit;\n}\n\ndt-article p,\ndt-article ul,\ndt-article ol {\n  margin-bottom: 24px;\n  font-family: Georgia, serif;\n}\n\ndt-article p b,\ndt-article ul b,\ndt-article ol b {\n  -webkit-font-smoothing: antialiased;\n}\n\ndt-article a {\n  border-bottom: 1px solid rgba(0, 0, 0, 0.4);\n  text-decoration: none;\n}\n\ndt-article a:hover {\n  border-bottom: 1px solid rgba(0, 0, 0, 0.8);\n}\n\ndt-article .link {\n  text-decoration: underline;\n  cursor: pointer;\n}\n\ndt-article ul,\ndt-article ol {\n  padding-left: 24px;\n}\n\ndt-article li {\n  margin-bottom: 24px;\n  margin-left: 0;\n  padding-left: 0;\n}\n\ndt-article pre {\n  font-size: 14px;\n  margin-bottom: 20px;\n}\n\n\ndt-article hr {\n  border: none;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.2);\n  margin-top: 60px;\n  margin-bottom: 60px;\n}\n\ndt-article section {\n  margin-top: 60px;\n  margin-bottom: 60px;\n}\n\n\n/* Figure */\n\ndt-article figure {\n  position: relative;\n  margin-top: 30px;\n  margin-bottom: 30px;\n}\n\n@media(min-width: 1024px) {\n  dt-article figure {\n    margin-top: 48px;\n    margin-bottom: 48px;\n  }\n}\n\ndt-article figure img {\n  width: 100%;\n}\n\ndt-article figure svg text,\ndt-article figure svg tspan {\n}\n\ndt-article figure figcaption {\n  color: rgba(0, 0, 0, 0.6);\n  font-size: 12px;\n  line-height: 1.5em;\n}\n@media(min-width: 1024px) {\n  dt-article figure figcaption {\n    font-size: 13px;\n  }\n}\n\ndt-article figure.external img {\n  background: white;\n  border: 1px solid rgba(0, 0, 0, 0.1);\n  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);\n  padding: 18px;\n  box-sizing: border-box;\n}\n\ndt-article figure figcaption a {\n  color: rgba(0, 0, 0, 0.6);\n}\n\n/*dt-article figure figcaption::before {\n  position: relative;\n  display: block;\n  top: -20px;\n  content: \"\";\n  width: 25px;\n  border-top: 1px solid rgba(0, 0, 0, 0.3);\n}*/\n\ndt-article span.equation-mimic {\n  font-family: georgia;\n  font-size: 115%;\n  font-style: italic;\n}\n\ndt-article figure figcaption b {\n  font-weight: 600;\n  color: rgba(0, 0, 0, 1.0);\n}\n\ndt-article > dt-code,\ndt-article section > dt-code  {\n  display: block;\n}\n\ndt-article .citation {\n  color: #668;\n  cursor: pointer;\n}\n\ndt-include {\n  width: auto;\n  display: block;\n}\n";
+var article = "dt-article {\n  display: block;\n  color: rgba(0, 0, 0, 0.8);\n  font: 17px/1.55em -apple-system, BlinkMacSystemFont, \"Roboto\", sans-serif;\n  padding-bottom: 72px;\n  overflow: hidden;\n  background: white;\n}\n\n@media(min-width: 1024px) {\n  dt-article {\n    font-size: 20px;\n  }\n}\n\n/* H1 */\n\ndt-article h1 {\n  margin-top: 18px;\n  font-weight: 400;\n  font-size: 40px;\n  line-height: 1em;\n  font-family: HoeflerText-Regular, Cochin, Georgia, serif;\n}\n@media(min-width: 768px) {\n  dt-article h1 {\n    font-size: 46px;\n    margin-top: 48px;\n    margin-bottom: 12px;\n  }\n}\n\n@media(min-width: 1080px) {\n  .centered h1 {\n    text-align: center;\n  }\n\n  dt-article h1 {\n    font-size: 50px;\n    letter-spacing: -0.02em;\n  }\n\n  dt-article > h1:first-of-type,\n  dt-article section > h1:first-of-type {\n    margin-top: 80px;\n  }\n}\n\n\n@media(min-width: 1200px) {\n  dt-article h1 {\n    font-size: 56px;\n  }\n\n  dt-article > h1:first-of-type {\n    margin-top: 100px;\n  }\n}\n\n/* H2 */\n\ndt-article h2 {\n  font-family: HoeflerText-Regular, Cochin, Georgia, serif;\n  font-weight: 400;\n  font-size: 26px;\n  line-height: 1.25em;\n  margin-top: 36px;\n  margin-bottom: 24px;\n}\n\n@media(min-width: 1024px) {\n  dt-article h2 {\n    margin-top: 48px;\n    font-size: 30px;\n  }\n}\n\ndt-article h1 + h2 {\n  font-weight: 300;\n  font-size: 20px;\n  line-height: 1.4em;\n  margin-top: 8px;\n  font-style: normal;\n}\n\n\n@media(min-width: 1080px) {\n  .centered h1 + h2 {\n    text-align: center;\n  }\n  dt-article h1 + h2 {\n    margin-top: 12px;\n    font-size: 24px;\n  }\n}\n\n/* H3 */\n\ndt-article h3 {\n  font-family: HoeflerText-Regular, Georgia, serif;\n  font-weight: 400;\n  font-size: 20px;\n  line-height: 1.4em;\n  margin-top: 36px;\n  margin-bottom: 18px;\n  font-style: italic;\n}\n\ndt-article h1 + h3 {\n  margin-top: 48px;\n}\n\n@media(min-width: 1024px) {\n  dt-article h3 {\n    font-size: 26px;\n  }\n}\n\n/* H4 */\n\ndt-article h4 {\n  font-weight: 600;\n  text-transform: uppercase;\n  font-size: 14px;\n  line-height: 1.4em;\n}\n\ndt-article a {\n  color: inherit;\n}\n\ndt-article p,\ndt-article ul,\ndt-article ol {\n  margin-bottom: 24px;\n  font-family: Georgia, serif;\n}\n\ndt-article p b,\ndt-article ul b,\ndt-article ol b {\n  -webkit-font-smoothing: antialiased;\n}\n\ndt-article a {\n  border-bottom: 1px solid rgba(0, 0, 0, 0.4);\n  text-decoration: none;\n}\n\ndt-article a:hover {\n  border-bottom: 1px solid rgba(0, 0, 0, 0.8);\n}\n\ndt-article .link {\n  text-decoration: underline;\n  cursor: pointer;\n}\n\ndt-article ul,\ndt-article ol {\n  padding-left: 24px;\n}\n\ndt-article li {\n  margin-bottom: 24px;\n  margin-left: 0;\n  padding-left: 0;\n}\n\ndt-article pre {\n  font-size: 14px;\n  margin-bottom: 20px;\n}\n\n\ndt-article hr {\n  border: none;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.2);\n  margin-top: 60px;\n  margin-bottom: 60px;\n}\n\ndt-article section {\n  margin-top: 60px;\n  margin-bottom: 60px;\n}\n\n\n/* Figure */\n\ndt-article figure {\n  position: relative;\n  margin-top: 30px;\n  margin-bottom: 30px;\n}\n\n@media(min-width: 1024px) {\n  dt-article figure {\n    margin-top: 48px;\n    margin-bottom: 48px;\n  }\n}\n\ndt-article figure img {\n  width: 100%;\n}\n\ndt-article figure svg text,\ndt-article figure svg tspan {\n}\n\ndt-article figure figcaption {\n  color: rgba(0, 0, 0, 0.6);\n  font-size: 12px;\n  line-height: 1.5em;\n}\n@media(min-width: 1024px) {\n  dt-article figure figcaption {\n    font-size: 13px;\n  }\n}\n\ndt-article figure.external img {\n  background: white;\n  border: 1px solid rgba(0, 0, 0, 0.1);\n  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);\n  padding: 18px;\n  box-sizing: border-box;\n}\n\ndt-article figure figcaption a {\n  color: rgba(0, 0, 0, 0.6);\n}\n\n/*dt-article figure figcaption::before {\n  position: relative;\n  display: block;\n  top: -20px;\n  content: \"\";\n  width: 25px;\n  border-top: 1px solid rgba(0, 0, 0, 0.3);\n}*/\n\ndt-article span.equation-mimic {\n  font-family: georgia;\n  font-size: 115%;\n  font-style: italic;\n}\n\ndt-article figure figcaption b {\n  font-weight: 600;\n  color: rgba(0, 0, 0, 1.0);\n}\n\ndt-article > dt-code,\ndt-article section > dt-code  {\n  display: block;\n}\n\ndt-article .citation {\n  color: #668;\n  cursor: pointer;\n}\n\ndt-include {\n  width: auto;\n  display: block;\n}\n";
 
 var code = "/**\n * prism.js default theme for JavaScript, CSS and HTML\n * Based on dabblet (http://dabblet.com)\n * @author Lea Verou\n */\n\ncode {\n  white-space: nowrap;\n  background: rgba(0, 0, 0, 0.04);\n  border-radius: 2px;\n  padding: 4px 7px;\n  font-size: 15px;\n  color: rgba(0, 0, 0, 0.6);\n}\n\npre code {\n  display: block;\n  background: white;\n  border-left: 3px solid rgba(0, 0, 0, 0.05);\n  padding: 0 0 0 24px;\n}\n\n\ncode[class*=\"language-\"],\npre[class*=\"language-\"] {\n  text-shadow: 0 1px white;\n  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;\n  text-align: left;\n  white-space: pre;\n  word-spacing: normal;\n  word-break: normal;\n  word-wrap: normal;\n  line-height: 1.5;\n\n  -moz-tab-size: 4;\n  -o-tab-size: 4;\n  tab-size: 4;\n\n  -webkit-hyphens: none;\n  -moz-hyphens: none;\n  -ms-hyphens: none;\n  hyphens: none;\n}\n\npre[class*=\"language-\"]::-moz-selection, pre[class*=\"language-\"] ::-moz-selection,\ncode[class*=\"language-\"]::-moz-selection, code[class*=\"language-\"] ::-moz-selection {\n  text-shadow: none;\n  background: #b3d4fc;\n}\n\npre[class*=\"language-\"]::selection, pre[class*=\"language-\"] ::selection,\ncode[class*=\"language-\"]::selection, code[class*=\"language-\"] ::selection {\n  text-shadow: none;\n  background: #b3d4fc;\n}\n\n@media print {\n  code[class*=\"language-\"],\n  pre[class*=\"language-\"] {\n  text-shadow: none;\n  }\n}\n\n/* Code blocks */\npre[class*=\"language-\"] {\n  overflow: auto;\n}\n\n:not(pre) > code[class*=\"language-\"],\npre[class*=\"language-\"] {\n}\n\n/* Inline code */\n:not(pre) > code[class*=\"language-\"] {\n  white-space: normal;\n}\n\n.token.comment,\n.token.prolog,\n.token.doctype,\n.token.cdata {\n  color: slategray;\n}\n\n.token.punctuation {\n  color: #999;\n}\n\n.namespace {\n  opacity: .7;\n}\n\n.token.property,\n.token.tag,\n.token.boolean,\n.token.number,\n.token.constant,\n.token.symbol,\n.token.deleted {\n  color: #905;\n}\n\n.token.selector,\n.token.attr-name,\n.token.string,\n.token.char,\n.token.builtin,\n.token.inserted {\n  color: #690;\n}\n\n.token.operator,\n.token.entity,\n.token.url,\n.language-css .token.string,\n.style .token.string {\n  color: #a67f59;\n  background: hsla(0, 0%, 100%, .5);\n}\n\n.token.atrule,\n.token.attr-value,\n.token.keyword {\n  color: #07a;\n}\n\n.token.function {\n  color: #DD4A68;\n}\n\n.token.regex,\n.token.important,\n.token.variable {\n  color: #e90;\n}\n\n.token.important,\n.token.bold {\n  font-weight: bold;\n}\n.token.italic {\n  font-style: italic;\n}\n\n.token.entity {\n  cursor: help;\n}\n";
 
@@ -4220,7 +4220,7 @@ var bibliography = function(dom, data) {
                             function (full, x, char) { return char; });
           val = val.replace(/{\\([a-zA-Z])}/g,
                             function (full, char) { return char; });
-          e.entryTags[k] = val;
+          e.entryTags[k.toLowerCase()] = val;
         }
         bibliography[e.citationKey] = e.entryTags;
         bibliography[e.citationKey].type = e.entryType;
@@ -5092,8 +5092,14 @@ var expandData = function(dom, data) {
     data.authors = data.authors || [];
 
     // paths
-    data.url = "http://distill.pub/" + data.distillPath;
+    if (!data.distillPath && !data.url) {
+      data.url = "http://distill.pub/";
+    } else if (!data.url) {
+      data.url = "http://distill.pub/" + data.distillPath;
+    }
     data.githubUrl = "https://github.com/" + data.githubPath;
+
+    data.previewURL = data.previewURL ? data.previewURL : data.url + "/thumbnail.jpg";
 
     // Homepage
     //data.homepage = !post.noHomepage;
@@ -5138,13 +5144,90 @@ var expandData = function(dom, data) {
 
 var favicon = "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA99JREFUeNrsG4t1ozDMzQSM4A2ODUonKBucN2hugtIJ6E1AboLcBiQTkJsANiAb9OCd/OpzMWBJBl5TvaeXPiiyJetry0J8wW3D3QpjRh3GjneXDq+fSQA9s2mH9x3KDhN4foJfCb8N/Jrv+2fnDn8vLRQOplWHVYdvHZYdZsBcZP1vBmh/n8DzEmhUQDPaOuP9pFuY+JwJHwHnCLQE2tnWBGEyXozY9xCUgHMhhjE2I4heVWtgIkZ83wL6Qgxj1obfWBxymPwe+b00BCCRNPbwfb60yleAkkBHGT5AEehIYz7eJrFDMF9CvH4wwhcGHiHMneFvLDQwlwvMLQq58trRcYBWfYn0A0OgHWQUSu25mE+BnoYKnnEJoeIWAifzOv7vLWd2ZKRfWAIme3tOiUaQ3UnLkb0xj1FxRIeEGKaGIHOs9nEgLaaA9i0JRYo1Ic67wJW86KSKE/ZAM8KuVMk8ITVhmxUxJ3Cl2xlm9Vtkeju1+mpCQNxaEGNCY8bs9X2YqwNoQeGjBWut/ma0QAWy/TqAsHx9wSya3I5IRxOfTC+leG+kA/4vSeEcGBtNUN6byhu3+keEZCQJUNh8MAO7HL6H8pQLnsW/Hd4T4lv93TPjfM7A46iEEqbB5EDOvwYNW6tGNZzT/o+CZ6sqZ6wUtR/wf7mi/VL8iNciT6rHih48Y55b4nKCHJCCzb4y0nwFmin3ZEMIoLfZF8F7nncFmvnWBaBj7CGAYA/WGJsUwHdYqVDwAmNsUgAx4CGgAA7GOOxADYOFWOaIKifuVYzmOpREqA21Mo7aPsgiY1PhOMAmxtR+AUbYH3Id2wc0SAFIQTsn9IUGWR8k9jx3vtXSiAacFxTAGakBk9UudkNECd6jLe+6HrshshvIuC6IlLMRy7er+JpcKma24SlE4cFZSZJDGVVrsNvitQhQrDhW0jfiOLfFd47C42eHT56D/BK0To+58Ahj+cAT8HT1UWlfLZCCd/uKawzU0Rh2EyIX/Icqth3niG8ybNroezwe6khdCNxRN+l4XGdOLVLlOOt2hTRJlr1ETIuMAltVTMz70mJrkdGAaZLSmnBEqmAE32JCMmuTlCnRgsBENtOUpHhvvsYIL0ibnBkaC6QvKcR7738GKp0AKnim7xgUSNv1bpS8QwhBt8r+EP47v/oyRK/S34yJ9nT+AN0Tkm4OdB9E4BsmXM3SnMlRFUrtp6IDpV2eKzdYvF3etm3KhQksbOLChGkSmcBdmcEwvqkrMy5BzL00NZeu3qPYJOOuCc+5NjcWKXQxFvTa3NoXJ4d8in7fiAUuTt781dkvuHX4K8AA2Usy7yNKLy0AAAAASUVORK5CYII=\n";
 
+/*!
+ * escape-html
+ * Copyright(c) 2012-2013 TJ Holowaychuk
+ * Copyright(c) 2015 Andreas Lubbe
+ * Copyright(c) 2015 Tiancheng "Timothy" Gu
+ * MIT Licensed
+ */
+
+/**
+ * Module variables.
+ * @private
+ */
+
+var matchHtmlRegExp = /["'&<>]/;
+
+/**
+ * Module exports.
+ * @public
+ */
+
+var index$1 = escapeHtml;
+
+/**
+ * Escape special characters in the given string of html.
+ *
+ * @param  {string} string The string to escape for inserting into HTML
+ * @return {string}
+ * @public
+ */
+
+function escapeHtml(string) {
+  var str = '' + string;
+  var match = matchHtmlRegExp.exec(str);
+
+  if (!match) {
+    return str;
+  }
+
+  var escape;
+  var html = '';
+  var index = 0;
+  var lastIndex = 0;
+
+  for (index = match.index; index < str.length; index++) {
+    switch (str.charCodeAt(index)) {
+      case 34: // "
+        escape = '&quot;';
+        break;
+      case 38: // &
+        escape = '&amp;';
+        break;
+      case 39: // '
+        escape = '&#39;';
+        break;
+      case 60: // <
+        escape = '&lt;';
+        break;
+      case 62: // >
+        escape = '&gt;';
+        break;
+      default:
+        continue;
+    }
+
+    if (lastIndex !== index) {
+      html += str.substring(lastIndex, index);
+    }
+
+    lastIndex = index + 1;
+    html += escape;
+  }
+
+  return lastIndex !== index
+    ? html + str.substring(lastIndex, index)
+    : html;
+}
+
 var meta = function(dom, data) {
   var head = dom.querySelector("head");
   var appendHead = function (html) { return appendHtml(head, html); };
 
-  function meta(name, content) {
-    if (content)
-      { appendHead(("    <meta name=\"" + name + "\" content=\"" + content + "\" >\n")); }
+  function meta(name, content, force) {
+    if (content || force)
+      { appendHead(("    <meta name=\"" + name + "\" content=\"" + (index$1(content)) + "\" >\n")); }
   }
 
   appendHead(("\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge,chrome=1\">\n    <link rel=\"icon\" type=\"image/png\" href=\"data:image/png;base64," + favicon + "\">\n    <link href=\"/rss.xml\" rel=\"alternate\" type=\"application/rss+xml\" title=\"Articles from Distill\">\n    <link rel=\"canonical\" href=\"" + (data.url) + "\">\n    <title>" + (data.title) + "</title>\n  "));
@@ -5154,29 +5237,32 @@ var meta = function(dom, data) {
     appendHtml(head, ("\n      <meta property=\"article:author\" content=\"" + (a.firstName) + " " + (a.lastName) + "\" />"));
   });
 
-  appendHead(("\n    <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->\n    <meta property=\"og:type\" content=\"article\"/>\n    <meta property=\"og:title\" content=\"" + (data.title) + "\"/>\n    <meta property=\"og:description\" content=\"" + (data.description) + "\">\n    <meta property=\"og:url\" content=\"" + (data.url) + "\"/>\n    <meta property=\"og:image\" content=\"" + (data.url) + "/thumbnail.jpg\"/>\n    <meta property=\"og:locale\" content=\"en_US\" />\n    <meta property=\"og:site_name\" content=\"Distill\" />\n  "));
+  appendHead(("\n    <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->\n    <meta property=\"og:type\" content=\"article\"/>\n    <meta property=\"og:title\" content=\"" + (data.title) + "\"/>\n    <meta property=\"og:description\" content=\"" + (data.description) + "\">\n    <meta property=\"og:url\" content=\"" + (data.url) + "\"/>\n    <meta property=\"og:image\" content=\"" + (data.previewURL) + "\"/>\n    <meta property=\"og:locale\" content=\"en_US\" />\n    <meta property=\"og:site_name\" content=\"Distill\" />\n  "));
 
-  appendHead(("\n    <!--  https://dev.twitter.com/cards/types/summary -->\n    <meta name=\"twitter:card\" content=\"summary_large_image\">\n    <meta name=\"twitter:title\" content=\"" + (data.title) + "\">\n    <meta name=\"twitter:description\" content=\"" + (data.description) + "\">\n    <meta name=\"twitter:url\" content=\"" + (data.url) + "\">\n    <meta name=\"twitter:image\" content=\"" + (data.url) + "/thumbnail.jpg\">\n    <meta name=\"twitter:image:width\" content=\"560\">\n    <meta name=\"twitter:image:height\" content=\"295\">\n  "));
+  appendHead(("\n    <!--  https://dev.twitter.com/cards/types/summary -->\n    <meta name=\"twitter:card\" content=\"summary_large_image\">\n    <meta name=\"twitter:title\" content=\"" + (data.title) + "\">\n    <meta name=\"twitter:description\" content=\"" + (data.description) + "\">\n    <meta name=\"twitter:url\" content=\"" + (data.url) + "\">\n    <meta name=\"twitter:image\" content=\"" + (data.previewURL) + "\">\n    <meta name=\"twitter:image:width\" content=\"560\">\n    <meta name=\"twitter:image:height\" content=\"295\">\n  "));
 
   // if this is a proprer article, generate Google Scholar meta data
   if (data.doiSuffix){
     appendHead("\n      <!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->\n");
 
     meta("citation_title", data.title);
-    meta("citation_fulltext_html_url", data.url);
+    //meta("citation_fulltext_html_url", data.url);
     meta("citation_volume", data.volume);
     meta("citation_issue", data.issue);
     meta("citation_firstpage", data.doiSuffix? ("e" + (data.doiSuffix)) : undefined);
     meta("citation_doi", data.doi);
 
     var journal = data.journal || {};
-    meta("citation_journal_title", journal.name);
-    meta("citation_journal_abbrev", journal.nameAbbrev);
+    meta("citation_journal_title", journal.full_title || journal.title);
+    meta("citation_journal_abbrev", journal.abbrev_title);
     meta("citation_issn", journal.issn);
     meta("citation_publisher", journal.publisher);
+    meta("citation_fulltext_world_readable", "", true);
 
     if (data.publishedDate){
       var zeroPad = function (n) { return n < 10 ? "0" + n : n; };
+      meta("citation_online_date", ((data.publishedYear) + "/" + (data.publishedMonthPadded) + "/" + (data.publishedDayPadded)));
+      // Should we do something different here?
       meta("citation_publication_date", ((data.publishedYear) + "/" + (data.publishedMonthPadded) + "/" + (data.publishedDayPadded)));
     }
 
@@ -5203,10 +5289,32 @@ function appendHtml(el, html) {
 }
 
 function citation_meta_content(ref){
+  // Special test for arxiv
   var content = "citation_title=" + (ref.title) + ";";
-  ref.author.split(" and ").forEach(function (author) {
-    content += "citation_author=" + (author.trim()) + ";";
+
+  var name_strings = ref.author.split(" and ").forEach(function (name) {
+    name = name.trim();
+    if (name.indexOf(",") != -1){
+      var last = name.split(",")[0].trim();
+      var firsts = name.split(",")[1].trim();
+    } else {
+      var last = name.split(" ").slice(-1)[0].trim();
+      var firsts = name.split(" ").slice(0,-1).join(" ");
+    }
+    content += "citation_author=" + firsts + " " + last + ";";
   });
+
+  if ("year" in ref) {
+    content += "citation_publication_date=" + (ref.year) + ";";
+  }
+
+  var arxiv_id_search = /https?:\/\/arxiv\.org\/pdf\/([0-9]*\.[0-9]*)\.pdf/.exec(ref.url);
+  arxiv_id_search = arxiv_id_search || /https?:\/\/arxiv\.org\/abs\/([0-9]*\.[0-9]*)/.exec(ref.url);
+  arxiv_id_search = arxiv_id_search || /arXiv preprint arXiv:([0-9]*\.[0-9]*)/.exec(ref.journal);
+  if (arxiv_id_search && arxiv_id_search[1]){
+    content += "citation_arxiv_id=" + (arxiv_id_search[1]) + ";";
+    return content;
+  }
   if ("journal" in ref){
     content += "citation_journal_title=" + (ref.journal) + ";";
   }
@@ -5231,22 +5339,6 @@ var banner = function(dom, data) {
   banner.addEventListener("click", function() {
     banner.style.display = "none";
   });
-};
-
-var logo = "<svg viewBox=\"-607 419 64 64\">\n  <path d=\"M-573.4,478.9c-8,0-14.6-6.4-14.6-14.5s14.6-25.9,14.6-40.8c0,14.9,14.6,32.8,14.6,40.8S-565.4,478.9-573.4,478.9z\"/>\n</svg>\n";
-
-var html$2 = "\n<style>\ndt-header {\n  display: block;\n  position: relative;\n  height: 60px;\n  background-color: hsl(200, 60%, 15%);\n  width: 100%;\n  box-sizing: border-box;\n  z-index: 2;\n  color: rgba(0, 0, 0, 0.8);\n  border-bottom: 1px solid rgba(0, 0, 0, 0.08);\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);\n}\ndt-header .content {\n  height: 70px;\n}\ndt-header a {\n  font-size: 16px;\n  height: 60px;\n  line-height: 60px;\n  text-decoration: none;\n  color: rgba(255, 255, 255, 0.8);\n  padding: 22px 0;\n}\ndt-header a:hover {\n  color: rgba(255, 255, 255, 1);\n}\ndt-header svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\n@media(min-width: 1080px) {\n  dt-header {\n    height: 70px;\n  }\n  dt-header a {\n    height: 70px;\n    line-height: 70px;\n    padding: 28px 0;\n  }\n  dt-header .logo {\n  }\n}\ndt-header svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-header .logo {\n  font-size: 17px;\n  font-weight: 200;\n}\ndt-header .nav {\n  float: right;\n  font-weight: 300;\n}\ndt-header .nav a {\n  font-size: 12px;\n  margin-left: 24px;\n  text-transform: uppercase;\n}\n</style>\n\n<div class=\"content l-page\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a>\n  <div class=\"nav\">\n    <a href=\"/faq\">About</a>\n    <a href=\"https://github.com/distillpub\">GitHub</a>\n    <!-- https://twitter.com/distillpub -->\n  </div>\n</div>\n";
-
-var header = function(dom, data) {
-  var el = dom.querySelector("dt-header");
-  if(el) {
-    el.innerHTML = html$2;
-  } else {
-    var header = dom.createElement("dt-header");
-    header.innerHTML = html$2;
-    var b = dom.querySelector("body");
-    b.insertBefore(header, b.firstChild);
-  }
 };
 
 var mustache = createCommonjsModule(function (module, exports) {
@@ -5886,61 +5978,57 @@ var mustache = createCommonjsModule(function (module, exports) {
 }));
 });
 
-var html$3 = "\n<style>\n  dt-byline {\n    font-size: 12px;\n    line-height: 18px;\n    display: block;\n    border-top: 1px solid rgba(0, 0, 0, 0.1);\n    border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n    color: rgba(0, 0, 0, 0.5);\n    padding-top: 12px;\n    padding-bottom: 12px;\n  }\n  dt-article.centered dt-byline {\n    text-align: center;\n\n  }\n  dt-byline a,\n  dt-article dt-byline a {\n    text-decoration: none;\n    border-bottom: none;\n  }\n  dt-article dt-byline a:hover {\n    text-decoration: underline;\n    border-bottom: none;\n  }\n  dt-byline .authors {\n    text-align: left;\n  }\n  dt-byline .name {\n    display: inline;\n    text-transform: uppercase;\n  }\n  dt-byline .affiliation {\n    display: inline;\n  }\n  dt-byline .date {\n    display: block;\n    text-align: left;\n  }\n  dt-byline .year, dt-byline .month {\n    display: inline;\n  }\n  dt-byline .citation {\n    display: block;\n    text-align: left;\n  }\n  dt-byline .citation div {\n    display: inline;\n  }\n\n  @media(min-width: 768px) {\n    dt-byline {\n    }\n  }\n\n  @media(min-width: 1080px) {\n    dt-byline {\n      border-bottom: none;\n      margin-bottom: 70px;\n    }\n\n    dt-byline a:hover {\n      color: rgba(0, 0, 0, 0.9);\n    }\n\n    dt-byline .authors {\n      display: inline-block;\n    }\n\n    dt-byline .author {\n      display: inline-block;\n      margin-right: 12px;\n      /*padding-left: 20px;*/\n      /*border-left: 1px solid #ddd;*/\n    }\n\n    dt-byline .affiliation {\n      display: block;\n    }\n\n    dt-byline .author:last-child {\n      margin-right: 0;\n    }\n\n    dt-byline .name {\n      display: block;\n    }\n\n    dt-byline .date {\n      border-left: 1px solid rgba(0, 0, 0, 0.1);\n      padding-left: 15px;\n      margin-left: 15px;\n      display: inline-block;\n    }\n    dt-byline .year, dt-byline .month {\n      display: block;\n    }\n\n    dt-byline .citation {\n      border-left: 1px solid rgba(0, 0, 0, 0.15);\n      padding-left: 15px;\n      margin-left: 15px;\n      display: inline-block;\n    }\n    dt-byline .citation div {\n      display: block;\n    }\n  }\n</style>\n\n";
+var html$2 = "\n<style>\n  dt-byline {\n    font-size: 12px;\n    line-height: 18px;\n    display: block;\n    border-top: 1px solid rgba(0, 0, 0, 0.1);\n    border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n    color: rgba(0, 0, 0, 0.5);\n    padding-top: 12px;\n    padding-bottom: 12px;\n  }\n  dt-article.centered dt-byline {\n    text-align: center;\n\n  }\n  dt-byline a,\n  dt-article dt-byline a {\n    text-decoration: none;\n    border-bottom: none;\n  }\n  dt-article dt-byline a:hover {\n    text-decoration: underline;\n    border-bottom: none;\n  }\n  dt-byline .authors {\n    text-align: left;\n  }\n  dt-byline .name {\n    display: inline;\n    text-transform: uppercase;\n  }\n  dt-byline .affiliation {\n    display: inline;\n  }\n  dt-byline .date {\n    display: block;\n    text-align: left;\n  }\n  dt-byline .year, dt-byline .month {\n    display: inline;\n  }\n  dt-byline .citation {\n    display: block;\n    text-align: left;\n  }\n  dt-byline .citation div {\n    display: inline;\n  }\n\n  @media(min-width: 768px) {\n    dt-byline {\n    }\n  }\n\n  @media(min-width: 1080px) {\n    dt-byline {\n      border-bottom: none;\n      margin-bottom: 70px;\n    }\n\n    dt-byline a:hover {\n      color: rgba(0, 0, 0, 0.9);\n    }\n\n    dt-byline .authors {\n      display: inline-block;\n    }\n\n    dt-byline .author {\n      display: inline-block;\n      margin-right: 12px;\n      /*padding-left: 20px;*/\n      /*border-left: 1px solid #ddd;*/\n    }\n\n    dt-byline .affiliation {\n      display: block;\n    }\n\n    dt-byline .author:last-child {\n      margin-right: 0;\n    }\n\n    dt-byline .name {\n      display: block;\n    }\n\n    dt-byline .date {\n      border-left: 1px solid rgba(0, 0, 0, 0.1);\n      padding-left: 15px;\n      margin-left: 15px;\n      display: inline-block;\n    }\n    dt-byline .year, dt-byline .month {\n      display: block;\n    }\n\n    dt-byline .citation {\n      border-left: 1px solid rgba(0, 0, 0, 0.15);\n      padding-left: 15px;\n      margin-left: 15px;\n      display: inline-block;\n    }\n    dt-byline .citation div {\n      display: block;\n    }\n  }\n</style>\n\n";
 
-var template = "\n<div class=\"byline\">\n  <div class=\"authors\">\n  {{#authors}}\n    <div class=\"author\">\n      {{#personalURL}}\n        <a class=\"name\" href=\"{{personalURL}}\">{{name}}</a>\n      {{/personalURL}}\n      {{^personalURL}}\n        <div class=\"name\">{{name}}</div>\n      {{/personalURL}}\n      {{#affiliation}}\n        {{#affiliationURL}}\n          <a class=\"affiliation\" href=\"{{affiliationURL}}\">{{affiliation}}</a>\n        {{/affiliationURL}}\n        {{^affiliationURL}}\n          <div class=\"affiliation\">{{affiliation}}</div>\n        {{/affiliationURL}}\n      {{/affiliation}}\n    </div>\n    {{/authors}}\n  </div>\n  <div class=\"date\">\n    <div class=\"month\">{{publishedMonth}}. {{publishedDay}}</div>\n    <div class=\"year\">{{publishedYear}}</div>\n  </div>\n  <a class=\"citation\" href=\"#citation\">\n    <div>Citation:</div>\n    <div>{{concatenatedAuthors}}, {{publishedYear}}</div>\n  </a>\n</div>\n";
+var template = "\n<div class=\"byline\">\n  <div class=\"authors\">\n  {{#authors}}\n    <div class=\"author\">\n      {{#personalURL}}\n        <a class=\"name\" href=\"{{personalURL}}\">{{name}}</a>\n      {{/personalURL}}\n      {{^personalURL}}\n        <div class=\"name\">{{name}}</div>\n      {{/personalURL}}\n      {{#affiliation}}\n        {{#affiliationURL}}\n          <a class=\"affiliation\" href=\"{{affiliationURL}}\">{{affiliation}}</a>\n        {{/affiliationURL}}\n        {{^affiliationURL}}\n          <div class=\"affiliation\">{{affiliation}}</div>\n        {{/affiliationURL}}\n      {{/affiliation}}\n    </div>\n    {{/authors}}\n  </div>\n  {{#publishedYear}}\n  <div class=\"date\">\n    <div class=\"month\">{{publishedMonth}}. {{publishedDay}}</div>\n    <div class=\"year\">{{publishedYear}}</div>\n  </div>\n  {{/publishedYear}}\n  {{#publishedYear}}\n  <a class=\"citation\" href=\"#citation\">\n    <div>Citation:</div>\n    <div>{{concatenatedAuthors}}, {{publishedYear}}</div>\n  </a>\n  {{/publishedYear}}\n</div>\n";
 
 var byline = function(dom, data) {
   var el = dom.querySelector('dt-byline');
   if (el) {
-    el.innerHTML = html$3 + mustache.render(template, data);
+    el.innerHTML = html$2 + mustache.render(template, data);
   }
 };
 
-var html$4 = "\n<style>\n  dt-appendix {\n    display: block;\n    font-size: 14px;\n    line-height: 24px;\n    margin-bottom: 0;\n    border-top: 1px solid rgba(0,0,0,0.1);\n    color: rgba(0,0,0,0.5);\n    background: rgb(250, 250, 250);\n    padding-top: 36px;\n    padding-bottom: 60px;\n  }\n  dt-appendix h3 {\n    font-size: 16px;\n    font-weight: 500;\n    margin-top: 18px;\n    margin-bottom: 18px;\n    color: rgba(0,0,0,0.65);\n  }\n  dt-appendix .citation {\n    font-size: 11px;\n    line-height: 15px;\n    border-left: 1px solid rgba(0, 0, 0, 0.1);\n    padding-left: 18px;\n    border: 1px solid rgba(0,0,0,0.1);\n    background: rgba(0, 0, 0, 0.02);\n    padding: 10px 18px;\n    border-radius: 3px;\n    color: rgba(150, 150, 150, 1);\n    overflow: hidden;\n    margin-top: -12px;\n  }\n  dt-appendix .references {\n    font-size: 12px;\n    line-height: 20px;\n  }\n  dt-appendix a {\n    color: rgba(0, 0, 0, 0.6);\n  }\n  dt-appendix ol,\n  dt-appendix ul {\n    padding-left: 24px;\n  }\n</style>\n\n<div class=\"l-body\">\n  <h3>References</h3>\n  <dt-bibliography></dt-bibliography>\n  <h3 id=\"citation\">Errors, Reuse, and Citation</h3>\n  <p>If you see mistakes or want to suggest changes, please <a class=\"github-issue\">create an issue on GitHub</a>.</p>\n  <p>Diagrams and text are licensed under Creative Commons Attribution <a href=\"https://creativecommons.org/licenses/by/2.0/\">CC-BY 2.0</a>, unless noted otherwise, with the <a class=\"github\">source available on GitHub</a>. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: “Figure from …”.</p>\n  <p>For attribution in academic contexts, please cite this work as</p>\n  <pre class=\"citation short\"></pre>\n  <p>BibTeX citation</p>\n  <pre class=\"citation long\"></pre>\n</div>\n";
+var templateHTML = "\n<style>\n  dt-appendix {\n    display: block;\n    font-size: 14px;\n    line-height: 24px;\n    margin-bottom: 0;\n    border-top: 1px solid rgba(0,0,0,0.1);\n    color: rgba(0,0,0,0.5);\n    background: rgb(250, 250, 250);\n    padding-top: 36px;\n    padding-bottom: 60px;\n  }\n  dt-appendix h3 {\n    font-size: 16px;\n    font-weight: 500;\n    margin-top: 18px;\n    margin-bottom: 18px;\n    color: rgba(0,0,0,0.65);\n  }\n  dt-appendix .citation {\n    font-size: 11px;\n    line-height: 15px;\n    border-left: 1px solid rgba(0, 0, 0, 0.1);\n    padding-left: 18px;\n    border: 1px solid rgba(0,0,0,0.1);\n    background: rgba(0, 0, 0, 0.02);\n    padding: 10px 18px;\n    border-radius: 3px;\n    color: rgba(150, 150, 150, 1);\n    overflow: hidden;\n    margin-top: -12px;\n  }\n  dt-appendix .references {\n    font-size: 12px;\n    line-height: 20px;\n  }\n  dt-appendix a {\n    color: rgba(0, 0, 0, 0.6);\n  }\n  dt-appendix ol,\n  dt-appendix ul {\n    padding-left: 24px;\n  }\n</style>\n\n<div class=\"l-body\">\n</div>\n";
 
 var appendix = function(dom, data) {
   var el = dom.querySelector('dt-appendix');
   if (el) {
-    var oldHtml = el.innerHTML;
-    el.innerHTML = html$4;
-    var div = el.querySelector("div.l-body");
+    var userHTML = el.innerHTML;
+    el.innerHTML = templateHTML;
+    var newHTML = "";
 
+    // If we have some footnotes on the page, render a container for the footnote list.
     if (dom.querySelector("dt-fn")) {
-      div.innerHTML = "<h3>Footnotes</h3><dt-fn-list></dt-fn-list>" + div.innerHTML;
+      newHTML = newHTML + "<h3>Footnotes</h3><dt-fn-list></dt-fn-list>";
     }
 
-    div.innerHTML = oldHtml + div.innerHTML;
-    if (data.githubCompareUpdatesUrl) {
-      div.innerHTML = "<h3>Updates</h3><p><a href=\"" + (data.githubCompareUpdatesUrl) + "\">View all changes</a> to this article since it was first published.</p>" + div.innerHTML;
+    // If we have any citations on the page, render a container for the bibliography.
+    if (dom.querySelector("dt-cite")) {
+      newHTML = newHTML + "<h3>References</h3><dt-bibliography></dt-bibliography>";
     }
 
-    el.querySelector("a.github").setAttribute("href", data.githubUrl);
-    el.querySelector("a.github-issue").setAttribute("href", data.githubUrl + "/issues/new");
-    el.querySelector(".citation.short").textContent = data.concatenatedAuthors + ", " + '"' + data.title + '", Distill, ' + data.publishedYear + ".";
-    var bibtex  = "@article{" + data.slug + ",\n";
-        bibtex += "  author = {" + data.bibtexAuthors + "},\n";
-        bibtex += "  title = {" + data.title + "},\n";
-        bibtex += "  journal = {Distill},\n";
-        bibtex += "  year = {" + data.publishedYear + "},\n";
-        bibtex += "  note = {" + data.url + "}\n";
-        bibtex += "}";
-    el.querySelector(".citation.long").textContent = bibtex;
+    var div = el.querySelector("div.l-body");
+    div.innerHTML = userHTML + newHTML;
   }
 
 };
 
-var html$5 = "\n<style>\ndt-footer {\n  display: block;\n  color: rgba(255, 255, 255, 0.4);\n  font-weight: 300;\n  padding: 40px 0;\n  border-top: 1px solid rgba(0, 0, 0, 0.1);\n  background-color: hsl(200, 60%, 15%);\n  text-align: center;\n}\ndt-footer .logo svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\ndt-footer .logo svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-footer .logo {\n  font-size: 17px;\n  font-weight: 200;\n  color: rgba(255, 255, 255, 0.8);\n  text-decoration: none;\n  margin-right: 6px;\n}\n</style>\n\n<div class=\"l-screen-inset\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a> is dedicated to clear explanations of machine learning\n</div>\n";
+var appendixDistill = function(dom, data) {
+  var el = dom.querySelector('dt-appendix > div');
+  if (el) {
+    var existingHTML = el.innerHTML;
+    var newHTML = "";
 
-var footer = function(dom, data) {
-  var el = dom.querySelector("dt-footer");
-  if(el) {
-    el.innerHTML = html$5;
-  } else {
-    var footer = dom.createElement("dt-footer");
-    footer.innerHTML = html$5;
-    var b = dom.querySelector("body");
-    b.appendChild(footer);
+newHTML += "<h3>Updates and Corrections</h3>\n<p><a href=\"" + (data.githubCompareUpdatesUrl) + "\">View all changes</a> to this article since it was first published. If you see a mistake or want to suggest a change, please <a class=\"github-issue\" href=\"" + (data.githubUrl) + "/issues/new\">create an issue on GitHub</a>.</p>";
+
+newHTML += "<h3>Citations and Reuse</h3>\n<p>Diagrams and text are licensed under Creative Commons Attribution <a href=\"https://creativecommons.org/licenses/by/2.0/\">CC-BY 2.0</a>, unless noted otherwise, with the <a class=\"github\" href=\"" + (data.githubUrl) + "\">source available on GitHub</a>. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: “Figure from …”.</p>";
+
+newHTML += "<p>For attribution in academic contexts, please cite this work as</p>\n<pre class=\"citation short\">" + (data.concatenatedAuthors) + ", \"" + (data.title) + "\", " + (data.journal.title) + ", " + (data.publishedYear) + ". http://doi.org/" + (data.doi) + "</pre>";
+
+newHTML += "<p>BibTeX citation</p>\n<pre class=\"citation long\">@article{" + (data.slug) + ",\n  author = {" + (data.bibtexAuthors) + "},\n  title = {" + (data.title) + "},\n  journal = {" + (data.journal.title) + "},\n  year = {" + (data.publishedYear) + "},\n  url = {" + (data.url) + "},\n  doi = {" + (data.doi) + "}\n}</pre>";
+
+    el.innerHTML = existingHTML + newHTML;
   }
 };
 
@@ -8418,7 +8506,7 @@ function quotes(text) {
   return text;
 }
 
-var code$2 = "// DistillHoverBox\n//=====================================\n\nfunction DistillHoverBox(key, pos){\n\n  if (!(key in DistillHoverBox.contentMap)){\n    console.error(\"No DistillHoverBox content registered for key\", key);\n  }\n  if (key in DistillHoverBox.liveBoxes) {\n    console.error(\"There already exists a DistillHoverBox for key\", key);\n  } else {\n    for (var k in DistillHoverBox.liveBoxes)\n      DistillHoverBox.liveBoxes[k].remove();\n    DistillHoverBox.liveBoxes[key] = this;\n  }\n  this.key = key;\n\n  var pretty = window.innerWidth > 600;\n\n  var padding = pretty? 18 : 12;\n  var outer_padding = pretty ? 18 : 0;\n  var bbox = document.querySelector(\"body\").getBoundingClientRect();\n  var left = pos[0] - bbox.left, top = pos[1] - bbox.top;\n  var width = Math.min(window.innerWidth-2*outer_padding, 648);\n  left = Math.min(left, window.innerWidth-width-outer_padding);\n  width = width - 2*padding;\n\n  var str = `<div style=\"position: absolute;\n                          background-color: #FFF;\n                          white-s\n                          opacity: 0.95;\n                          max-width: ${width}px;\n                          top: ${top}px;\n                          left: ${left}px;\n                          border: 1px solid rgba(0, 0, 0, 0.25);\n                          padding: ${padding}px;\n                          border-radius: ${pretty? 3 : 0}px;\n                          box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.2);\n                          z-index: ${1e6}\" >\n              ${DistillHoverBox.contentMap[key]}\n              </div>`;\n\n  this.div = appendBody(str);\n\n  DistillHoverBox.bind (this.div, key);\n}\n\nDistillHoverBox.prototype.remove = function remove(){\n  if (this.div) this.div.remove();\n  if (this.timeout) clearTimeout(this.timeout);\n  delete DistillHoverBox.liveBoxes[this.key];\n}\n\nDistillHoverBox.prototype.stopTimeout = function stopTimeout() {\n  if (this.timeout) clearTimeout(this.timeout);\n}\n\nDistillHoverBox.prototype.extendTimeout = function extendTimeout(T) {\n  //console.log(\"extend\", T)\n  var this_ = this;\n  this.stopTimeout();\n  this.timeout = setTimeout(() => this_.remove(), T);\n}\n\nDistillHoverBox.liveBoxes = {};\nDistillHoverBox.contentMap = {};\n\nDistillHoverBox.bind = function bind(node, key) {\n  if (typeof node == \"string\"){\n    node = document.querySelector(node);\n  }\n  node.addEventListener(\"mouseover\", () => {\n    var bbox = node.getBoundingClientRect();\n    if (!(key in DistillHoverBox.liveBoxes)){\n      new DistillHoverBox(key, [bbox.right, bbox.bottom]);\n    }\n    DistillHoverBox.liveBoxes[key].stopTimeout();\n  });\n  node.addEventListener(\"mouseout\", () => {\n    if (key in DistillHoverBox.liveBoxes){\n      DistillHoverBox.liveBoxes[key].extendTimeout(250);\n    }\n  });\n\n}\n\n\nfunction appendBody(str){\n  var node = nodeFromString(str);\n  var body = document.querySelector(\"body\");\n  body.appendChild(node);\n  return node;\n}\n\nfunction nodeFromString(str) {\n  var div = document.createElement(\"div\");\n  div.innerHTML = str;\n  return div.firstChild;\n}\n\nvar hover_es = document.querySelectorAll(\"span[data-hover]\");\nhover_es = [].slice.apply(hover_es);\nhover_es.forEach((e,n) => {\n  var key = \"hover-\"+n;\n  var content = e.getAttribute(\"data-hover\");\n  DistillHoverBox.contentMap[key] = content;\n  DistillHoverBox.bind(e, key);\n});\n";
+var code$2 = "// DistillHoverBox\n//=====================================\n\nfunction DistillHoverBox(key, pos){\n\n  if (!(key in DistillHoverBox.contentMap)){\n    console.error(\"No DistillHoverBox content registered for key\", key);\n  }\n  if (key in DistillHoverBox.liveBoxes) {\n    console.error(\"There already exists a DistillHoverBox for key\", key);\n  } else {\n    for (var k in DistillHoverBox.liveBoxes)\n      DistillHoverBox.liveBoxes[k].remove();\n    DistillHoverBox.liveBoxes[key] = this;\n  }\n  this.key = key;\n\n  var pretty = window.innerWidth > 600;\n\n  var padding = pretty? 18 : 12;\n  var outer_padding = pretty ? 18 : 0;\n  var bbox = document.querySelector(\"body\").getBoundingClientRect();\n  var left = pos[0] - bbox.left, top = pos[1] - bbox.top;\n  var width = Math.min(window.innerWidth-2*outer_padding, 648);\n  left = Math.min(left, window.innerWidth-width-outer_padding);\n  width = width - 2*padding;\n\n  var str = `<div style=\"position: absolute;\n                          background-color: #FFF;\n                          white-s\n                          opacity: 0.95;\n                          max-width: ${width}px;\n                          top: ${top}px;\n                          left: ${left}px;\n                          border: 1px solid rgba(0, 0, 0, 0.25);\n                          padding: ${padding}px;\n                          border-radius: ${pretty? 3 : 0}px;\n                          box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.2);\n                          z-index: ${1e6}\" >\n              ${DistillHoverBox.contentMap[key]}\n              </div>`;\n\n  this.div = appendBody(str);\n\n  DistillHoverBox.bind (this.div, key);\n}\n\nDistillHoverBox.prototype.remove = function remove(){\n  if (this.div) this.div.remove();\n  if (this.timeout) clearTimeout(this.timeout);\n  delete DistillHoverBox.liveBoxes[this.key];\n}\n\nDistillHoverBox.prototype.stopTimeout = function stopTimeout() {\n  if (this.timeout) clearTimeout(this.timeout);\n}\n\nDistillHoverBox.prototype.extendTimeout = function extendTimeout(T) {\n  //console.log(\"extend\", T)\n  var this_ = this;\n  this.stopTimeout();\n  this.timeout = setTimeout(() => this_.remove(), T);\n}\n\nDistillHoverBox.liveBoxes = {};\nDistillHoverBox.contentMap = {};\n\nDistillHoverBox.bind = function bind(node, key) {\n  if (typeof node == \"string\"){\n    node = document.querySelector(node);\n  }\n  node.addEventListener(\"mouseover\", () => {\n    var bbox = node.getBoundingClientRect();\n    if (!(key in DistillHoverBox.liveBoxes)){\n      new DistillHoverBox(key, [bbox.right, bbox.bottom]);\n    }\n    DistillHoverBox.liveBoxes[key].stopTimeout();\n  });\n  node.addEventListener(\"mouseout\", () => {\n    if (key in DistillHoverBox.liveBoxes){\n      DistillHoverBox.liveBoxes[key].extendTimeout(250);\n    }\n  });\n  node.addEventListener(\"touchend\", () => {\n    if (key in DistillHoverBox.liveBoxes){\n      DistillHoverBox.liveBoxes[key].extendTimeout(250);\n    }\n  });\n\n}\n\n\nfunction appendBody(str){\n  var node = nodeFromString(str);\n  var body = document.querySelector(\"body\");\n  body.appendChild(node);\n  return node;\n}\n\nfunction nodeFromString(str) {\n  var div = document.createElement(\"div\");\n  div.innerHTML = str;\n  return div.firstChild;\n}\n\nvar hover_es = document.querySelectorAll(\"span[data-hover]\");\nhover_es = [].slice.apply(hover_es);\nhover_es.forEach((e,n) => {\n  var key = \"hover-\"+n;\n  var content = e.getAttribute(\"data-hover\");\n  DistillHoverBox.contentMap[key] = content;\n  DistillHoverBox.bind(e, key);\n});\n";
 
 var hoverBox = function(dom) {
   var s = dom.createElement("script");
@@ -8580,6 +8668,36 @@ function xml(obj) {
   return result;
 }
 
+var logo = "<svg viewBox=\"-607 419 64 64\">\n  <path d=\"M-573.4,478.9c-8,0-14.6-6.4-14.6-14.5s14.6-25.9,14.6-40.8c0,14.9,14.6,32.8,14.6,40.8S-565.4,478.9-573.4,478.9z\"/>\n</svg>\n";
+
+var html$3 = "\n<style>\ndt-header {\n  display: block;\n  position: relative;\n  height: 60px;\n  background-color: hsl(200, 60%, 15%);\n  width: 100%;\n  box-sizing: border-box;\n  z-index: 2;\n  color: rgba(0, 0, 0, 0.8);\n  border-bottom: 1px solid rgba(0, 0, 0, 0.08);\n  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);\n}\ndt-header .content {\n  height: 70px;\n}\ndt-header a {\n  font-size: 16px;\n  height: 60px;\n  line-height: 60px;\n  text-decoration: none;\n  color: rgba(255, 255, 255, 0.8);\n  padding: 22px 0;\n}\ndt-header a:hover {\n  color: rgba(255, 255, 255, 1);\n}\ndt-header svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\n@media(min-width: 1080px) {\n  dt-header {\n    height: 70px;\n  }\n  dt-header a {\n    height: 70px;\n    line-height: 70px;\n    padding: 28px 0;\n  }\n  dt-header .logo {\n  }\n}\ndt-header svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-header .logo {\n  font-size: 17px;\n  font-weight: 200;\n}\ndt-header .nav {\n  float: right;\n  font-weight: 300;\n}\ndt-header .nav a {\n  font-size: 12px;\n  margin-left: 24px;\n  text-transform: uppercase;\n}\n</style>\n\n<div class=\"content l-page\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a>\n  <div class=\"nav\">\n    <a href=\"/about/\">About</a>\n    <a href=\"/prize/\">Prize</a>\n    <a href=\"/journal/\">Submit</a>\n  </div>\n</div>\n";
+
+var header = function(dom, data) {
+  var el = dom.querySelector("dt-header");
+  if(el) {
+    el.innerHTML = html$3;
+  } else {
+    var header = dom.createElement("dt-header");
+    header.innerHTML = html$3;
+    var b = dom.querySelector("body");
+    b.insertBefore(header, b.firstChild);
+  }
+};
+
+var html$4 = "\n<style>\ndt-footer {\n  display: block;\n  color: rgba(255, 255, 255, 0.4);\n  font-weight: 300;\n  padding: 40px 0;\n  border-top: 1px solid rgba(0, 0, 0, 0.1);\n  background-color: hsl(200, 60%, 15%);\n  text-align: center;\n}\ndt-footer .logo svg {\n  width: 24px;\n  position: relative;\n  top: 4px;\n  margin-right: 2px;\n}\ndt-footer .logo svg path {\n  fill: none;\n  stroke: rgba(255, 255, 255, 0.8);\n  stroke-width: 3px;\n}\ndt-footer .logo {\n  font-size: 17px;\n  font-weight: 200;\n  color: rgba(255, 255, 255, 0.8);\n  text-decoration: none;\n  margin-right: 6px;\n}\ndt-footer .nav {\n  margin-top: 12px;\n}\ndt-footer .nav a {\n  color: rgba(255, 255, 255, 0.8);\n  margin-right: 6px;\n}\n</style>\n\n<div class=\"l-page\">\n  <div class=\"description\">\n  <a href=\"/\" class=\"logo\">\n    " + logo + "\n    Distill\n  </a>\n  is dedicated to clear explanations of machine learning\n  </div>\n  <div class=\"nav\">\n    <a href=\"http://distill.pub/about/\">About</a>\n    <a href=\"http://distill.pub/journal/\">Submit</a>\n    <a href=\"http://distill.pub/prize/\">Prize</a>\n    <a href=\"http://distill.pub/rss.xml\">RSS</a>\n    <a href=\"https://twitter.com/distillpub\">Twitter</a>\n  </div>\n</div>\n";
+
+var footer = function(dom, data) {
+  var el = dom.querySelector("dt-footer");
+  if(el) {
+    el.innerHTML = html$4;
+  } else {
+    var footer = dom.createElement("dt-footer");
+    footer.innerHTML = html$4;
+    var b = dom.querySelector("body");
+    b.appendChild(footer);
+  }
+};
+
 function renderImmediately(dom) {
   html(dom);
   styles(dom);
@@ -8590,10 +8708,8 @@ function renderOnLoad(dom, data) {
   bibliography(dom, data);
   expandData(dom, data);
   meta(dom, data);
-  header(dom, data);
   byline(dom, data);
   appendix(dom, data);
-  footer(dom, data);
   markdown(dom, data);
   code$1(dom, data);
   citation(dom, data);
@@ -8613,6 +8729,7 @@ if(window && window.document) {
       banner(window.document, data);
     }
     generateCrossref(data);
+    // console.log(data);
   });
 }
 
@@ -8621,11 +8738,19 @@ function render$1(dom, data) {
   renderImmediately(dom);
   renderOnLoad(dom, data);
   // Remove script tag so it doesn't run again in the client
-  var s = dom.querySelector('script[src="http://distill.pub/template.js"]');
+  var s = dom.querySelector('script[src*="distill.pub/template"]');
   if (s) { s.parentElement.removeChild(s); }
 }
 
+// Distill specific rendering
+function distillify(dom, data) {
+  header(dom, data);
+  appendixDistill(dom, data);
+  footer(dom, data);
+}
+
 exports.render = render$1;
+exports.distillify = distillify;
 exports.generateCrossref = generateCrossref;
 
 Object.defineProperty(exports, '__esModule', { value: true });

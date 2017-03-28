@@ -38,8 +38,8 @@ function phaseDiagram_dec(divin) {
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
 
-  var w = 110
-  var h = 110
+  var w = 100
+  var h = 100
   var a = 1.0
 
   var axis = [[-a*5,a*5],[-a,a]]
@@ -53,34 +53,34 @@ function phaseDiagram_dec(divin) {
   var overlay = divin.append("svg")
        .style("position", "absolute")
        .attr("width", 348)
-       .attr("height", 520)
+       .attr("height", 620)
        .style("z-index", 10)
        .style("pointer-events", "none")
 
   // Draw the three phases
 
-  var lambdas = [0, 0.011, 0.25]
-  var betas = [1, 0.985, 0.95, 0.8, 0]
+  var lambdas = [0, 0.011, 0.05, 0.25]
+  var betas = [1, 0.985, 0.95, 0.9, 0.85, 0.8, 0]
 
-  for (var i = 0; i < 5; i ++ ) {
+  for (var i = 0; i < 6; i ++ ) {
     divin.append("figcaption")
       .style("position","absolute")
       .style("width",(w-10) + "px")
       .style("height",20 + "px")
-      .style("left", 70+135*i + "px")
+      .style("left", 65 + (w+8)*i + "px")
       .style("top", 0 + "px")
       .attr("class", "figtext")
       .style("border-bottom", "1px solid black" )
       .html((i != 0 ? "" : "β = ") + betas[i])
   }
 
-  for (var j = 0; j < 3; j ++ ) {
+  for (var j = 0; j < 4; j ++ ) {
     divin.append("figcaption")
       .style("position","absolute")
-      .style("width",35 + "px")
-      .style("height",h + "px")
+      .style("width", 35 + "px")
+      .style("height", h + "px")
       .style("left", 0 + "px")
-      .style("top", 50+150*j + "px")
+      .style("top", 50 + 120*j + "px")
       .attr("class", "figtext")      
       .style("border-right", "1px solid black" )
       .html( (j != 0 ? "" : "<br>λ = ") + lambdas[j])
@@ -123,39 +123,39 @@ function phaseDiagram_dec(divin) {
 
   divin.append("figcaption")
     .style("position","absolute")
-    .style("width",160 + "px")
+    .style("width",120 + "px")
     .style("height",h + "px")
     .style("left", 730 + "px")
-    .style("top", 40 + "px")
+    .style("top", 60 + "px")
     .style("font-size", "12px")
-    .html("When $\\lambda_i = 0$ and $\\beta=1$, the object moves at constant speed. As $\\beta$ goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
+    .html("<b>Vertical</b><br>When $\\lambda_i = 0$ and $\\beta=1$, the object moves at constant speed. As $\\beta$ goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
+
+  // divin.append("figcaption")
+  //   .style("position","absolute")
+  //   .style("width",160 + "px")
+  //   .style("height",h + "px")
+  //   .style("left", 730 + "px")
+  //   .style("top", (150 + 45) + "px")
+  //   .style("font-size", "12px")
+  //   .html("Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$, and moves in a periodic trajectory.")
 
   divin.append("figcaption")
     .style("position","absolute")
-    .style("width",160 + "px")
-    .style("height",h + "px")
-    .style("left", 730 + "px")
-    .style("top", (150 + 45) + "px")
-    .style("font-size", "12px")
-    .html("Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$, and moves in a periodic trajectory.")
-
-  divin.append("figcaption")
-    .style("position","absolute")
-    .style("width",160 + "px")
+    .style("width",120 + "px")
     .style("height",h + "px")
     .style("left", 730 + "px")
     .style("top", (150*2 + 50) + "px")
     .style("font-size", "12px")
     .html("Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
 
-  for (var i = 0; i < 5; i ++ ) {
-    for (var j = 0; j < 3; j ++) {
+  for (var i = 0; i < 6; i ++ ) {
+    for (var j = 0; j < 4; j ++) {
       var div = divin.append("div")
         .style("position","absolute")
         .style("width", w + "px")
         .style("height",h + "px")
-        .style("left", 65+135*i + "px")
-        .style("top", 50+150*j + "px")
+        .style("left", 65 + (w+8)*i + "px")
+        .style("top", 50 + 120*j + "px")
 
       var svg = div.append("svg")
                   .style("position", 'absolute')

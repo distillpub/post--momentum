@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<script src="assets/lib/template.js"></script>
+<script src="assets/lib/template.v1.js"></script>
 <script type="text/front-matter">
   title: Why Momentum Works.
   authors:
@@ -100,7 +100,7 @@
 </svg>
 
 <dt-article class="centered">
-  <h1>Why does Momentum Work?</h1>
+  <h1>How Momentum Really Works</h1>
 
   <figure style = "position:relative; width:984px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
@@ -111,7 +111,7 @@
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
     </div>
     <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 90px; left: 580px; top: 320px;">
-      The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm. 
+      The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm.
     </figcaption>
   </figure>
 
@@ -178,9 +178,9 @@
 <!--   <p>
   If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. Should you keep iterating, and hope for the best?
   </p>
- -->  
+ -->
   <p>
-  Gradient descent as many virtues, but speed is not one of them. The iteration is is simple - when optimizing a smooth function $f$, we make a small step in the gradient
+  Gradient descent as many virtues, but speed is not one of them. The iteration is is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
@@ -188,7 +188,7 @@
   </p>
 
   <p>
-  But the exponential decrease, though appealing in theory, can often be infuriatingly small. Things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. What has gone wrong?
+  But the exponential decrease, though appealing in theory, can often be infuriatingly small. Things often begin quite well -- with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. What has gone wrong?
   </p>
 
   <p>
@@ -211,11 +211,11 @@
   </p>
 
   <p>
-  The new iteration, known best to machine learners as Momentum<dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter - this is similar to the speedup you get from Quicksort, the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new iteration, known best to machine learners as Momentum<dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
   <p>
-  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now - momentum is an algorithm for the book.
+  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
   </p>
 
 <hr>
@@ -378,9 +378,9 @@
                   .margins(20,20)(d3.select("#sliderStep"))
 
 
-      // renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.1)
-      // renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.1)
-      // renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.1)
+      renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.1)
+      renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.1)
+      renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.1)
 
 
       svg.append("text")
@@ -452,7 +452,7 @@
 
   <h3>Example - Polynomial Regression</h3>
   <p>
-  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very interesting, concrete interpretation. 
+  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very interesting, concrete interpretation.
   </p>
 
 <!--   <p>
@@ -488,7 +488,7 @@
   <h4> Example: Polynomial Regression</h4>
 
   <p>
-  Lets understand this phenomena in the quadratic model. 
+  Lets understand this phenomena in the quadratic model.
   </p> -->
   <p>
   Lets see how this plays out in polynomial regression. Given 1D data, $\xi_i$, our problem is to fit the model
@@ -777,7 +777,7 @@ Rewrite the eigenvalues of $(Z^{T}Z+\eta I)^{-1}$ as
 $$
 \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
 $$
-Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize. 
+Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize.
 </dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
@@ -1040,7 +1040,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
-  <figure id = "phasediagram0" style="position:relative; width:970px; height:520px;margin-left:auto; margin-right:auto">
+  <figure id = "phasediagram0" style="position:relative; width:970px; height:480px;margin-left:auto; margin-right:auto">
   <div id = "phasediagram0div"; style="position:absolute; left:80px; top:10px"></div>
   </figure>
   <script>
@@ -1060,12 +1060,12 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
                 .style("top","0px")
                 .style("left","0px")
 
-      renderDraggable(svg, [181, 65], [208, 77], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
-      //renderDraggable(svg, [185, 116], [234, 174], 4, "constant speed").attr("opacity", 0.5)
-      //renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
-      //renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)      
-      //renderDraggable(svg, [219, 269], [246, 327], 4, "particle returns slowly").attr("opacity", 0.5)
-      //renderDraggable(svg, [250, 433], [287, 468], 4, "particle returns quickly").attr("opacity", 0.5)
+      renderDraggable(svg, [185, 65], [237, 65], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
+      renderDraggable(svg, [185, 116], [234, 174], 4, "constant speed").attr("opacity", 0.5)
+      renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
+      renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)
+      renderDraggable(svg, [219, 269], [246, 327], 4, "particle returns slowly").attr("opacity", 0.5)
+      renderDraggable(svg, [250, 433], [287, 468], 4, "particle returns quickly").attr("opacity", 0.5)
       callback(null);
 
     });
@@ -1092,7 +1092,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair <dt-fn> We must optimize over 
+  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair <dt-fn> We must optimize over
   $$
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
@@ -1511,10 +1511,10 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       pathstr = pathstr + "L " + j*8 + "," + (j-1)*8 +  "L " + j*8 + "," + j*8
     }
     if (j == 0) {
-      //pathstr = pathstr + "L " + j*8 + "," + j*8      
+      //pathstr = pathstr + "L " + j*8 + "," + j*8
     }
     if (j == 26) {
-      pathstr = pathstr + "L " + j*8 + "," + (j-1)*8       
+      pathstr = pathstr + "L " + j*8 + "," + (j-1)*8
     }
   }
   pathstr = pathstr + "L "+ 26*8 + ",0 L 8,0 "
@@ -1651,12 +1651,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
 
 <dt-appendix class="centered">
-  
+
 
   <h3>Acknowledgments</h3>
 
   <p>
-  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations. 
+  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
   </p>
 
 </dt-appendix>

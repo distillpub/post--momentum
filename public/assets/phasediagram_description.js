@@ -59,7 +59,7 @@ function phaseDiagram_dec(divin) {
 
   // Draw the three phases
 
-  var lambdas = [0, 0.011, 0.05, 0.25]
+  var lambdas = [0, 0.01, 0.05, 0.25]
   var betas = [1, 0.985, 0.95, 0.9, 0.85, 0.8, 0]
 
   for (var i = 0; i < 6; i ++ ) {
@@ -83,14 +83,14 @@ function phaseDiagram_dec(divin) {
       .style("top", 50 + 120*j + "px")
       .attr("class", "figtext")      
       .style("border-right", "1px solid black" )
-      .html( (j != 0 ? "" : "<br>λ = ") + lambdas[j])
+      .html( (j != 0 ? "&nbsp" : "<br>λ = ") + lambdas[j])
   }
 
   divin.append("figcaption")
     .style("position","absolute")
     .style("width",35 + "px")
     .style("height",h + "px")
-    .style("left", 94 + "px")
+    .style("left", 90 + "px")
     .style("top", 27 + "px")
     .html( "Velocity")
 
@@ -98,7 +98,7 @@ function phaseDiagram_dec(divin) {
     .style("position","absolute")
     .style("width",100 + "px")
     .style("height",h + "px")
-    .style("left", 70 + "px")
+    .style("left", 64 + "px")
     .style("top", -17 + "px")
     .attr("class", "figtext")
     .html( "Damping")
@@ -116,7 +116,7 @@ function phaseDiagram_dec(divin) {
     .style("position","absolute")
     .style("width",35 + "px")
     .style("height",h + "px")
-    .style("left", 80 + "px")
+    .style("left", 75 + "px")
     .style("top", 56 + "px")
     .style("transform","rotate(-90deg)")
     .html( "Position")
@@ -128,7 +128,7 @@ function phaseDiagram_dec(divin) {
     .style("left", 730 + "px")
     .style("top", 60 + "px")
     .style("font-size", "12px")
-    .html("<b>Vertical</b><br>When $\\lambda_i = 0$ and $\\beta=1$, the object moves at constant speed. As $\\beta$ goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
+    .html("<b>$\\beta$: Horizontal Axis</b><br>When $\\lambda_i = 0$ and $\\beta=1$, the object moves at constant speed. As $\\beta$ goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
 
   // divin.append("figcaption")
   //   .style("position","absolute")
@@ -144,41 +144,44 @@ function phaseDiagram_dec(divin) {
     .style("width",120 + "px")
     .style("height",h + "px")
     .style("left", 730 + "px")
-    .style("top", (150*2 + 50) + "px")
+    .style("top", (120*2 + 50) + "px")
     .style("font-size", "12px")
-    .html("Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
+    .html("<b> $\\lambda$: Vertical Axis</b><br> The external force causes the particle to return to the origin. Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
 
   for (var i = 0; i < 6; i ++ ) {
     for (var j = 0; j < 4; j ++) {
+
+      var hborder = (j == 0) ? 0 : 35
+
       var div = divin.append("div")
         .style("position","absolute")
         .style("width", w + "px")
         .style("height",h + "px")
         .style("left", 65 + (w+8)*i + "px")
-        .style("top", 50 + 120*j + "px")
+        .style("top", 50 + 120*j - hborder + "px")
 
       var svg = div.append("svg")
                   .style("position", 'absolute')
                   .style("left", 0)
-                  .style("top", "0px")
+                  .style("top", "px")
                   .style("width", w)
-                  .style("height", h)
+                  .style("height", h + (2*hborder))
         .style("border-radius", "5px")
 
       svg.append("g").attr("class", "grid")
-        .attr("transform", "translate(0," + h/2 +")")
+        .attr("transform", "translate(0," + (h + 2*hborder)/2 +")")
         .attr("opacity", 0.2)
         .call(d3.axisBottom(X).ticks(0).tickSize(0))
 
       svg.append("g").attr("class", "grid")
         .attr("transform", "translate(" + w/2 + ",0)")
         .attr("opacity", 0.2)      
-        .call(d3.axisLeft(X).ticks(0).tickSize(0))
+        .call(d3.axisLeft(d3.scaleLinear().domain([0,1]).range([hborder, h+hborder])).ticks(0).tickSize(0))
 
       var colorRange = d3.scaleLinear().domain([0, 10, 50, totalIters]).range(colorbrewer.OrRd[4])
       
       var Xaxis = d3.scaleLinear().domain(axis[0]).range([0, w])
-      var Yaxis = d3.scaleLinear().domain(axis[1]).range([0, h])
+      var Yaxis = d3.scaleLinear().domain(axis[1]).range([hborder, h+hborder])
 
       var update = plot2dGen(Xaxis, Yaxis, colorRange)
                     .pathOpacity(1)

@@ -1647,16 +1647,16 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   y_{i}^{0}\\
   x_{i}^{0}
   \end{array}\right)+\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
-  \epsilon_{i}\\
-  0
-  \end{array}\right)
+\epsilon\\
+-\alpha\epsilon
+\end{array}\right)
   $$
   There are two phases of the optimization, shown here for a simple 1D case.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
 
   <figure id="stochastic" style="position:relative; width:920px; height:420px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $f(w) - f(w^*)$ into a determinsitic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> $\lambda_1=1$, and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg> $\lambda_2=10$ </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $f(w) - f(w^*)$ into a determinsitic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg>, and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg> </figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:400px; left:140px; width:780px; height:120px">The arrow points to the crossover point where the noise dominates the iterations.</figcaption>
 

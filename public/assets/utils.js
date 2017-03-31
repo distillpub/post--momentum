@@ -632,7 +632,7 @@ function renderHeatmap(canvas, f, cmap) {
 }
 
 
-function slider2D(div, onChange,lambda1, lambdan, start) {
+function slider2D(div, onChange, lambda1, lambdan, start) {
 
 	var panel = div.append("svg")
 	              .append("g")

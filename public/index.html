@@ -333,18 +333,18 @@
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
  -->
   <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px">
-    
-    <div id="stepSizeMilestones" 
-         class="figtext" 
+
+    <div id="stepSizeMilestones"
+         class="figtext"
          style="position:absolute; left:15px; top:15px">
          Step Size
     </div>
-    
+
     <div class="figtext2" id="milestones_gd_optstep"
       style="position:absolute; font-size:11px; left:152px; top:18px; z-index:10; cursor: pointer">
       Optimal Step Size
     </div>
-    
+
     <svg style="position:absolute; font-size:10px; left:224px; top:34px">
 <line marker-end="url(#arrowhead)" style="stroke: black; stroke-width: 1.5; visibility: visible;" x2="5" y2="10" x1="5" y1="0"></line>
     </svg>
@@ -900,7 +900,7 @@ $$
 \end{aligned}
 $$
 When the $(-\alpha\lambda+\beta+1)^{2}-4\beta<0$ is less than zero,
-then the roots are complex and 
+then the roots are complex and
 $$
 \begin{aligned}
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
@@ -984,7 +984,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
     for (var i = 0; i<5; i++) {
       up(i,defaults[i][0], defaults[i][1])
     }
-    
+
     renderMath(document.getElementById("momentum2D"))
 
     callback(null);
@@ -1210,7 +1210,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
         ]
       }
     ]
-    
+
     drawAnnotations(d3.select("#poly0f"), annotations)
 
 
@@ -1280,7 +1280,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <script src="assets/flow.js"></script>
   <script>
     deleteQueue.push(renderLoading(d3.select("#flow")))
-    renderQueue.push(function(callback) {      
+    renderQueue.push(function(callback) {
       d3.queue()
         .defer(d3.json, "assets/data/Sigma.json")
         .defer(d3.json, "assets/data/matrix.json")
@@ -1296,16 +1296,16 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
               {
                 "x": 0,
                 "y": 0,
-                "path": "M 379,55 A 28.57 28.57 0 0 0 338,30",
+                "path": "M 389,55 A 28.57 28.57 0 0 0 352,30",
                 "text": "Optimal parameters",
                 "textOffset": [
-                  321,
+                  341,
                   65
                 ]
               }
             ]
-            drawAnnotations(d3.select("#flow"), annotations)            
-          }          
+            drawAnnotations(d3.select("#flow"), annotations)
+          }
         });
       callback(null);
     });

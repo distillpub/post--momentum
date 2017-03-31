@@ -3,7 +3,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   var jetc = d3.scaleLinear().domain([-100,1.5,2,3,4,5,10,60,200,500]).range(colorbrewer.RdYlBu[10]);
 
   var colorBar = divin.append("div").style("position", "absolute").style("left","490px").style("top", "5px").style("height","45px")
-  
+
   colorMap( colorBar,
            180,
            jetc,
@@ -31,7 +31,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   //     .shifty(10)
   //     .change(changeStep)(divin.append("div").style("position","relative").style("left", "100px"))
 
-  var slider = divin.append("div").style("position","relative").style("left", "100px")
+  var slider = divin.append("div").style("position","relative").style("left", "112px")
   /*
   Generate coordinates for 2D Laplacian based on input matrix
   V[i] = (x,y) coordinate of node in 2D space.

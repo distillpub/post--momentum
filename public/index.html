@@ -1094,6 +1094,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
       // renderDraggable(svg, [219, 269], [246, 327], 4, "particle returns slowly").attr("opacity", 0.5)
       // renderDraggable(svg, [250, 433], [287, 468], 4, "particle returns quickly").attr("opacity", 0.5)
       callback(null);
+      renderMath(document.getElementById("phasediagram0"))
 
     });
   </script>
@@ -1107,6 +1108,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
     deleteQueue.push(renderLoading(d3.select("#phasediagram1")))
     renderQueue.push(function(callback) {
       phaseDiagram(d3.select("#phasediagram1"));
+      renderMath(document.getElementById("phasediagram1"))
       callback(null);
     });
   </script>
@@ -1164,7 +1166,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   </p>
 
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd">$\lambda_1=1$</span>, <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5">$\lambda_2=10$</span>, and <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a">$\lambda_3=??$</span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd">$\lambda_1=0.01$</span>, <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5">$\lambda_2=0.1$</span>, and <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a">$\lambda_3=1$</span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
 

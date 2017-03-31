@@ -889,13 +889,13 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 
   This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now
 
-   $$\max \{|\sigma_1|, |\sigma_2|\} < 1.$$
+   $$\max \{|\sigma_1|, |\sigma_2|\} ~<~ 1.$$
 
-   This "coupled" iteration is hard to understand algebraically. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-fn>
+   This "coupled" iteration is hard to understand algebraically. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior.<dt-fn>
 The eigenvalues are
 $$
 \begin{aligned}
-\sigma_{1} & =\frac{1}{2}\left(1-\alpha\lambda+\beta+\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)\\
+\sigma_{1} & =\frac{1}{2}\left(1-\alpha\lambda+\beta+\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)\\[0.6em]
 \sigma_{2} & =\frac{1}{2}\left(1-\alpha\lambda+\beta-\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)
 \end{aligned}
 $$
@@ -906,7 +906,7 @@ $$
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
 \end{aligned}
 $$
-Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. </dt-fn>.
+Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. </dt-fn>
   </p>
 
   <figure id = "momentum2D" style="width:984px; height:540px">

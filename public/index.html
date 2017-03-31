@@ -550,7 +550,7 @@
     var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit);
 
     // Swoopy Annotator
-    annotations = [
+    var annotations = [
     {
       "x": 0,
       "y": 0,
@@ -1197,23 +1197,23 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
     var update = renderMilestones(svg, function() {})
     var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
 
-    // Swoopy Annotator
-    var annotations = [
+    // // Swoopy Annotator
+    annotations = [
       {
         "x": 0,
         "y": 0,
-        "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+        "path": "M 798,98 A 27.97 27.97 0 0 0 760.9999389648438,70.9999771118164",
         "text": "Optimal parameters",
         "textOffset": [
-          188,
+          740,
           109
         ]
       }
     ]
+    var sel = drawAnnotations(d3.select("#milestonesMomentumFig"), annotations)
+    sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all")
 
-    drawAnnotations(d3.select("#poly0f"), annotations)
-
-
+    console.log(sel.selectAll("text").node())
     callback(null);
   });
 
@@ -1622,7 +1622,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
             d3.scaleLinear().domain([0,1]).range([0, 194]) );
 
   // Swoopy Annotator
-  annotations = [
+  var annotations = [
     {
       "x": 0,
       "y": 0,
@@ -1726,39 +1726,39 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     var slidera = slider2D(d3.select("#sliderStep2DD"), function(x,y) { update(x,y) }, 1, 100)
 
     // Swoopy Annotator
-    var annotations = [
-      {
-        "x": 0,
-        "y": 0,
-        "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
-        "text": "Optimal parameters",
-        "textOffset": [
-          188,
-          109
-        ]
-      }
-    ]
+    // var annotations = [
+    //   {
+    //     "x": 0,
+    //     "y": 0,
+    //     "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+    //     "text": "Optimal parameters",
+    //     "textOffset": [
+    //       188,
+    //       109
+    //     ]
+    //   }
+    // ]
 
-    var swoopy = d3.swoopyDrag()
-      .x(function(d){ return (d.x) })
-      .y(function(d){ return (d.y) })
-        .draggable(false)
-        .annotations(annotations)
+    // var swoopy = d3.swoopyDrag()
+    //   .x(function(d){ return (d.x) })
+    //   .y(function(d){ return (d.y) })
+    //     .draggable(false)
+    //     .annotations(annotations)
 
-    var svg = d3.select("#sliderStep2D").selectAll("svg")
-    var swoopySel = svg.append("g").call(swoopy)
+    // var svg = d3.select("#sliderStep2D").selectAll("svg")
+    // var swoopySel = svg.append("g").call(swoopy)
 
-    svg.append('marker')
-        .attr('id', 'arrow')
-        .attr('viewBox', '-10 -10 20 20')
-        .attr('markerWidth', 20)
-        .attr('markerHeight', 20)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-        .attr("transform", "scale(0.5)")
+    // svg.append('marker')
+    //     .attr('id', 'arrow')
+    //     .attr('viewBox', '-10 -10 20 20')
+    //     .attr('markerWidth', 20)
+    //     .attr('markerHeight', 20)
+    //     .attr('orient', 'auto')
+    //   .append('path')
+    //     .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+    //     .attr("transform", "scale(0.5)")
 
-    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
+    // swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
 
   });
   </script>

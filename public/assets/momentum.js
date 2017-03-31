@@ -32,13 +32,21 @@ function renderOverlay(svg, nodes) {
                   .attr("stroke-dasharray", "2,2")
                   .attr("opacity", 0.7)
 
-    var circ = svg.append("circle")
+    var circ = svg.append("g")
+                    .attr("transform", "translate(" + x1 + "," + y1 + ")");
+
+    circ.append("circle")
                    .attr("r", 5)
-                   .attr("cx", x1)
-                   .attr("cy",y1)
                    .attr("fill","none")
                    .attr("stroke", "black")
-                   .attr("stroke-width", "1px")
+                   .attr("stroke-width", 3)
+                   .attr("stroke-opacity", 0.5);
+
+    circ.append("circle")
+                   .attr("r", 5)
+                   .attr("fill","none")
+                   .attr("stroke", "white")
+                   .attr("stroke-width", 1.5);
 
     n = nodes
     var updatePath =  (function(xin, yin, pathin, circin,i, aline) {
@@ -50,7 +58,8 @@ function renderOverlay(svg, nodes) {
           d3.select(nodes[i]).style("opacity", 1)
         }
 
-        circin.attr("cx", x2).attr("cy", y2).attr("stroke-width", bold? 2 : 1).attr("stroke", "rgb(255, 102, 0)")
+        circin.attr("transform", "translate(" + x2 + "," + y2 + ")");
+
         if (i < 2) {
           pathin.attr("d", ringPath([x2, y2],[xin, yin]).d)
                 .attr("opacity", bold? 1 : 0.7)

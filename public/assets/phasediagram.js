@@ -29,7 +29,7 @@ function phaseDiagram(divin) {
 
   var axis = [[-a*5,a*5],[-a,a]]
   var width_bar = 620
-  var X = d3.scaleLinear().domain([0,1]).range([0, width_bar])
+  var X = d3.scaleLinear().domain([1,0]).range([0, width_bar])
 
   var valueline = d3.line()
     .x(function(d) { return d[0]; })
@@ -56,7 +56,7 @@ function phaseDiagram(divin) {
       .style("position","absolute")
       .style("width",w + "px")
       .style("height",h + "px")
-      .style("left", [15, 235, 455][i] + "px")
+      .style("left", [455, 235, 15][i] + "px")
       .style("top", [110, 110, 110][i] + "px")
       .style("border-top", "solid 1px gray")
 
@@ -83,7 +83,7 @@ function phaseDiagram(divin) {
     }
 
     if (i == 1) {
-      path.attr("d", ringPath([X(0.8)+15,30],[divx + 40,divy -40]).d + "L" + divx + "," + divy + " ") 
+      path.attr("d", ringPath([X(0.8)+5,30],[divx - 40,divy -40]).d + "L" + divx + "," + divy + " ") 
     }
 
     if (i == 2) {

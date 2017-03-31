@@ -83,7 +83,7 @@ function renderMilestones(div, updateTick) {
     .attr("y", 206 + i*seperation)
     .attr("text-anchor", "end")
     .attr("fill", "gray")    
-    .html((i == 0) ? "Eigenvalue " + i : i)
+    .html((i == 0) ? "Eigenvalue " + (i+1) : (i+1) )
   }
 
 

@@ -2,7 +2,7 @@
 λ = 1
 Rf(β, α) = [   β        λ; 
             -α*β (1 - α*λ)]
-α = 0.5
+α = 0.1
 β = 0.7
 
 ϵ = 0.1
@@ -14,7 +14,7 @@ function err(k)
     sum( ( ((R^(k-i))*([ϵ; -α*ϵ]) )[2] )^2 for i = 1:k )
 end
 
-function err2(k)
+function err2(k, α, β)
     R = Rf(β, α)
     x = [ϵ; -α*ϵ]
     s = 0
@@ -55,3 +55,5 @@ d2 = [runmomentum(1,0, i, 0.)[2]^2 for i = 1:k]
 plot(d)
 plot(d2+e)
 plot(d2)
+
+plot(err2(200, 0.01, 0))

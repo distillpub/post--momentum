@@ -983,6 +983,8 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
     for (var i = 0; i<5; i++) {
       up(i,defaults[i][0], defaults[i][1])
     }
+    
+    renderMath(document.getElementById("momentum2D"))
 
     callback(null);
   });
@@ -1207,27 +1209,9 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
         ]
       }
     ]
+    
+    drawAnnotations(d3.select("#poly0f"), annotations)
 
-    var swoopy = d3.swoopyDrag()
-      .x(function(d){ return (d.x) })
-      .y(function(d){ return (d.y) })
-        .draggable(false)
-        .annotations(annotations)
-
-    var svg = d3.select("#sliderStep2D").selectAll("svg")
-    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
-
-    svg.append('marker')
-        .attr('id', 'arrow')
-        .attr('viewBox', '-10 -10 20 20')
-        .attr('markerWidth', 20)
-        .attr('markerHeight', 20)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-        .attr("transform", "scale(0.5)")
-
-    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
 
     callback(null);
   });
@@ -1295,7 +1279,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <script src="assets/flow.js"></script>
   <script>
     deleteQueue.push(renderLoading(d3.select("#flow")))
-    renderQueue.push(function(callback) {
+    renderQueue.push(function(callback) {      
       d3.queue()
         .defer(d3.json, "assets/data/Sigma.json")
         .defer(d3.json, "assets/data/matrix.json")
@@ -1306,7 +1290,21 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
           }
           else {
             renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
-          }
+            // Swoopy Annotator
+            var annotations = [
+              {
+                "x": 0,
+                "y": 0,
+                "path": "M 379,55 A 28.57 28.57 0 0 0 338,30",
+                "text": "Optimal parameters",
+                "textOffset": [
+                  321,
+                  65
+                ]
+              }
+            ]
+            drawAnnotations(d3.select("#flow"), annotations)            
+          }          
         });
       callback(null);
     });
@@ -1622,6 +1620,20 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
             jet,
             d3.scaleLinear().domain([0,1]).range([0, 194]) );
 
+  // Swoopy Annotator
+  annotations = [
+    {
+      "x": 0,
+      "y": 0,
+      "path": "M 817,95 A 23.869 23.869 0 0 0 792,72",
+      "text": "Optimal parameters",
+      "textOffset": [
+        767,
+        109
+      ]
+    }
+  ]
+  drawAnnotations(d3.select("#rosenViz"), annotations)
 
   callback(null);
   });
@@ -1733,7 +1745,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
         .annotations(annotations)
 
     var svg = d3.select("#sliderStep2D").selectAll("svg")
-    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+    var swoopySel = svg.append("g").call(swoopy)
 
     svg.append('marker')
         .attr('id', 'arrow')
@@ -2003,29 +2015,29 @@ renderMath(document.body)
 <!-- Figure render queue -->
 <script>
 
-for (var i = 0; i < renderQueue.length; i++) {
-  renderQueue[i](function() {})
-  deleteQueue[i](function() {})
-}
-  // setTimeout(function() {
-  //   var q = d3.queue(1);
+// for (var i = 0; i < renderQueue.length; i++) {
+//   renderQueue[i](function() {})
+//   deleteQueue[i](function() {})
+// }
+  setTimeout(function() {
+    var q = d3.queue(1);
 
-  //   d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-  //     q.defer(function(callback) { fn[1](callback); fn[0](callback); renderMath(document.body) });
-  //     q.defer(function(callback) {
-  //       setTimeout(function() {
-  //         callback(null);
-  //       }, 50);
-  //     });
-  //   });
-  //   q.await(function(error) {
-  //     if (error) {
-  //       console.error("Render error.")
-  //     } else {
-  //       console.log("Render done.")
-  //     }
-  //   });
-  // }, 50);
+    d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
+      q.defer(function(callback) { fn[1](callback); fn[0](callback); renderMath(document.body) });
+      q.defer(function(callback) {
+        setTimeout(function() {
+          callback(null);
+        }, 50);
+      });
+    });
+    q.await(function(error) {
+      if (error) {
+        console.error("Render error.")
+      } else {
+        console.log("Render done.")
+      }
+    });
+  }, 50);
 
 // DEBUG
 // renderQueue.forEach( function (fn) { fn( function() {}) } )

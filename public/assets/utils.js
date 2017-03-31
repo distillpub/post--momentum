@@ -1489,4 +1489,6 @@ function drawAnnotations(figure, annotations) {
 
     swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
 
+    return swoopySel
+
 }

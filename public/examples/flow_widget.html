@@ -54,6 +54,20 @@
         }
         else {
           renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
+            annotations = [
+              {
+                "x": 0,
+                "y": 0,
+                "path": "M 379,55 A 28.57 28.57 0 0 0 338,30",
+                "text": "Optimal parameters",
+                "textOffset": [
+                  321,
+                  65
+                ]
+              }
+            ]
+            drawAnnotations(d3.select("#flow"), annotations)
+
         }
       });
   </script>

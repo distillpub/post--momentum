@@ -28,6 +28,7 @@ function sliderGen(dims) {
   var shifty = -10
   var ticktitles = function(d,i) { return round(d) }
   var showticks = true
+  var default_xval = 0
 
   function renderSlider(divin) {
 
@@ -168,9 +169,12 @@ function sliderGen(dims) {
           .style("font-size", "10px")
 
     handle.moveToFront()
-    return {xval: function() { return curr_xval }, tick:updateTicks, init:function() {
-        handle.attr("transform", "translate(" + x(curr_xval) + ",0)" );
-        onChange(curr_xval, handle)}
+    return {xval : function() { return curr_xval }, 
+    		tick : updateTicks, 
+    		init:function() {
+		        handle.attr("transform", "translate(" + x(default_xval) + ",0)" );
+		        onChange(default_xval, handle)
+    		}
     }
 
   }
@@ -207,6 +211,7 @@ function sliderGen(dims) {
 
   renderSlider.startxval = function(m) {
     curr_xval = m
+    default_xval = m
     return renderSlider
   }
 

@@ -199,8 +199,8 @@
 
   $$
   \begin{aligned}
-  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\
-  w^{k+1}&=w^{k}-\alpha z^{k+1},
+  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\[0.4em]
+  w^{k+1}&=w^{k}-\alpha z^{k+1}
   \end{aligned}
   $$
 
@@ -298,11 +298,12 @@
   A=Q \text{diag}(\lambda_{1},\ldots,\lambda_{n})Q^{T},\qquad Q = [q_1,\ldots,q_n],
   $$
 
-  and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. Perform a change of variables, $x^{k} = Q^T(w^{k} - w^\star)$. And the iterations break apart, becoming
+  and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. If we perform a change of variables, $x^{k} = Q^T(w^{k} - w^\star)$, the iterations break apart, becoming:
 
   $$
   \begin{aligned}
-  x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\ &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^kx^0_i
+  x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\[0.4em]
+   &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^kx^0_i
   \end{aligned}
   $$
 
@@ -437,7 +438,7 @@
   <p>
  <h3>Choosing A Step-size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. <dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
+  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1.<dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
   $$
   \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
   $$
@@ -573,7 +574,7 @@
   Because of the linearity, we can fit this model at our data $\xi_i$ by using linear regression on the model mismatch
 
   $$
-  \text{minimize}_w \qquad\frac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} = \tfrac{1}{2}\|Zw - d\|^2
+  \text{minimize}_w \qquad\tfrac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} ~~=~~ \tfrac{1}{2}\|Zw - d\|^2
   $$
   where
   $$
@@ -590,7 +591,7 @@
   The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$. So let's recast our regression problem in $Q$ space. First, we do a change of variables, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
   $$
-  \text{model}(\xi)=x_{1}\bar{p}_{1}(\xi)+\cdots+x_{n}\bar{p}_{n}(\xi)\qquad p_{i}=\sum q_{ij}p_j.
+  \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad p_{i}=\sum q_{ij}p_j.
   $$
 
   This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the other. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative,
@@ -777,7 +778,7 @@
 
   </script>
   <p>
-  This effect is harnessed with the heuristic of early stopping - by noting that by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay <dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+  This effect is harnessed with the heuristic of early stopping - by noting that by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
 $$
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 $$
@@ -790,7 +791,7 @@ $$
 \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
 $$
 Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize.
-</dt-fn>. But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
+</dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
 <hr>
@@ -801,7 +802,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 
   $$
   \begin{aligned}
-  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\
+  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
   $$
@@ -810,7 +811,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 
   $$
   \begin{aligned}
-  z^{k+1}&=\beta z^{k}+ (Aw^{k}-b)\\
+  z^{k+1}&=\beta z^{k}+ (Aw^{k}-b)\\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}
   \end{aligned}
   $$
@@ -820,7 +821,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 
   $$
   \begin{aligned}
-  y_{i}^{k+1}&=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}\\
+  y_{i}^{k+1}&=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}\\[0.4em]
   x_{i}^{k+1}&=x_{i}^{k}-\alpha y_{i}^{k+1}.
   \end{aligned}
   $$
@@ -1012,7 +1013,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   </span>
 
 
-  <span style="position:absolute;left: 360px;top:0px;">
+  <span style="position:absolute;left: 355px;top:0px;">
   $$+$$
   </span>
 
@@ -1032,7 +1033,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   $$\beta y_{i}^{k}$$
   </span>
 
-  <figcaption style="position:absolute;left:200px;top: 60px;width:150px;">
+  <figcaption style="position:absolute;left:200px;top: 60px;width:130px;">
   which is dampened at each step
   </figcaption>
 
@@ -1053,7 +1054,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   And $x$ is our particle's <b>position</b>
   </figcaption>
 
-  <figcaption style="position:absolute;left:200px;top: 155px;width:300px;">
+  <figcaption style="position:absolute;left:200px;top: 155px;width:280px;">
   which is moved at each step by a small amount in the direction of the velocity $y^{k+1}_i$.
   </figcaption>
 
@@ -1123,7 +1124,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair <dt-fn> We must optimize over
+  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair,<dt-fn> We must optimize over
   $$
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
@@ -1133,7 +1134,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   -\alpha\beta & 1-\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   $$
-  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn>, but they work out to be
+  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> but they work out to be
   $$
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   $$

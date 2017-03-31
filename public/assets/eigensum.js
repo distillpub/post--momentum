@@ -28,7 +28,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .style("width", "25px")
         .style("height", "25px")
         .style("opacity", 0)
-        .html(".")  
+        .html(".")
       } else{
       if (i == 5) {
         mathdiv.append("span").style("text-align","center")
@@ -36,7 +36,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .style("width", "26px")
         .style("height", "25px")
         .style("opacity", 0)
-        .html(".")  
+        .html(".")
         }
       }
 
@@ -48,12 +48,13 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
     if (i != 6) {
       var html = katex.renderToString(wi[i].toPrecision(3) + (hat ? " \\bar{p}_" : " p_")+(i+1))
     } else{
-      var html = katex.renderToString("\\text{model}")  
+      var html = katex.renderToString("\\text{model}")
     }
-    
+
     if (i != 6) {
     var equation = mathdiv
       .append("span")
+      .attr("class", "draggable-number")
       .style("text-align","center")
       .style("display","inline-block")
       .style("width", "110px")
@@ -61,10 +62,10 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
       .style("font-size", "16px")
       .style("cursor", "ew-resize")
       .html(html)
-      .call( 
+      .call(
       d3.drag()
         .on("start", function() { startpoint = d3.mouse(this)[0] } )
-        .on("drag", (function(i) { return function() { 
+        .on("drag", (function(i) { return function() {
           var xi = xrange(d3.mouse(this)[0] - startpoint) + wi[i]
           witemp = wi.slice(0); witemp[i] = xi
           var str = (witemp[i]).toPrecision(3) + (hat ? " \\bar{p}_" : "p_")+(i+1)
@@ -83,9 +84,9 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .style("width", "110px")
         .style("height", "50px")
         .style("font-size", "16px")
-        .html(html)      
+        .html(html)
     }
-      
+
     equations.push(equation)
 
     // Add pluses and equal signs
@@ -96,7 +97,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
       .style("width", "25px")
       .style("height", "50px")
       .style("font-size", "16px")
-      .html(html)  
+      .html(html)
     } else{
     if (i == 5) {
       var html = katex.renderToString("=")
@@ -105,7 +106,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
       .style("width", "26px")
       .style("height", "50px")
       .style("font-size", "16px")
-      .html(html)  
+      .html(html)
       }
     }
 
@@ -124,17 +125,17 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   for (var i = 0; i < 6; i++ ){
     var w = zeros(6)
     w[i] = 2
-    var update = renderEigenSum(div.append("svg"), x, undefined, function() {}, [colorbrewer.Dark2[6][1], colorbrewer.Dark2[6][1]])
+    var update = renderEigenSum(div.append("svg"), x, undefined, function() {}, ["hsl(24, 100%, 50%)", "hsl(24, 100%, 50%)"])
     updates.push(update.poly)
     if (i != 5) {
       div.append("span").html("+").style("position", "relative").style("top", "-51px")
     }
   }
-  
-  div.append("span").html("=").style("position", "relative").style("top", "-51px")  
-  
-  var updatesum = renderEigenSum(div.append("svg"),x, b, 
-    refit, 
+
+  div.append("span").html("=").style("position", "relative").style("top", "-51px")
+
+  var updatesum = renderEigenSum(div.append("svg"),x, b,
+    refit,
     ["black", "black"]).poly
 
   function updateweights(win) {
@@ -161,8 +162,8 @@ Render the Polynomial fitting widget
 */
 function renderEigenSum(svg, xv, b, dragCallback, colors) {
 
-  /* 
-    Data on eigenvectors 
+  /*
+    Data on eigenvectors
 
     xv - x values (\xi in paper)
     U - eigenvectors
@@ -173,7 +174,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
   var A = vandermonde(xv, 25)
   var w = zeros(xv.length)
   /**************************************************************************
-    START VISUALIZATION 
+    START VISUALIZATION
   ***************************************************************************/
 
   var width = 110
@@ -207,7 +208,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
       .attr("x2", function(d,i) { return x(d[0]) })
       .attr("y2", function(d,i) { return y(poly(w, d[0])) })
     }
-  }  
+  }
 
   /*
    * Add eigenvalue plot at the bottom.
@@ -258,7 +259,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
       .style("fill", colors[0])
       .call(d3.drag()
             .on("drag", function(d,i) {
-              var ypos = d3.event.y 
+              var ypos = d3.event.y
               var yval = y.invert(ypos)
               this.setAttribute("cy", ypos)
               b[i] = yval
@@ -269,7 +270,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
                 .attr("x2", function(d,i) { return x(d[0]) })
                 .attr("y2", function(d,i) { return y(poly(w, d[0])) })
             })
-          )      
+          )
 
     console.log()
 
@@ -277,7 +278,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
 
     var dragging = false
     vongroup.selectAll("path")
-      .data(voronoi.polygons(d3.zip(xv,b))) 
+      .data(voronoi.polygons(d3.zip(xv,b)))
       .enter().append("path")
       .attr("d", function(d, i) { return "M" + d.join("L") + "Z"; })
       .datum(function(d, i) { return d.point; })
@@ -285,13 +286,13 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
       .style("fill", "white")
       .style("opacity", 0.001)
       // .style("pointer-events", "all")
-      .on("mouseover", function(d,i) { 
+      .on("mouseover", function(d,i) {
         if (!dragging){
         d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "1px");
         d3.select(data.selectAll("circle").nodes()[i]).style("fill", "red");
         }
       })
-      .on("mouseout", function(d,i) { 
+      .on("mouseout", function(d,i) {
         if (!dragging) {
         d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "0px");
         d3.select(data.selectAll("circle").nodes()[i]).style("fill", "black");
@@ -304,7 +305,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
               d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "2px");
               d3.select(data.selectAll("circle").nodes()[i]).style("fill", "pink");
 
-              var ypos = d3.event.y 
+              var ypos = d3.event.y
               var yval = y.invert(ypos)
               if (ypos < 0 || ypos > 110) {
                 return
@@ -319,17 +320,17 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
                 .attr("x2", function(d,i) { return x(d[0]) })
                 .attr("y2", function(d,i) { return y(poly(w, d[0])) })
               vongroup.selectAll("path")
-                .data(voronoi.polygons(d3.zip(xv,b))) 
+                .data(voronoi.polygons(d3.zip(xv,b)))
                 .merge(vongroup)
                 .attr("d", function(d, i) { return "M" + d.join("L") + "Z"; })
             })
-            .on("end", function(d,i) { 
+            .on("end", function(d,i) {
               console.log("end")
               dragging = false
               d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "0px");
               d3.select(data.selectAll("circle").nodes()[i]).style("fill", "black");
             })
-          )  
+          )
 
     var datalinessvg = svg.append("g")
 
@@ -345,7 +346,7 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
 
   }
 
-  eigensvg.append("g")     
+  eigensvg.append("g")
     .attr("class", "grid")
     .attr("transform", "translate(0," + (height/2) + ")")
     .call(d3.axisBottom(x)

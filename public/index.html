@@ -136,7 +136,8 @@
   var update = function (i,j) { iterChange(i, 0, getw0()) }
 
   var slidera = sliderGen([230, 40])
-              .ticks([0,0.0015,0.003])
+              .ticks([0,0.003,0.006])
+              .ticktitles( function(d,i) { return ["0", "0.003", "0.006"][i]})
               .change( function (i) {
                 d3.select("#sliderAlpha").selectAll(".figtext").html("Step size α = " + getalpha().toPrecision(2) )
                 iterChange(getalpha(), getbeta(), getw0() )
@@ -235,7 +236,7 @@
   w^{k+1}=w^{k}- \alpha (Aw^{k} - b)
   $$
 
-  Here's the trick. There is a very natural space to view gradient descent where the iterates all act independently - the eigenvalues of $A$.
+  Here's the trick. There is a very natural space to view gradient descent where the iterates all act independently - the eigenvectors of $A$.
   </p>
   <figure style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "change_of_variables">
   <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
@@ -326,7 +327,7 @@
   we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
   </p>
   <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
-  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=100$ respectively. </figcaption>
+  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=0.01$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=0.1$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=1$ respectively. </figcaption>
 
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
  -->
@@ -445,12 +446,12 @@
   $$
   \text{condition number} := \kappa :=\frac{\lambda_n}{\lambda_1}
   $$
-  The condition number means many things. It is a measure of how singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context - the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $1$ is ideal, giving convergence in one step (of course, the function is trivial). And larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological curvature.
+  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context - the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $1$ is ideal, giving convergence in one step (of course, the function is trivial). And larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological curvature.
   </p>
 
 <hr>
 
-  <h3>Example: Polynomial Regression</h3>
+  <h2>Example: Polynomial Regression</h2>
   <p>
   The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very interesting, concrete interpretation.
   </p>
@@ -1208,7 +1209,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
   </p>
 
-  <h3>Example: The Colorization Problem</h3>
+  <h2>Example: The Colorization Problem</h2>
 
   <p>
   Lets look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices as pixels, $E$ be the set of edges connecting each pixel to its four neighboring pixels, and $D$ be a small set of a few distinguished vertices. Consider the problem of minimizing
@@ -1446,9 +1447,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   and a small regularization term.
   </figcaption>
 
-
-
-
   </div>
   </figure>
   <p>
@@ -1637,8 +1635,96 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. Many of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. And this lower bound does not preclude the possibility of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
   </p>
+  <h3>Momentum with Noise</h3>
 
-<hr>
+  <p>
+  Basically the stochastic gradient allows you to decompose the objective function into a determinsitic part and a stochastic part
+  $$
+  \left(\begin{array}{c}
+  y_{i}^{k}\\
+  x_{i}^{k}
+  \end{array}\right)=R^{k}\left(\begin{array}{c}
+  y_{i}^{0}\\
+  x_{i}^{0}
+  \end{array}\right)+\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+  \epsilon_{i}\\
+  0
+  \end{array}\right)
+  $$
+  There are two phases of the optimization, shown here for a simple 1D case.
+  </p>
+  <script src="assets/stochastic_milestones.js"></script>
+
+  <figure id="stochastic" style="position:relative; width:920px; height:420px">
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $f(w) - f(w^*)$ into a determinsitic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> $\lambda_1=1$, and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg> $\lambda_2=10$ </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:400px; left:140px; width:780px; height:120px">The arrow points to the crossover point where the noise dominates the iterations.</figcaption>
+
+  <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
+  <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
+
+  <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
+  <div id = "stochasticgd" style="position:relative; left:15px"></div>
+  </figure>
+  <script>
+  deleteQueue.push(renderLoading(d3.select("#stochastic")))
+  renderQueue.push(function(callback) {
+      var graphDiv = d3.select("#stochasticgd")
+                   .style("width",  920 + "px")
+                   .style("height", 300 + "px")
+                   .style("top", "170px")
+                   .style("position", "relative")
+                   .style("margin-left", "auto")
+                   .style("margin-right", "auto")
+                   .attr("width", 920)
+                   .attr("height", 500)
+
+    var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+
+    var update = renderStochasticMilestones(svg, function() {})
+    var slidera = slider2D(d3.select("#sliderStep2DD"), function(x,y) { update(x,y) }, 1, 100)
+
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+        "text": "Optimal parameters",
+        "textOffset": [
+          188,
+          109
+        ]
+      }
+    ]
+
+    var swoopy = d3.swoopyDrag()
+      .x(function(d){ return (d.x) })
+      .y(function(d){ return (d.y) })
+        .draggable(false)
+        .annotations(annotations)
+
+    var svg = d3.select("#sliderStep2D").selectAll("svg")
+    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+
+    svg.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '-10 -10 20 20')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 20)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+        .attr("transform", "scale(0.5)")
+
+    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
+
+  });
+  </script>
+  <p>
+  Things to note include - a smaller stepsize gives less error (but slower convergence) - this justifies lowering the stepsize peroidically. Momentum is generally bad, as it allows errors in the gradient to accumulate (though this is bounded). The momentum term can plasuabily be restarted every few iterations to avoid the accumulation of errors (i'm sure this isn't original).
+  </p>
+  <hr>
   <h2>Onwards and Downwards</h2>
   <p>
   The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But Like the proverbial blind men feeling elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will unify into a satisfying whole.
@@ -1889,29 +1975,29 @@ renderMath(document.body)
 <!-- Figure render queue -->
 <script>
 
-// for (var i = 0; i < renderQueue.length; i++) {
-//   renderQueue[i](function() {})
-//   deleteQueue[i](function() {})
-// }
-  setTimeout(function() {
-    var q = d3.queue(1);
+for (var i = 0; i < renderQueue.length; i++) {
+  renderQueue[i](function() {})
+  deleteQueue[i](function() {})
+}
+  // setTimeout(function() {
+  //   var q = d3.queue(1);
 
-    d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-      q.defer(function(callback) { fn[1](callback); fn[0](callback); renderMath(document.body) });
-      q.defer(function(callback) {
-        setTimeout(function() {
-          callback(null);
-        }, 50);
-      });
-    });
-    q.await(function(error) {
-      if (error) {
-        console.error("Render error.")
-      } else {
-        console.log("Render done.")
-      }
-    });
-  }, 50);
+  //   d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
+  //     q.defer(function(callback) { fn[1](callback); fn[0](callback); renderMath(document.body) });
+  //     q.defer(function(callback) {
+  //       setTimeout(function() {
+  //         callback(null);
+  //       }, 50);
+  //     });
+  //   });
+  //   q.await(function(error) {
+  //     if (error) {
+  //       console.error("Render error.")
+  //     } else {
+  //       console.log("Render done.")
+  //     }
+  //   });
+  // }, 50);
 
 // DEBUG
 // renderQueue.forEach( function (fn) { fn( function() {}) } )

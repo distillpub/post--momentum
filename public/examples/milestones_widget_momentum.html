@@ -1,17 +1,14 @@
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
-  <script src="../assets/lib/template.js"></script>
-  <script src="../assets/lib/auto-render.min.js"></script>
-  <script src="../assets/lib/katex.min.js"></script>
-  <script src="../assets/lib/swoopy-drag.js"></script>
-  <link   rel="stylesheet" href="../assets/lib/katex.min.css">
-  <link   rel="stylesheet" type="text/css" href="../assets/widgets.css">  
-  <script src = "../assets/lib/d3.v4.min.js"></script>
-  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
-  <script src = "../assets/lib/tooltip.js"></script>  
-  <script src = "../assets/utils.js"></script>  
-  <script src = "../assets/milestones.js"></script>  
+<script src="../assets/lib/template.v1.js"></script>
+<script src="../assets/lib/lib.js"></script>
+<script src="../assets/utils.js"></script>
+<script src="../assets/stochastic_milestones.js"></script>
+<link rel="stylesheet" href="../assets/lib/katex.min.css">
+<link rel="stylesheet" type="text/css" href="../assets/widgets.css">
+<script src="../assets/lib/auto-render.min.js"></script>
+<script src="../assets/lib/katex.min.js"></script>
+
 </head> 
 <body>
 <dt-article class="centered">
@@ -19,32 +16,21 @@
   Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
 
 </p>
-  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
-  <figure style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:140px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=1$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=10$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:0px; width:280px; height:120px"> $f(w) - f(w^\star)$</figcaption>
-  <figcaption style="position:absolute; text-align:left; top:430px; left:120px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
+  <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:420px">
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $f(w) - f(w^*)$ into a determinsitic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> $\lambda_1=1$, and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg> $\lambda_2=10$ </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:400px; left:140px; width:780px; height:120px">The arrow points to the crossover point where the noise dominates the iterations.</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
-<!--   <div style="position:absolute; top:10px; left:0px">
-  <svg>
-  <defs>
-      <linearGradient id="Gradient2" x1="0" x2="0" y1="0" y2="1">
-        <stop offset="0%" stop-color="white"/>
-        <stop offset="100%" stop-color="white" stop-opacity="0"/>
-      </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="800" height="100" width="100" height="100" fill="url(#Gradient2)"/>
-  </svg>
-  </div> -->
-
-  <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
-  <div id = "obj"></div>  
+  <div id = "sliderStep2D" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
+  <div id = "milestonesMomentum" style="position:relative; left:15px"></div>
   </figure>
   <script>
-  var graphDiv = d3.select("#obj")
+  renderQueue = []
+  renderQueue.push(function(callback) {
+      var graphDiv = d3.select("#milestonesMomentum")
                    .style("width",  920 + "px")
                    .style("height", 300 + "px")
                    .style("top", "170px")
@@ -53,48 +39,49 @@
                    .style("margin-right", "auto")
                    .attr("width", 920)
                    .attr("height", 500)
-  
-  var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
-  var update = renderMilestones(svg, function() {})
+    var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
-  var slidera = slider2D(d3.select("#sliderStep"), function(x,y) { update(x,y) })
+    var update = renderStochasticMilestones(svg, function() {})
+    var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
 
-  // Swoopy Annotator
-  var annotations = [
-    {
-      "x": 0,
-      "y": 0,
-      "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
-      "text": "Optimal parameters",
-      "textOffset": [
-        188,
-        109
-      ]
-    }
-  ]
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
+        "text": "Optimal parameters",
+        "textOffset": [
+          188,
+          109
+        ]
+      }
+    ]
 
-  var swoopy = d3.swoopyDrag()
-    .x(function(d){ return (d.x) })
-    .y(function(d){ return (d.y) })
-      .draggable(false)
-      .annotations(annotations)
+    var swoopy = d3.swoopyDrag()
+      .x(function(d){ return (d.x) })
+      .y(function(d){ return (d.y) })
+        .draggable(false)
+        .annotations(annotations)
 
-  var svg = d3.select("#sliderStep").selectAll("svg")
-  var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
+    var svg = d3.select("#sliderStep2D").selectAll("svg")
+    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
 
-  svg.append('marker')
-      .attr('id', 'arrow')
-      .attr('viewBox', '-10 -10 20 20')
-      .attr('markerWidth', 20)
-      .attr('markerHeight', 20)
-      .attr('orient', 'auto')
-    .append('path')
-      .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-      .attr("transform", "scale(0.5)")
+    svg.append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '-10 -10 20 20')
+        .attr('markerWidth', 20)
+        .attr('markerHeight', 20)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
+        .attr("transform", "scale(0.5)")
 
-  swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)')
+    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
 
+  });
+  renderQueue[0]()
 
   </script>
 <p>

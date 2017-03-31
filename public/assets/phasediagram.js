@@ -40,9 +40,9 @@ function phaseDiagram(divin) {
        .attr("width", 648)
        .attr("height", 520)
        .style("z-index", 10)
-       //.style("pointer-events", "none")
+       .style("pointer-events", "none")
   renderDraggable(overlay, [320.5, 361+35], [346.5, 378+35], 6, "reaches<tspan x=\"0\" dy=\"1.2em\">optimum</tspan>")
-  renderDraggable(overlay, [102, 312], [107, 310], 6, "initial point:<tspan x=\"0\" dy=\"1.2em\">x = 1, y = 0</tspan>")
+  //renderDraggable(overlay, [102, 312], [107, 310], 6, "initial point:<tspan x=\"0\" dy=\"1.2em\">x = 1, y = 0</tspan>")
   //renderDraggable(overlay, [581.5, 360+35], [597.5, 321+35], 6, "misses optimum")
 
   // Draw the three phases

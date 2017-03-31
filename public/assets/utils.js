@@ -384,6 +384,7 @@ function stackedBarchartGen(n, m) {
   var axis = [0,1.53]
   var translatex = 110
   var translatey = 10
+  var col = colorbrewer.RdPu
 
   function renderStackedGraph(svg) {
 
@@ -422,8 +423,6 @@ function stackedBarchartGen(n, m) {
 		var Y = d3.scaleLinear().domain([axis[1],axis[0]]).range([0,height])
 
 		function add(a, b) { return a + b; }
-
-		var col = colorbrewer.RdPu
 
 		var s = []
 		for (var j = 0; j < m; j ++) {
@@ -465,7 +464,7 @@ function stackedBarchartGen(n, m) {
 			  .attr("fill", function (d,i) { return highlight.includes(i) ? "darkred" : "black" })
 			svgdata.exit().remove()
 
-			for (var j = 0; j < 3; j++) {
+			for (var j = 0; j < m; j++) {
 		    var svgdatai = s[j].selectAll("line").data(stacknew)
 		    svgdatai.enter().append("line")
 		    svgdatai.merge(svgdatai)
@@ -510,6 +509,10 @@ function stackedBarchartGen(n, m) {
   	return renderStackedGraph;
   }
 
+  renderStackedGraph.col = function(_) {
+  	col = _
+  	return renderStackedGraph
+  }
   return renderStackedGraph
 }
 
@@ -764,6 +767,8 @@ function slider2D(div, onChange,lambda1, lambdan, start) {
 	} else {
 	  changeMouse(X(alpha*lambdan),Y(beta))
 	}
+
+  circle.moveToFront()
 }
 
 /****************************************************************************
@@ -871,6 +876,46 @@ function matSum(R,b) {
   }, lambda:(numeric.norm2([lambda.y[0],lambda.x[0]]))}
 
 }
+
+/*
+Matrix power
+*/
+// function matPow(A) {
+
+//   function fix(U) {
+//     if (U["y"] === undefined) {
+//       if (typeof U["x"][0] == "number") {
+//         U["y"] = zeros(U["x"].length)
+//       } else {
+//         U["y"] = zeros2D(U["x"].length, U["x"][0].length)
+//       }
+//     }
+//   }
+
+//   // Complex Diag functionality
+//   function diag(A) {
+//     var X = numeric.diag(A["x"])
+//     var Y = numeric.diag(A["y"])
+//     return new numeric.T(X,Y)
+//   }
+
+//   // Hack for tacking powers of complex numbers
+//   function pow(x,k) {
+//     return x.log().mul(k).exp()
+//   }
+
+//   var eR     = numeric.eig(A)
+//   // var lambda = eR["lambda"]; fix(lambda)
+//   // var U      = eR["E"]; fix(U)
+//   // var Uinv   = U.inv(); fix(Uinv)
+
+//   return {matPow: function(k) {
+// //    var lambdak = pow(lambda,k)
+// //    return U.dot(diag(lambdak)).dot(Uinv)["x"]
+//   }, lambda:(numeric.norm2([lambda.y[0],lambda.x[0]]))}
+
+// }
+
 
 /*
   Closed form solution for momentum iteration

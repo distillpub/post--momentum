@@ -10,27 +10,44 @@ function renderOverlay(svg, nodes) {
 
   for (var i = 0; i < 5; i++) {
 
-    var adjust = [0,0,-10,-40,-20][i]
-    var x1 = nodes[i].offsetLeft + 20
+    var adjust = [0,0,0,0,0][i]
+    var x1 = nodes[i].offsetLeft + 15
     var y1 = nodes[i].offsetTop + adjust
 
     var line = svg.append("line")
-      .style("stroke", "grey")
+      .style("stroke", "black")
       .style("stroke-width", "1px")
-      .attr("stroke-dasharray", "2,2")
+      // .attr("stroke-dasharray", "2,2")
       .attr("opacity", 0.7)
       .attr("x1", x1)
       .attr("y1", y1)
       .attr("x2", x1)
       .attr("y2", y1 - adjust)
+      .attr("shape-rendering", "crispEdges")
 
-    var path = svg.append("path")
+    var paths = svg.append("g");
+
+    paths.append("path")
+                  .attr("class", "leader-line")
                   .attr("d", ringPath([110,110],[x1,y1]).d)
-                  .style("stroke", "grey")
+                  .style("stroke-width", "3px")
+                  .style("fill", "none")
+                  .attr("stroke", "white")
+                  // .attr("stroke-dasharray", "2,2")
+                  .attr("stroke-opacity", 0.4)
+                  .attr("shape-rendering", "crispEdges");
+
+    paths.append("path")
+                  .attr("class", "leader-line")
+                  .attr("d", ringPath([110,110],[x1,y1]).d)
                   .style("stroke-width", "1px")
                   .style("fill", "none")
-                  .attr("stroke-dasharray", "2,2")
-                  .attr("opacity", 0.7)
+                  .attr("stroke", "black")
+                  // .attr("stroke-dasharray", "2,2")
+                  .attr("stroke-opacity", 0.3)
+                  .attr("shape-rendering", "crispEdges");
+
+    var path = paths.selectAll(".leader-line")
 
     var circ = svg.append("g")
                     .attr("transform", "translate(" + x1 + "," + y1 + ")");
@@ -38,15 +55,15 @@ function renderOverlay(svg, nodes) {
     circ.append("circle")
                    .attr("r", 5)
                    .attr("fill","none")
-                   .attr("stroke", "black")
-                   .attr("stroke-width", 3)
+                   .attr("stroke", "white")
+                   .attr("stroke-width", 4)
                    .attr("stroke-opacity", 0.5);
 
     circ.append("circle")
                    .attr("r", 5)
                    .attr("fill","none")
-                   .attr("stroke", "white")
-                   .attr("stroke-width", 1.5);
+                   .attr("stroke", "black")
+                   .attr("stroke-width", 1);
 
     n = nodes
     var updatePath =  (function(xin, yin, pathin, circin,i, aline) {
@@ -61,15 +78,9 @@ function renderOverlay(svg, nodes) {
         circin.attr("transform", "translate(" + x2 + "," + y2 + ")");
 
         if (i < 2) {
-          pathin.attr("d", ringPath([x2, y2],[xin, yin]).d)
-                .attr("opacity", bold? 1 : 0.7)
-                .style("stroke-width", bold? 1:1)
-                .style("stroke", "rgb(150, 150, 150)")
+          pathin.attr("d", ringPath([x2, y2],[xin, yin]).d);
         } else {
-          pathin.attr("d", ringPath([xin, yin],[x2, y2]).d)
-                .attr("opacity", bold? 1 : 0.7)
-                .style("stroke-width", bold? 1:1)
-                .style("stroke", "rgb(150, 150, 150)")
+          pathin.attr("d", ringPath([xin + 5, yin + 5],[x2 + 4, y2]).d);
         }
         aline.attr("opacity", bold? 1 : 0.7).style("stroke-width", bold? 1:1).style("stroke", "rgb(150, 150, 150)")
       }
@@ -130,7 +141,7 @@ function renderTaxonomy(div) {
                 .style("left", l +"px")
                 .style("width", "180px")
                 .style("height", "300px")
-                .style("border-top", "1px solid grey")
+                .style("border-top", "1px solid #ccc")
 
     divs.push(outdiv.node())
 
@@ -144,7 +155,7 @@ function renderTaxonomy(div) {
 
     outdiv.append("span")
       .style("position", "absolute")
-      .style("top","5px")
+      .style("top","8px")
       .style("width", "150px")
       .style("height", "130px")
       .style("font-size", "13px")

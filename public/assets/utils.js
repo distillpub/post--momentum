@@ -169,8 +169,8 @@ function sliderGen(dims) {
           .style("font-size", "10px")
 
     handle.moveToFront()
-    return {xval : function() { return curr_xval }, 
-    		tick : updateTicks, 
+    return {xval : function() { return curr_xval },
+    		tick : updateTicks,
     		init:function() {
 		        handle.attr("transform", "translate(" + x(default_xval) + ",0)" );
 		        onChange(default_xval, handle)
@@ -322,7 +322,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
       return dots;
     }
 
-    var dots1 = initData("black",r1)
+    var dots1 = initData("#999",r1)
     var dots2 = initData(colorbrewer.RdPu[5][2],r2)
 
     function updateData(dots, data) {
@@ -1015,10 +1015,10 @@ function ringPathGen(radius, width, height) {
     // if (dir == "W") { top  = (p2[1] - height/2); left = (p2[0] - width - padding) }
     // if (dir == "E") { top  = (p2[1] - height/2); left = (p2[0] + padding) }
 
-    if (dir == "S") { top  = (p2[1] + height/2 + padding); left = (p2[0] - width/2) } 
+    if (dir == "S") { top  = (p2[1] + height/2 + padding); left = (p2[0] - width/2) }
     if (dir == "N") { top  = (p2[1] - padding); left = (p2[0] - width/2) }
     if (dir == "W") { top  = (p2[1] + height/4); left = (p2[0] - width - padding) }
-    if (dir == "E") { top  = (p2[1] + height/4); left = (p2[0] + padding) }    
+    if (dir == "E") { top  = (p2[1] + height/4); left = (p2[0] + padding) }
 
     return {d:d, label:[left, top]}
 
@@ -1224,7 +1224,7 @@ function renderDraggable(svg, p1, p2, radius, text) {
                   var d = ringPath(p1, p2)
                   path.attr("d", d.d)
                   circlePointer.attr("cx",x).attr("cy",y)
-                  console.log(p1, p2)                  
+                  console.log(p1, p2)
               }));
 
   var circleDragger = svg.append("circle")

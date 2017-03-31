@@ -7,7 +7,7 @@
 .track-inset,
 .track-overlay {
   stroke-linecap: round;
-  
+
 }
 
 .track {
@@ -19,7 +19,7 @@
 .track-inset {
   stroke: #e6e6e6;
   stroke-width: 5px;
-  
+
 }
 
 .track-overlay {
@@ -36,7 +36,7 @@
   stroke-width: 1.5px;
 }
 
-.figtext path{ 
+.figtext path{
     stroke: black;
     stroke-width:1;
     fill: none;
@@ -52,7 +52,7 @@
   color: #fff;
   border-radius: 2px;
   pointer-events: none;
-  font-size: 10px;  
+  font-size: 10px;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -205,27 +205,27 @@
 .figtext{
   font-size:12px;
   line-height:18px;
-  font-family:Helvetica;      
+  font-family:Helvetica;
   font-weight: bold;
 }
 
 .figtext2{
   font-size:13px;
   line-height:18px;
-  font-family:Helvetica;      
+  font-family:Helvetica;
   text-align:left;
-  color:gray;  
+  color:gray;
 }
 
 
 .annotatetext{
   font-size:12px;
   line-height:18px;
-  font-family:Helvetica;      
+  font-family:Helvetica;
   color:gray;
 }
 
-.annotatetext path{ 
+.annotatetext path{
     stroke: black;
     stroke-width:1;
     fill: none;
@@ -235,14 +235,14 @@
 .ticktext{
   font-size:12px;
   line-height:18px;
-  font-family:Helvetica;      
+  font-family:Helvetica;
   text-align:right;
 }
 
 .mycaptiontext{
   font-size:15px;
   line-height:22px !important;
-  font-family:Open Sans;      
+  font-family:Open Sans;
   text-align:right;
   color:gray;
 }
@@ -263,7 +263,6 @@
   shape-rendering: crispEdges;
 }
 
-
 .annotations path{
   fill: none;
   stroke: black;
@@ -273,4 +272,16 @@
 }
 .annotations g:hover text{
   fill: red;
+}
+
+.draggable-number > .katex {
+  /*hsl(24, 100%, 50%)*/
+  border-bottom: dotted 1px #bbb;
+  /*color: hsl(24, 100%, 45%);*/
+  padding-bottom: 4px;
+}
+
+.draggable-number:hover > .katex {
+  color: hsl(24, 100%, 45%);
+  border-bottom: dotted 1px hsl(24, 100%, 50%);
 }

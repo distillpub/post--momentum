@@ -1,3 +1,5 @@
+<!doctype html>
+<meta charset="utf-8">
 <html>
 <head>
 <script src="../assets/lib/template.v1.js"></script>
@@ -11,16 +13,28 @@
 
 </head> 
 <body>
+<script type="text/javascript">
+function renderMath(elem) {
+  renderMathInElement(
+      elem,
+      {
+          delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right: "$", display: false},
+          ]
+      }
+  );
+  }
+
+</script>
 <dt-article class="centered">
 <p>
   Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
 
 </p>
-  <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:420px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $f(w) - f(w^*)$ into a determinsitic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> $\lambda_1=1$, and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg> $\lambda_2=10$ </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
-  <figcaption style="position:absolute; text-align:left; top:400px; left:140px; width:780px; height:120px">The arrow points to the crossover point where the noise dominates the iterations.</figcaption>
-
+  <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:380px">
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The line depicts the point where the expected errors match.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:280px; height:120px; font-size:15px"> $\mathbf{E} f(w) - f(w^\star) $</figcaption>
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
@@ -31,7 +45,7 @@
   renderQueue = []
   renderQueue.push(function(callback) {
       var graphDiv = d3.select("#milestonesMomentum")
-                   .style("width",  920 + "px")
+                   .style("width",  980 + "px")
                    .style("height", 300 + "px")
                    .style("top", "170px")
                    .style("position", "relative")
@@ -40,13 +54,13 @@
                    .attr("width", 920)
                    .attr("height", 500)
 
-    var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+    var svg = graphDiv.append("svg").attr("width", 980).attr("height", 500)
 
     var update = renderStochasticMilestones(svg, function() {})
     var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
 
-    // Swoopy Annotator
-    var annotations = [
+    // Swoopy Annotator sliderStep2D
+    var annotations = [ 
       {
         "x": 0,
         "y": 0,
@@ -59,27 +73,6 @@
       }
     ]
 
-    var swoopy = d3.swoopyDrag()
-      .x(function(d){ return (d.x) })
-      .y(function(d){ return (d.y) })
-        .draggable(false)
-        .annotations(annotations)
-
-    var svg = d3.select("#sliderStep2D").selectAll("svg")
-    var swoopySel = svg.append("g").attr("class", "figtext").call(swoopy)
-
-    svg.append('marker')
-        .attr('id', 'arrow')
-        .attr('viewBox', '-10 -10 20 20')
-        .attr('markerWidth', 20)
-        .attr('markerHeight', 20)
-        .attr('orient', 'auto')
-      .append('path')
-        .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-        .attr("transform", "scale(0.5)")
-
-    swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
-
   });
   renderQueue[0]()
 
@@ -88,5 +81,6 @@
   Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), the situation improves quite dramatically.
 
 </p>  
+<script>renderMath(document.body)</script>
 </dt-article>
 </body>

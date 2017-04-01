@@ -1689,26 +1689,24 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   \end{array}\right)=R^{k}\left(\begin{array}{c}
   y_{i}^{0}\\
   x_{i}^{0}
-  \end{array}\right)+\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
-\epsilon\\
--\alpha\epsilon
+  \end{array}\right)+ \epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
 \end{array}\right)
   $$
   There are two phases of the optimization, shown here for a simple 1D case.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
-
-  <figure id="stochastic" style="position:relative; width:920px; height:420px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $f(w) - f(w^*)$ into a determinsitic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg>, and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg> </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
-  <figcaption style="position:absolute; text-align:left; top:400px; left:140px; width:780px; height:120px">The arrow points to the crossover point where the noise dominates the iterations.</figcaption>
-
+  <figure id="stochastic" style="position:relative; width:920px; height:380px">
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The line depicts the point where the expected errors match.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:280px; height:120px; font-size:15px"> $\mathbf{E} f(w) - f(w^\star) $</figcaption>
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
   <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
   <div id = "stochasticgd" style="position:relative; left:15px"></div>
   </figure>
+
   <script>
   deleteQueue.push(renderLoading(d3.select("#stochastic")))
   renderQueue.push(function(callback) {

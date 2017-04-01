@@ -259,8 +259,8 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
 
           var xy = convert(alpha, beta)
 
-          xAxis.select("circle").attr("cx", pt[0])
-          yAxis.select("circle").attr("cy", pt[1])
+          xAxis.select("circle").attr("cx", pt[0]).style("visibility","visible")
+          yAxis.select("circle").attr("cy", pt[1]).style("visibility","visible")
 
           var e = getEigs(alpha,beta, 100)
           var n1 = 0
@@ -341,6 +341,9 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
             updateIC(defaults[2][0], defaults[2][1], true)
             updateMO(defaults[3][0], defaults[3][1], true)
             updateD( defaults[4][0], defaults[4][1], true)
+            xAxis.select("circle").style("visibility","hidden")
+            yAxis.select("circle").style("visibility","hidden")
+
             prevregime = ""
         }
 
@@ -367,7 +370,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
       .style("height",slider2D_size + 60)
 
     var xAxis = canvasaxis.append("g")
-    xAxis.append("circle").attr("fill", "black").attr("r", 2)
+    xAxis.append("circle").attr("fill", "black").attr("r", 2).style("visibility","hidden")
     xAxis.attr("class", "grid figtext")
       .attr("transform", "translate(51,"+(slider2D_size + 25) +")")
       .call(d3.axisBottom(d3.scaleLinear().domain([0,4]).range([0, 2*slider2D_size]))
@@ -375,7 +378,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
           .tickSize(4))
 
     var yAxis = canvasaxis.append("g")
-    yAxis.append("circle").style("fill", "black").attr("r", 2)
+    yAxis.append("circle").style("fill", "black").attr("r", 2).style("visibility","hidden")
     yAxis.attr("class", "grid figtext")
       .attr("transform", "translate(46,20)")
       .call(d3.axisLeft(ybeta).ticks(1).tickSize(4))

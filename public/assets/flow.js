@@ -146,7 +146,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
     cacheval = -1
     slideControl.slidera.init()
   }
-  slider2D(slider, changeStep, FlowSigma[0], FlowSigma[1119], [1.9,0.00001])
+  var reset = slider2D(slider, changeStep, FlowSigma[0], FlowSigma[1119], [1.9,0.00001])
 
   slider.append("div")
     .attr("class","figtext")
@@ -164,6 +164,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
     .style("pointer-events", "none")
     .html("Momentum β = ")
 
+    return reset
 }
 
 // <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>

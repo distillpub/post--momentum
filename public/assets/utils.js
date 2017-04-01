@@ -774,6 +774,8 @@ function slider2D(div, onChange, lambda1, lambdan, start) {
 	}
 
   circle.moveToFront()
+
+  return function() { changeMouse(X(specialpoints[0][0]), Y(specialpoints[0][1])) }
 }
 
 /****************************************************************************

@@ -1195,7 +1195,10 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
     var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
     var update = renderMilestones(svg, function() {})
-    var slidera = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100)
+    var reset = slider2D(d3.select("#sliderStep2D"), 
+                           function(x,y) { update(x,y) }, 
+                           1, 
+                           100)
 
     // // Swoopy Annotator
     annotations = [
@@ -1211,9 +1214,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
       }
     ]
     var sel = drawAnnotations(d3.select("#milestonesMomentumFig"), annotations)
-    sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all")
-
-    console.log(sel.selectAll("text").node())
+    sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
     callback(null);
   });
 
@@ -1290,7 +1291,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
             console.error("Error loading data files");
           }
           else {
-            renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
+            var reset = renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
             // Swoopy Annotator
             var annotations = [
               {
@@ -1304,7 +1305,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
                 ]
               }
             ]
-            drawAnnotations(d3.select("#flow"), annotations)
+            var sel = drawAnnotations(d3.select("#flow"), annotations)  
+            sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
           }
         });
       callback(null);
@@ -1597,7 +1599,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
 
   function update(alpha, beta) {
-    console.log(alpha,beta)
     var iter = geniterMomentum(RQ, RLambda, b, Math.max(alpha, 0.00001), Math.min(Math.max(beta, 0.00001), 0.999)).iter
     for (var j = 0; j < numIters; j++) {
       var iterj = iter(j)
@@ -1607,7 +1608,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     }
   }
 
-  var slidera = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
+  var reset = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
 
   update(0.0035749243028120182, 0.8095238095238095)
 
@@ -1634,7 +1635,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
       ]
     }
   ]
-  drawAnnotations(d3.select("#rosenViz"), annotations)
+  var sel = drawAnnotations(d3.select("#rosenViz"), annotations)
+  sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
 
   callback(null);
   });
@@ -1724,7 +1726,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
     var update = renderStochasticMilestones(svg, function() {})
     var slidera = slider2D(d3.select("#sliderStep2DD"), function(x,y) { update(x,y) }, 1, 100)
-
+    slidera(0.5,0.5)
     // Swoopy Annotator
     // var annotations = [
     //   {

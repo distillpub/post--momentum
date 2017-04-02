@@ -38,8 +38,8 @@ function phaseDiagram_dec(divin) {
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
 
-  var w = 100
-  var h = 100
+  var w = 95
+  var h = 95
   var a = 1.0
 
   var axis = [[-a*5,a*5],[-a,a]]
@@ -59,7 +59,7 @@ function phaseDiagram_dec(divin) {
 
   // Draw the three phases
 
-  var lambdas = [0, 0.01, 0.05, 0.25]
+  var lambdas = [0, 0.02, 0.1, 0.25]
   var betas = [1, 0.985, 0.95, 0.9, 0.85, 0.8, 0]
 
   for (var i = 0; i < 6; i ++ ) {
@@ -67,7 +67,7 @@ function phaseDiagram_dec(divin) {
       .style("position","absolute")
       .style("width",(w-10) + "px")
       .style("height",20 + "px")
-      .style("left", 65 + (w+8)*i + "px")
+      .style("left", 65 + (w+14)*i + "px")
       .style("top", 0 + "px")
       .attr("class", "figtext")
       .style("border-bottom", "1px solid black" )
@@ -80,7 +80,7 @@ function phaseDiagram_dec(divin) {
       .style("width", 35 + "px")
       .style("height", h + "px")
       .style("left", 0 + "px")
-      .style("top", 50 + 120*j + "px")
+      .style("top", 50 + 125*j + "px")
       .attr("class", "figtext")      
       .style("border-right", "1px solid black" )
       .html( (j != 0 ? "&nbsp" : "<br>λ = ") + lambdas[j])
@@ -157,8 +157,8 @@ function phaseDiagram_dec(divin) {
         .style("position","absolute")
         .style("width", w + "px")
         .style("height",h + "px")
-        .style("left", 65 + (w+8)*i + "px")
-        .style("top", 50 + 120*j - hborder + "px")
+        .style("left", 65 + (w+14)*i + "px")
+        .style("top", 50 + 125*j - hborder + "px")
 
       var svg = div.append("svg")
                   .style("position", 'absolute')

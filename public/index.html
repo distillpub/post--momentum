@@ -181,7 +181,18 @@
   </p>
  -->
   <p>
-  Gradient descent as many virtues, but speed is not one of them. The iteration is is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
+<!--   The standard way to think about momentum is as a ball rolling down a hill. It is a very intuitive, natural story - our iterate is a particle, and momentum gives it inertial energy. Under the influence of the gradient, we're dampening oscillations and reinforcing smooth directions, and granting it force to plough through narrow valleys, small humps, ridges and local minima. While this explanation is powerful, it doesn't explain all of momentum's behavior. How much momentum is a It doesn't explain why momentum typically provides a quadratic speedup. Neither does it explain exactly how momentum allows a larger step size in optimization.
+ -->
+  You're probably familiar with Momentum's physical interpretation. So the story goes - our iterate is a ball, rolling down a hill. Momentum gives it inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
+  </p>
+<!--   This explanation is intuitive, and helpful - but it is not the complete story. First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these missteps really worth the extra speed? Next, the optimal parameters of momentum are unclear. And finally, in the noisy setting, it can be argued that momentum helps by smoothing out the noise, or hurts, due to the error compunding. To gain a deeper understanding of momentum, we must delve a little deeper into its dynamics, to piece out its unusal and surprising properties.
+ -->
+  <p>
+  This explanation is intuitive, and helpful - but it is not be the complete story. <!-- First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that the iterates under momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these extra iterations really worth the extra speed? Next, this offers little guidance in the way of how much momentum to use. In this article we will delve a little deeper into the dynamics of momentum, in an attempt to explain some of this behavior. -->
+  </p>
+  <hr>
+  <p>
+  We begin with Gradient Descent. The iteration has as many virtues, but speed is not one of them. The iteration is is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
@@ -195,7 +206,7 @@
   <p>
   The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
-  But there is a mysterious tweak to gradient descent which improves things significantly. The change is innocent, and costs almost nothing - we give gradient descent a short term memory:
+  Momentum <dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite> proposes the following tweak to gradient descent. We give gradient descent a short term memory:
 
   $$
   \begin{aligned}
@@ -204,7 +215,7 @@
   \end{aligned}
   $$
 
-  Instead of taking taking a step in the gradient, we move in a geometrically decaying superposition all the previous gradients. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
+  he change is innocent, and costs almost nothing. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
 
   </p>
   <p>
@@ -212,11 +223,11 @@
   </p>
 
   <p>
-  The new iteration, known best to machine learners as Momentum<dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, may seem like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new iteration may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
   <p>
-  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
+  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain very narrow and technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
   </p>
 
 <hr>
@@ -318,7 +329,7 @@
   </p>
   <h3>Decomposing the Error</h3>
   <p>
-  The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of $Q$. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
+  The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of the eigenvectors of $Z^T Z$, $Q$. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
   </p>
   <p>
   For most step-sizes, the eigenvectors with largest eigenvectors converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's sub-optimality to the loss
@@ -438,13 +449,13 @@
   <p>
  <h3>Choosing A Step-size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1.<dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_0$ or $\lambda_n$:
+  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1.<dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_1$ or $\lambda_n$:
   $$
-  \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{0}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
+  \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{1}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
   $$
   </p>
   <p>
-  This overall rate is minimized when the rates for $\lambda_0$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvector to converge at the same time. If we work this through we get:
+  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvector to converge at the same time. If we work this through we get:
 
   $$
   \begin{aligned}
@@ -465,7 +476,7 @@
 
   <h2>Example: Polynomial Regression</h2>
   <p>
-  The above analysis reveals an interesting insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very interesting, concrete interpretation.
+  The above analysis reveals an insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very concrete interpretation.
   </p>
 
 <!--   <p>
@@ -588,7 +599,7 @@
   </p>
 
   <p>
-  The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$. So let's recast our regression problem in $Q$ space. First, we do a change of variables, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
+  The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$. So let's recast our regression problem in the space of the eigenvectors of $A$, $Q$. First, we do a change of variables, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
   $$
   \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad p_{i}=\sum q_{ij}p_j.
@@ -683,7 +694,7 @@
   </p>
 
   <p>
-  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, we arrive at a surprising result. The "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! So starting at a simple initial point like 0 (call this a prior, if you like), and track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
+  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! So starting at a simple initial point like 0 (by a gross abuse of language, let's think of this as a prior), and track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
   </p>
 
   <figure id = "poly2" style="width:940px; height:360px"></figure>
@@ -1090,7 +1101,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
                 .style("top","0px")
                 .style("left","0px")
 
-      renderDraggable(svg, [181.5, 65], [209.5, 65], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
+      renderDraggable(svg, [178.5, 66], [199.5, 66], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
       // renderDraggable(svg, [185, 116], [234, 174], 4, "constant speed").attr("opacity", 0.5)
       // renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
       // renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)
@@ -1170,7 +1181,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
 
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
   <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd">$\lambda_1=0.01$</span>, <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5">$\lambda_2=0.1$</span>, and <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a">$\lambda_3=1$</span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w^k) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
@@ -1260,7 +1271,7 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   renderMath(document.getElementById("colorizer_equation"))
   </script>
   <p>
-  The above optimization problem is bounded from below by $0$, and thus the optimal solution, which achieves this, is the vector of all $1$'s. A simple inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The above optimization problem is bounded from below by $0$, and thus the optimal solution, which achieves this, is the vector of all $1$'s. An inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   $$
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
@@ -1678,10 +1689,21 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. Many of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. And this lower bound does not preclude the possibility of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
   </p>
-  <h3>Momentum with Noise</h3>
+  <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  Basically the stochastic gradient allows you to decompose the objective function into a determinsitic part and a stochastic part
+  In most modern machine learning, the cost of evaluating the gradient can be prohibitively expensive. In practice, a randomized approximation is used, computed for example from a random subset of the data. This approximate gradient can be seen as a noisy gradient where
+  $$
+  \text{approimate gradient} = \nabla f(w) + \text{error}(w)
+  $$
+  On a quadratic, the terms break cleanly into two parts, where <dt-fn>
+  $$
+  \begin{aligned}
+  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})  + \text{error}(w^k) \\[0.4em]
+  w^{k+1}&=w^{k}-\alpha z^{k+1}.
+  \end{aligned}
+  $$
+  </dt-fn>
   $$
   \left(\begin{array}{c}
   y_{i}^{k}\\
@@ -1694,7 +1716,61 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 -\alpha
 \end{array}\right)
   $$
-  There are two phases of the optimization, shown here for a simple 1D case.
+  and $\epsilon^k = Q \cdot \text{error}(w^k)$. Let us consider a simplified model of this noise, where $\epsilon^k$ are independent gaussians. Then we can write the expected objective as a contribution of two different losses, visualized here
+     <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, we have the two term
+recurrence
+$$
+\begin{aligned}
+y^{k+1} & =\beta y^{k}+\lambda_{i}x^{k}+\epsilon^{k}\\
+x^{k+1} & =x^{k}-\alpha y^{k+1}
+\end{aligned}
+$$
+Which becomes 
+$$
+\left(\begin{array}{c}
+y^{k}\\
+x^{k}
+\end{array}\right)=R^{k}\left(\begin{array}{c}
+y^{0}\\
+x^{0}
+\end{array}\right)+\epsilon_{i}^{k}\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)
+$$
+The objective value is 
+$$
+\begin{aligned}
+\mathbf{E}f(x^{k})&=\frac{\lambda}{2}\mathbf{E}[(x^{k})^{2}]\\&=\frac{\lambda}{2}\mathbf{E}\left(e_{2}^{T}R^{k}\left(\begin{array}{c}
+y^{0}\\
+x^{0}
+\end{array}\right)+\epsilon_{i}^{k}e_{2}^{T}\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)\right)^{2}\\&=\frac{\lambda}{2}e_{2}^{T}R^{k}\left(\begin{array}{c}
+y^{0}\\
+x^{0}
+\end{array}\right)+\frac{\lambda}{2}\mathbf{E}\left(\epsilon^{k}e_{2}^{T}\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)\right)^{2}\\&=\frac{\lambda}{2}e_{2}^{T}R^{k}\left(\begin{array}{c}
+y^{0}\\
+x^{0}
+\end{array}\right)+\frac{\lambda}{2}\mathbf{E}[\epsilon_{i}^{k}]\,\cdot\,\sum_{i=1}^{k}\left(e_{2}^{T}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)\right)^{2}\\&=\frac{\lambda}{2}e_{2}^{T}R^{k}\left(\begin{array}{c}
+y^{0}\\
+x^{0}
+\end{array}\right)+\frac{\lambda\sigma}{2}\cdot\sum_{i=1}^{k}\gamma_{i}^{2}
+\end{aligned}
+$$
+where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)$$
+
+</dt-fn>.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
   <figure id="stochastic" style="position:relative; width:920px; height:380px">
@@ -1725,46 +1801,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     var update = renderStochasticMilestones(svg, function() {})
     var slidera = slider2D(d3.select("#sliderStep2DD"), function(x,y) { update(x,y) }, 1, 100)
     slidera(0.5,0.5)
-    // Swoopy Annotator
-    // var annotations = [
-    //   {
-    //     "x": 0,
-    //     "y": 0,
-    //     "path": "M 250,96 A 32.227 32.227 0 0 0 206,62",
-    //     "text": "Optimal parameters",
-    //     "textOffset": [
-    //       188,
-    //       109
-    //     ]
-    //   }
-    // ]
-
-    // var swoopy = d3.swoopyDrag()
-    //   .x(function(d){ return (d.x) })
-    //   .y(function(d){ return (d.y) })
-    //     .draggable(false)
-    //     .annotations(annotations)
-
-    // var svg = d3.select("#sliderStep2D").selectAll("svg")
-    // var swoopySel = svg.append("g").call(swoopy)
-
-    // svg.append('marker')
-    //     .attr('id', 'arrow')
-    //     .attr('viewBox', '-10 -10 20 20')
-    //     .attr('markerWidth', 20)
-    //     .attr('markerHeight', 20)
-    //     .attr('orient', 'auto')
-    //   .append('path')
-    //     .attr('d', 'M-6.75,-6.75 L 0,0 L -6.75,6.75')
-    //     .attr("transform", "scale(0.5)")
-
-    // swoopySel.selectAll('path').attr('marker-end', 'url(#arrow)');
-
   });
   </script>
   <p>
-  Things to note include - a smaller stepsize gives less error (but slower convergence) - this justifies lowering the stepsize peroidically. Momentum is generally bad, as it allows errors in the gradient to accumulate (though this is bounded). The momentum term can plasuabily be restarted every few iterations to avoid the accumulation of errors (i'm sure this isn't original).
-  </p>
+<!--   The tradeoffs we see are unfortunate. The parameters which improve the deterministic convergence (increased step size and momentum) work exactly in opposition to the stochastic error accumulated. This suggests that, when 
+ -->  </p>
   <hr>
   <h2>Onwards and Downwards</h2>
   <p>

@@ -2,10 +2,11 @@
 λ = 1
 Rf(β, α) = [   β        λ; 
             -α*β (1 - α*λ)]
-α = 0.1
-β = 0.7
 
-ϵ = 0.1
+α = 0.05
+β = 0.4
+
+ϵ = 8
 S = inv([ 1  0 ;
           α  1 ])
 
@@ -39,7 +40,7 @@ end
 
 function runmomentum(A,b,k, ϵ)
   z = zeros(length(b))
-  w = ones(length(b))
+  w = 3*ones(length(b))
   for i = 1:k
     z = β*z + (A*w - b) + ϵ*randn(1)
     w = w - α*z
@@ -47,13 +48,25 @@ function runmomentum(A,b,k, ϵ)
   return (z[1],w[1])
 end
 
-k = 200
-d = mean([[runmomentum(1,0, i, ϵ)[2]^2 for i = 1:k] for i = 1:10])
+function runmomentum2(A,b,k, ϵ)
+  z = zeros(length(b))
+  w = 3*ones(length(b))
+  fx = []
+  for i = 1:k
+    z = β*z + (A*w - b) + ϵ*randn(1)
+    w = w - α*z
+    push!(fx, w[1]*w[1])
+  end
+  return fx
+end
+
+k = 150
+d = mean([runmomentum2(1,0, k, ϵ) for i = 1:100])
 e = err2(k)
 d2 = [runmomentum(1,0, i, 0.)[2]^2 for i = 1:k]
 
-plot(d)
+plot(d,".")
 plot(d2+e)
-plot(d2)
+#plot(d2)
 
 plot(err2(200, 0.01, 0))

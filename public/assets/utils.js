@@ -390,6 +390,12 @@ function stackedBarchartGen(n, m) {
   var translatex = 110
   var translatey = 10
   var col = colorbrewer.RdPu
+  var highlightcol = "darkred"
+  var lineopacity = 1
+  var cr = 1.75
+  var copacity = 1
+  var dotcolor = "black"
+  var drawgrid = true
 
   function renderStackedGraph(svg) {
 
@@ -444,6 +450,7 @@ function stackedBarchartGen(n, m) {
 		    .attr("y2", function (d,i) { return Y(d[0]) } )
 		    .attr("stroke-width",2)
 		    .attr("stroke", col[3][j])
+        .attr("opacity", lineopacity)
 
 		  s.push(si)
 
@@ -456,6 +463,7 @@ function stackedBarchartGen(n, m) {
 		.attr("cx", function (d,i) { return X(i) } )
 		.attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
 		.attr("r", 2)
+    .attr("opacity", copacity)
 
 		function updateGraph(stacknew, highlight) {
 
@@ -464,45 +472,46 @@ function stackedBarchartGen(n, m) {
 			svgdata.merge(svgdata)
 			  .attr("cx", function (d,i) { return X(i) } )
 			  .attr("cy", function (d,i) { return Y(d.reduce(add,0)) } )
-			  .attr("r",  function (d,i) { return highlight.includes(i) ? 2 : 1.75 })
-			  .transition().delay(20)
-			  .attr("fill", function (d,i) { return highlight.includes(i) ? "darkred" : "black" })
+			  .attr("r",  function (d,i) { return highlight.includes(i) ? 2 : cr })
+			  .attr("fill", function (d,i) { return highlight.includes(i) ? highlightcol : dotcolor })
 			svgdata.exit().remove()
 
 			for (var j = 0; j < m; j++) {
 		    var svgdatai = s[j].selectAll("line").data(stacknew)
 		    svgdatai.enter().append("line")
 		    svgdatai.merge(svgdatai)
-			    .attr("x1", function (d,i) { return X(i) } )
-			    .attr("x2", function (d,i) { return X(i) } )
 			    .attr("y1", function (d,i) { return Y(d.slice(0,j).reduce(add, 0)) } )
 			    .attr("y2", function (d,i) { return Y(d.slice(0,j+1).reduce(add, 0)) } )
-			    .attr("stroke-width",2)
-			    .attr("stroke", col[3][j])
 		    svgdatai.exit().remove()
 			}
 
 		}
 
-		graphsvg.append("g")
-			.attr("class", "grid")
-			.attr("transform", "translate(0," + (height+10) + ")")
-			.attr("opacity", 0.25)
-			.call(d3.axisBottom(X)
-			  .ticks(5)
-			  .tickSize(2))
+    if (drawgrid) {
+  		graphsvg.append("g")
+  			.attr("class", "grid")
+  			.attr("transform", "translate(0," + (height+10) + ")")
+  			.attr("opacity", 0.25)
+  			.call(d3.axisBottom(X)
+  			  .ticks(5)
+  			  .tickSize(2))
 
-		graphsvg.append("g")
-			.attr("class", "grid")
-			.attr("transform", "translate(12,0)")
-			.attr("opacity", 0.25)
-			.call(d3.axisLeft(Y)
-			  .ticks(0)
-			  .tickSize(2))
-
+  		graphsvg.append("g")
+  			.attr("class", "grid")
+  			.attr("transform", "translate(12,0)")
+  			.attr("opacity", 0.25)
+  			.call(d3.axisLeft(Y)
+  			  .ticks(0)
+  			  .tickSize(2))
+    }
 		return {update: updateGraph, stack: s, X:X}
 
 	}
+
+  renderStackedGraph.highlightcol = function(_) {
+  	highlightcol = _;
+  	return renderStackedGraph;
+  }
 
   renderStackedGraph.translatex = function(_) {
   	translatex = _;
@@ -517,6 +526,31 @@ function stackedBarchartGen(n, m) {
   renderStackedGraph.col = function(_) {
   	col = _
   	return renderStackedGraph
+  }
+
+  renderStackedGraph.lineopacity = function(_) {
+    lineopacity = _
+    return renderStackedGraph
+  }
+
+  renderStackedGraph.cr = function(_) {
+    cr = _
+    return renderStackedGraph
+  }
+
+  renderStackedGraph.copacity = function(_) {
+    copacity = _
+    return renderStackedGraph
+  }
+
+  renderStackedGraph.dotcolor = function(_) {
+    dotcolor = _
+    return renderStackedGraph
+  }
+
+  renderStackedGraph.drawgrid = function(_) {
+    drawgrid = _
+    return renderStackedGraph
   }
   return renderStackedGraph
 }

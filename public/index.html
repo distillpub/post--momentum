@@ -183,12 +183,18 @@
   <p>
 <!--   The standard way to think about momentum is as a ball rolling down a hill. It is a very intuitive, natural story - our iterate is a particle, and momentum gives it inertial energy. Under the influence of the gradient, we're dampening oscillations and reinforcing smooth directions, and granting it force to plough through narrow valleys, small humps, ridges and local minima. While this explanation is powerful, it doesn't explain all of momentum's behavior. How much momentum is a It doesn't explain why momentum typically provides a quadratic speedup. Neither does it explain exactly how momentum allows a larger step size in optimization.
  -->
-  You're probably familiar with Momentum's physical interpretation. So the story goes - our iterate is a ball, rolling down a hill. Momentum gives it inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
+  The Momentum algorithm, also known by its older name the heavy ball method, seems inseparable from its physics which has inspired it. The story often goes as follows - our iterates are a ball rolling down a hill. Momentum gives our iterations inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
+  </p>
+  <p>
+  This explanation, now a staple of any exposition of the subject, is sadly a cartoon. And like many cartoons, though capturing very accurately the essence of the subject, still leaves much  unexplained. It is not clear, for example, how much momentum is a good thing. It has been observed (see e.g. the widget above) that momentum often causes iterates to overshoots its target, relying on the gradient's corrective forces to set it back on track. Are these wasted iterations really worth it? Momentum, too, as you may have also noticed, has the curious effect of increasing the range of permissible stepsizes. But exactly what are the limits of this expansion, an why does this happen?  
+  </p>
+  <p>
+  In this article, I hope to replace this gross oversimplification with a another, (perhaps more sophisticated) oversimplification. By noticing momentum plays well with quadratics, we will derive a closed form solution for the iterates, and ultimately deduce many of momentum's behavior and properties from this formula.
   </p>
 <!--   This explanation is intuitive, and helpful - but it is not the complete story. First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these missteps really worth the extra speed? Next, the optimal parameters of momentum are unclear. And finally, in the noisy setting, it can be argued that momentum helps by smoothing out the noise, or hurts, due to the error compunding. To gain a deeper understanding of momentum, we must delve a little deeper into its dynamics, to piece out its unusal and surprising properties.
  -->
   <p>
-  This explanation is intuitive, and helpful - but it is not be the complete story. <!-- First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that the iterates under momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these extra iterations really worth the extra speed? Next, this offers little guidance in the way of how much momentum to use. In this article we will delve a little deeper into the dynamics of momentum, in an attempt to explain some of this behavior. -->
+  <!-- First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that the iterates under momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these extra iterations really worth the extra speed? Next, this offers little guidance in the way of how much momentum to use. In this article we will delve a little deeper into the dynamics of momentum, in an attempt to explain some of this behavior. -->
   </p>
   <hr>
   <p>
@@ -1692,11 +1698,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  In most modern machine learning, the cost of evaluating the gradient can be prohibitively expensive. In practice, a randomized approximation is used, computed for example from a random subset of the data. This approximate gradient can be seen as a noisy gradient where
+  There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Except in the smallest of datasets, the cost of evaluating the gradient, which requires a pass through everything, is prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used in lieu of $\nabla f(w)$. These approximations can be broken down into two parts,
   $$
-  \text{approimate gradient} = \nabla f(w) + \text{error}(w)
+  \nabla f(w) + \text{error}(w)
   $$
-  On a quadratic, the terms break cleanly into two parts, where <dt-fn>
+  We can therefore think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})  + \text{error}(w^k) \\[0.4em]
@@ -1716,7 +1722,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 -\alpha
 \end{array}\right)
   $$
-  and $\epsilon^k = Q \cdot \text{error}(w^k)$. Let us consider a simplified model of this noise, where $\epsilon^k$ are independent gaussians. Then we can write the expected objective as a contribution of two different losses, visualized here
+  and $\epsilon^k = Q \cdot \text{error}(w^k)$. The error term, $\epsilon^k$, with its dependence on the iterates, is a fairly hairy object. For the purposes of exposition, let us simplify our lives and model this as random, independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error, 
      <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, we have the two term
 recurrence
 $$
@@ -1770,7 +1776,7 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
 -\alpha
 \end{array}\right)$$
 
-</dt-fn>.
+</dt-fn>, visualized here.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
   <figure id="stochastic" style="position:relative; width:920px; height:380px">
@@ -1804,8 +1810,8 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   });
   </script>
   <p>
-<!--   The tradeoffs we see are unfortunate. The parameters which improve the deterministic convergence (increased step size and momentum) work exactly in opposition to the stochastic error accumulated. This suggests that, when 
- -->  </p>
+  A few things are worth noting. In particular, we see a set of tradeoffs which appear to pit convergence speeds against stochastic error. Lowering the stepsize decreases the stochastic error, but also slows down the rate of convergence. And rather disappointingly, increasing momentum, the size of our "short term memory", now causes us to remember more errors, a compounding effect which increases indefinitely when $\beta = 1$. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have excellent performance on neural networks, though caution is advised for the reasons stated above.
+  </p>
   <hr>
   <h2>Onwards and Downwards</h2>
   <p>
@@ -1824,7 +1830,7 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   <h3>Acknowledgments</h3>
 
   <p>
-  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
+  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations. I would also like to thank Michael Bostock for the contour library used in the hero visualization.
   </p>
 
 </dt-appendix>

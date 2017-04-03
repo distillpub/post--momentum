@@ -62,7 +62,7 @@ function renderStochasticMilestones(div, updateTick) {
     var errx = [epsilon, -alpha*epsilon]
     var errsum = 0
 
-    var nsamples = 10
+    var nsamples = 1
     svsamples = []
     for (var i = 0; i < nsamples; i++) {
       var sv = runMomentum(stochasticf, w0, alpha, beta, totalIters)

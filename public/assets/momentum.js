@@ -177,7 +177,7 @@ function renderTaxonomy(div) {
 
   var top = 270
   var spacing = 190
-  var updateDR = genPhase(0,top,0, [-1.4,1.4], "Ripples", "R's eigenvalues are complex, have norm $\\leq 1$. $0 \\leq \\alpha \\leq 2/\\lambda_i$. The iterates display low frequency ripples as they spiral to 0.")
+  var updateDR = genPhase(0,top,0, [-1.4,1.4], "Ripples", "R's eigenvalues are complex, and the iterates display low frequency ripples. Surprisingly, the convergence rate $2\\sqrt{\\beta}$ is independent of $\\alpha$ and $\\lambda_i$.")
   updateDR(getTrace(0.0017,0.94,1,1))
 
   var updateMC = genPhase(1,top,spacing*1,[-1.4,1.4], "Monotonic Decrease", "R's eigenvalues are both real, are positive, and have norm less than one. The behavior here resembles gradient descent.")

@@ -1,15 +1,14 @@
 <!doctype html>
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="../assets/widgets.css">
-  <script src = "../assets/lib/d3.v4.min.js"></script>
-  <script src = "../assets/lib/numeric-1.2.6.min.js"></script>
-  <script src = "../assets/utils.js"></script>  
-  <script src = "../assets/lib/tooltip.js"></script>  
-  <script src="../assets/lib/template.js"></script>  
+<script src="../assets/lib/template.v1.js"></script>
+<script src="../assets/lib/lib.js"></script>
+<script src="../assets/utils.js"></script>
+<script src="../assets/stochastic_milestones.js"></script>
+<link rel="stylesheet" href="../assets/lib/katex.min.css">
+<link rel="stylesheet" type="text/css" href="../assets/widgets.css">
 <script src="../assets/lib/auto-render.min.js"></script>
 <script src="../assets/lib/katex.min.js"></script>
-<script src="../assets/lib/swoopy-drag.js"></script>
 
 <link   rel="stylesheet" href="../assets/lib/katex.min.css">
 <link   rel="stylesheet" type="text/css" href="../assets/widgets.css">
@@ -21,55 +20,51 @@
   <dt-article class="centered">
   <p>
   Each row is a single iterate down the left mouse button and drag in the Comp window to create a paragraph text block. The edge—the text’s bounding box— is defined by how far you dragged the mouse when you created the paragraph text layer. This style of text wraps text to the next line when your type reaches the edge of the current line.
-  \text{minimize}\qquad \frac{1}{2} x^T \left( \sum_{i\in D} e_i e_i^T + L_G \right) x - e_i^T x
   </p>
-<!--   f^n(w) = \frac{\kappa-1}{8}\left(w_{1}-1\right)^{2}+\frac{\kappa-1}{8}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}+\frac{1}{2}\|w\|^{2}
- -->
-  <figure style="width:610px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure style="width:610px; height:70px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
   <div style="position:relative; top:-35px">
 
-  <span style="position:absolute; left:0px; top:9px">
-  $$f^n(w)$$
+  <span style="position:absolute; left:0px; top:0px">
+  $$    \left(\begin{array}{c}
+  y_{i}^{k}\\
+  x_{i}^{k}
+  \end{array}\right)$$
   </span>
 
-  <span style="position:absolute; left:72px; top:9px">
+  <figcaption style="position:absolute; left:00px; top:95px; width:80px;">
+  The iterate is a sum of 
+  </figcaption>
+
+  <span style="position:absolute; left:120px; top:10px">
   $$=$$
   </span>
 
-  <figcaption style="position:absolute; left:105px; top:90px; width:140px;">
-  colorizer
+  <span style="position:absolute; left:170px; top:0px">
+  $$R^{k}\left(\begin{array}{c}
+  y_{i}^{0}\\
+  x_{i}^{0}
+  \end{array}\right)$$
+  </span>  
+  <figcaption style="position:absolute; left:170px; top:95px;width:130px;">
+  the deterministic momentum iterates
   </figcaption>
 
-  <span style="position:absolute; left:105px; top:0px">
-  $$\frac{1}{2}\left(w_{1}-1\right)^{2}$$
-  </span>
-
-  <span style="position:absolute; left:240px; top:6px">
+  <span style="position:absolute; left:320px; top:10px">
   $$+$$
   </span>
 
-  <span style="position:absolute; left:280px; top:-10px">
-  $$\frac{1}{2}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}$$
-  </span>
 
-  <figcaption style="position:absolute; left: 280px; top:90px;width:250px;">
-  smoother
+  <span style="position:absolute; left:375px; top:-10px">
+  $$\epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+1\\
+-\alpha
+\end{array}\right)$$
+  </span> 
+
+  <figcaption style="position:absolute; left:375px; top:95px;width:200px;">
+  a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$
   </figcaption>
-
-  <span style="position:absolute; left:480px; top:6px">
-  $$+$$
-  </span>
-  <span style="position:absolute; left:510px; top:-2px">
-  $$\frac{2}{\kappa-1}\|w\|^{2}$$
-  </span>
-
-  <figcaption style="position:absolute; left:510px; top:90px;width:250px;">
-  regularizer
-  </figcaption>
-
-
-
 
   </div>
   </figure>

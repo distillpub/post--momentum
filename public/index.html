@@ -107,11 +107,11 @@
     <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step size α = 0.02</text>
     </div>
-    <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 300px; top: 320px;;">
+    <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
     </div>
-    <figcaption id="Bananacaption" style="position:absolute; width: 360px; height: 90px; left: 580px; top: 320px;">
-      The Rosenbrock banana function features a long narrow, curved valley which causes gradient descent (β = 0) to grind to a halt. Plotted here are the first 200 iterates of the momentum algorithm.
+    <figcaption id="Bananacaption" style="position:absolute; width: 420px; height: 90px; left: 540px; top: 320px;">
+      We often think of Momentum as a means of dampening oscillations and speeding up the iterations, leading to faster convergence. But it has other interesting behavior. It allows a larger range of step-sizes to be used, and creates its own oscillations. What is going on?
     </figcaption>
   </figure>
 
@@ -183,13 +183,13 @@
   <p>
 <!--   The standard way to think about momentum is as a ball rolling down a hill. It is a very intuitive, natural story - our iterate is a particle, and momentum gives it inertial energy. Under the influence of the gradient, we're dampening oscillations and reinforcing smooth directions, and granting it force to plough through narrow valleys, small humps, ridges and local minima. While this explanation is powerful, it doesn't explain all of momentum's behavior. How much momentum is a It doesn't explain why momentum typically provides a quadratic speedup. Neither does it explain exactly how momentum allows a larger step size in optimization.
  -->
-  The Momentum algorithm, also known by its older name the heavy ball method, seems inseparable from its physics which has inspired it. The story often goes as follows - our iterates are a ball rolling down a hill. Momentum gives our iterations inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
+  The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known by its older name the heavy ball method <dt-fn> or the Chebychev Method </dt-fn>, seems inseparable from its physics which has inspired it. It is often thought of as a ball rolling down a hill. Momentum gives our iterations inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
   </p>
   <p>
-  This explanation, now a staple of any exposition of the subject, is sadly a cartoon. And like many cartoons, though capturing very accurately the essence of the subject, still leaves much  unexplained. It is not clear, for example, how much momentum is a good thing. It has been observed (see e.g. the widget above) that momentum often causes iterates to overshoots its target, relying on the gradient's corrective forces to set it back on track. Are these wasted iterations really worth it? Momentum, too, as you may have also noticed, has the curious effect of increasing the range of permissible stepsizes. But exactly what are the limits of this expansion, an why does this happen?  
+  This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And like many cartoons, though it captures very accurately the essence of its subject, still leaves many details unexplained. It is not clear, for example, just how much momentum is a good thing. It has been observed (see e.g. the widget above) that momentum often causes iterates to overshoots its target, relying on the gradient's corrective forces to set it back on track. Are these wasted iterations really worth it? Momentum, too, has the curious effect of increasing the range of permissible stepsizes. But exactly what are the limits of this expansion, an why does this happen?  
   </p>
   <p>
-  In this article, I hope to replace this gross oversimplification with a another, (perhaps more sophisticated) oversimplification. By noticing momentum plays well with quadratics, we will derive a closed form solution for the iterates, and ultimately deduce many of momentum's behavior and properties from this formula.
+  In this article, I hope to replace this gross oversimplification with a another, slighty better oversimplification. Momentum plays well with quadratics, and thus we will use that as a model to derive a closed form solution for the iterates, and ultimately deduce much of momentum's behavior and properties from this formula.
   </p>
 <!--   This explanation is intuitive, and helpful - but it is not the complete story. First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these missteps really worth the extra speed? Next, the optimal parameters of momentum are unclear. And finally, in the noisy setting, it can be argued that momentum helps by smoothing out the noise, or hurts, due to the error compunding. To gain a deeper understanding of momentum, we must delve a little deeper into its dynamics, to piece out its unusal and surprising properties.
  -->
@@ -212,7 +212,7 @@
   <p>
   The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
-  Momentum <dt-fn> Momentum is also known by it's older names, the Heavy Ball Method or the Chebychev Method </dt-fn> <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite> proposes the following tweak to gradient descent. We give gradient descent a short term memory:
+  Momentum proposes the following tweak to gradient descent. We give gradient descent a short term memory:
 
   $$
   \begin{aligned}
@@ -904,11 +904,7 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
   $$
 
-  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now
-
-   $$\max \{|\sigma_1|, |\sigma_2|\} ~<~ 1.$$
-
-   This "coupled" iteration is hard to understand algebraically. But by plotting $\max \{|\sigma_1|, |\sigma_2|\}$ <dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior.<dt-fn>
+  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore $\max\{|\sigma_{1}|,|\sigma_{2}|\}$<dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior.<dt-fn>
 The eigenvalues are
 $$
 \begin{aligned}
@@ -923,7 +919,7 @@ $$
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
 \end{aligned}
 $$
-Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. </dt-fn>
+Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. </dt-fn>, the slowest of the two rates. By plotting this out
   </p>
 
   <figure id = "momentum2D" style="width:984px; height:540px">
@@ -1008,6 +1004,10 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   });
   </script>
   <p>
+
+  For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now, for $0 < \beta < 1$,
+
+  $$\max \{|\sigma_1|, |\sigma_2|\} < 1 ~~\Longleftrightarrow~~ 0<\alpha\lambda_{i}<2+2\beta  $$
 
   Notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
   </p>
@@ -1145,10 +1145,10 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   $$
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
-  -\alpha\beta & 1-\lambda_{i}
+  -\alpha\beta & 1-\alpha\lambda_{i}
   \end{array}\right) \! \bigg\|,\ldots,\bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{n}\\
-  -\alpha\beta & 1-\lambda_{n}
+  -\alpha\beta & 1-\alpha\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   $$
   ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> but they work out to be
@@ -1698,11 +1698,34 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Except in the smallest of datasets, the cost of evaluating the gradient, which requires a pass through everything, is prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used in lieu of $\nabla f(w)$. These approximations can be broken down into two parts,
-  $$
-  \nabla f(w) + \text{error}(w)
-  $$
-  We can therefore think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
+  There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Except in the smallest of datasets, the cost of evaluating the gradient, which requires a pass through all the data, is prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
+  </p>
+  <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative">
+
+  <div style="position:relative; top:-45px">
+
+  <span style="position:absolute; left:50px; top:9px">
+  $$\nabla f(w)$$
+  </span>
+
+  <figcaption style="position:absolute; left:50px; top:70px; width:140px;">
+  The true gradient
+  </figcaption>
+
+  <span style="position:absolute; left:170px; top:9px">
+  $$+$$
+  </span>
+
+  <span style="position:absolute; left:230px; top:9px">
+  $$\text{error}(w)$$
+  </span>  
+  <figcaption style="position:absolute; left:230px; top:70px;width:250px;">
+  And an estiamtion error. If the estimator is unbiased, then $\mathbf{E}[\text{error}(w)] = 0$
+  </figcaption>
+  </div>
+  </figure>
+  <p>
+  It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})  + \text{error}(w^k) \\[0.4em]
@@ -1710,19 +1733,58 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   \end{aligned}
   $$
   </dt-fn>
-  $$
-  \left(\begin{array}{c}
+  </p>
+
+  <figure style="width:610px; height:80px; display:block; margin-left:auto; margin-right:auto; position:relative">
+
+  <div style="position:relative; top:-35px">
+
+  <span style="position:absolute; left:0px; top:0px">
+  $$    \left(\begin{array}{c}
   y_{i}^{k}\\
   x_{i}^{k}
-  \end{array}\right)=R^{k}\left(\begin{array}{c}
+  \end{array}\right)$$
+  </span>
+
+  <figcaption style="position:absolute; left:00px; top:95px; width:80px;">
+  The iterate is a sum of 
+  </figcaption>
+
+  <span style="position:absolute; left:120px; top:10px">
+  $$=$$
+  </span>
+
+  <span style="position:absolute; left:170px; top:0px">
+  $$R^{k}\left(\begin{array}{c}
   y_{i}^{0}\\
   x_{i}^{0}
-  \end{array}\right)+ \epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+  \end{array}\right)$$
+  </span>  
+  <figcaption style="position:absolute; left:170px; top:95px;width:130px;">
+  the deterministic momentum iterates
+  </figcaption>
+
+  <span style="position:absolute; left:320px; top:10px">
+  $$+$$
+  </span>
+
+
+  <span style="position:absolute; left:375px; top:-10px">
+  $$\epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
 1\\
 -\alpha
-\end{array}\right)
-  $$
-  and $\epsilon^k = Q \cdot \text{error}(w^k)$. The error term, $\epsilon^k$, with its dependence on the iterates, is a fairly hairy object. For the purposes of exposition, let us simplify our lives and model this as random, independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error, 
+\end{array}\right)$$
+  </span> 
+
+  <figcaption style="position:absolute; left:375px; top:95px;width:200px;">
+  a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$
+  </figcaption>
+
+  </div>
+  </figure>
+
+  <p>
+  The error term, $\epsilon^k$, with its dependence on the iterates, is a fairly hairy object. For the purposes of exposition, let us model this, following <dt-cite key="flammarion2015averaging"></dt-cite> as independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
      <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, we have the two term
 recurrence
 $$
@@ -1779,11 +1841,13 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
 </dt-fn>, visualized here.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
-  <figure id="stochastic" style="position:relative; width:920px; height:380px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The line depicts the point where the expected errors match.</figcaption>
+  <figure id="stochastic" style="position:relative; width:920px; height:460px">
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The small black dots are a single run of stochastic gradient descent with gaussian noise.</figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:280px; height:120px; font-size:15px"> $\mathbf{E} f(w) - f(w^\star) $</figcaption>
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
+
+  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient. Here Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient. The iteration stalls till the parameters are adjusted.</figcaption>
 
   <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
   <div id = "stochasticgd" style="position:relative; left:15px"></div>
@@ -1810,7 +1874,7 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   });
   </script>
   <p>
-  A few things are worth noting. In particular, we see a set of tradeoffs which appear to pit convergence speeds against stochastic error. Lowering the stepsize decreases the stochastic error, but also slows down the rate of convergence. And rather disappointingly, increasing momentum, the size of our "short term memory", now causes us to remember more errors, a compounding effect which increases indefinitely when $\beta = 1$. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have excellent performance on neural networks, though caution is advised for the reasons stated above.
+  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, disappointingly, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more in machine learning. And in fact, has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing - acting as a implicit regularizer, which like early stopping, prevents the final bit of fine tuning of the model which causes overfitting.
   </p>
   <hr>
   <h2>Onwards and Downwards</h2>
@@ -2051,6 +2115,13 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   author={Hinton, Geoff and Bengio, Yoshua and LeCun, Yann},
   year={2015},
   url={http://www.iro.umontreal.ca/~bengioy/talks/DL-Tutorial-NIPS2015.pdf}
+}
+
+@article{zhang2016understanding,
+  title={Understanding deep learning requires rethinking generalization},
+  author={Zhang, Chiyuan and Bengio, Samy and Hardt, Moritz and Recht, Benjamin and Vinyals, Oriol},
+  journal={arXiv preprint arXiv:1611.03530},
+  year={2016}
 }
 
 </script>

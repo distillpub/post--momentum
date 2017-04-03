@@ -165,14 +165,14 @@
 
   </script><
   <p>
-  The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known by its older name the heavy ball method <dt-fn> or the Chebychev Method </dt-fn>, seems inseparable from its physics which has inspired it. It is often thought of as a ball rolling down a hill. Momentum gives our iterations inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
-  </p>
+<!--   The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite> can sometimes seem inseparable from the physics which has inspired it. It is standard to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima. 
+ -->  </p>
   <p>
-  This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And like many cartoons, though it captures very accurately the essence of the subject, still leaves many details unexplained. It is not clear, for example, just how much momentum is a good thing. It has been observed (see e.g. the widget above) that momentum often causes iterates to overshoots its target, relying on the gradient's corrective forces to set it back on track. Are these wasted iterations really worth it? Momentum, too, has the curious effect of increasing the range of permissible step-sizes. But exactly what are the limits of this expansion, an why does this happen?  
-  </p>
+<!--   This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And though it isn't wrong, it is an oversimplification, failing to account for many of momentum's important properties. It does not explain, for example, how much momentum should be used. Momentum works by overshooting the target, and relies on the gradient's corrective forces to set it back on track. But are these wasted iterations really worth it? And if so, how much of a speedup can one expect? Momentum also has the effect of increasing the range of permissible step-sizes. But what are the limits of this expansion, and why does it happen?
+ -->  </p>
   <p>
-  In this article, I hope to replace this gross oversimplification with a another, slightly better oversimplification. Momentum plays well with quadratics, and thus we will use that as a model to derive a closed form solution for the iterates. From this, we can deduce much of momentum's more subtle behavior. 
-  </p>
+<!--   In this article, I hope to replace this gross oversimplification with a another, slightly more sophisticated oversimplification - the convex quadaratic. There exists a closed form solution for Momentum on the quadratic, and this will serve as the traction we need to gain a more sophisitcated understanding of the problem.
+ -->  </p>
 <!--   This explanation is intuitive, and helpful - but it is not the complete story. First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these missteps really worth the extra speed? Next, the optimal parameters of momentum are unclear. And finally, in the noisy setting, it can be argued that momentum helps by smoothing out the noise, or hurts, due to the error compunding. To gain a deeper understanding of momentum, we must delve a little deeper into its dynamics, to piece out its unusal and surprising properties.
  -->
   <p>
@@ -786,11 +786,12 @@ Recall that $Z^{T}Z=Q\text{diag}(\Lambda_{1},\ldots,\Lambda_{n})Q^T$. The soluti
 $$
 (Z^{T}Z+\eta I)^{-1}(Zd)=Q\text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
 $$
-Rewrite the eigenvalues of $(Z^{T}Z+\eta I)^{-1}$ as
+We can think of regularization as a function which decays the largest eigenvalues, as follows
 $$
-\frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
+\text{Tikhonov Regularized } \lambda_i = \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
 $$
-Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplicative decay which hits the smallest eigenvalues (those closest to $0$) the hardest. Gradient descent can be seen as employing a similar decay, but with the decay rate $1-\left(1-\alpha\lambda_{i}\right)^{k}$ instead. Note that this decay is dependent on the stepsize.
+Gradient descent can be seen as employing a similar decay, but with the decay rate $$ \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)$$
+instead. Note that this decay is dependent on the stepsize.
 </dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
@@ -994,17 +995,17 @@ $$
   </script>
   <p>
 
-  For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out to be
+  For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
 
   $$0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1$$
 
-  Notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
+  We recover the correct range of gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. 
   </p>
   <hr>
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite> - it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating, like in a video game, in discrete time.
+  The true magic happens, however, when we find the sweet spot of $\alpha$ and $\beta$. Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite> - it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating, like in a video game, in discrete time.
   </p>
 
   <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1688,7 +1689,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Except in the smallest of datasets, the cost of evaluating the gradient, which requires a pass through all the data, is prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
+  There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Computing a full gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
   </p>
   <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "truegradientpluserror">
 
@@ -1699,7 +1700,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <figcaption style="position:absolute; left:50px; top:70px; width:140px;">
-  a sum of the true gradient
+  the true gradient
   </figcaption>
 
   <span style="position:absolute; left:170px; top:9px">
@@ -1710,7 +1711,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$\text{error}(w)$$
   </span>  
   <figcaption style="position:absolute; left:230px; top:70px;width:300px;">
-  and an approximation error. If the estimator is unbiased, then $\mathbf{E}[\text{error}(w)] = 0$
+  and an approximation error. <br>If the estimator is unbiased e.g. $\mathbf{E}[\text{error}(w)] = 0$
   </figcaption>
   </div>
   </figure>
@@ -1720,13 +1721,33 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   <p>
   It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
-  TODO: Finish this derivation
+  The momentum iterations are 
   $$
   \begin{aligned}
-  z^{k+1}&=\beta z^{k}+\nabla f(w^{k})  + \text{error}(w^k) \\[0.4em]
+  z^{k+1}&=\beta z^{k}+ A w^{k}  + \text{error}(w^k) \\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
   $$
+  which, after a change of variables, become
+  $$
+\left(\!\!\begin{array}{cc}
+1 & 0\\
+\alpha & 1
+\end{array}\!\!\right)\Bigg(\!\!\begin{array}{c}
+y_{i}^{k+1}\\
+x_{i}^{k+1}
+\end{array}\!\!\Bigg)=\left(\!\!\begin{array}{cc}
+\beta & \lambda_{i}\\
+0 & 1
+\end{array}\!\!\right)\left(\!\!\begin{array}{c}
+y_{i}^{k}\\
+x_{i}^{k}
+\end{array}\!\!\right)+\left(\!\!\begin{array}{c}
+\epsilon_{i}^{k}\\
+0
+\end{array}\!\!\right)
+  $$
+  Inverting the $2 \times 2$ matrix on the left, and applying the formula recursively yields the final solution.
   </dt-fn>
   </p>
 
@@ -1782,34 +1803,13 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </script>
   <p>
   The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. For simplicity, let us model this, following <dt-cite key="flammarion2015averaging"></dt-cite> as independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
-     <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, we have the two term
-recurrence
-$$
-\begin{aligned}
-y^{k+1} & =\beta y^{k}+\lambda_{i}x^{k}+\epsilon^{k}\\
-x^{k+1} & =x^{k}-\alpha y^{k+1}
-\end{aligned}
-$$
-Which becomes 
-$$
-\left(\begin{array}{c}
-y^{k}\\
-x^{k}
-\end{array}\right)=R^{k}\left(\begin{array}{c}
-y^{0}\\
-x^{0}
-\end{array}\right)+\epsilon_{i}^{k}\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
-1\\
--\alpha
-\end{array}\right)
-$$
-The objective value is 
+     <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, the objective value is 
 $$
 \begin{aligned}
 \mathbf{E}f(x^{k})&=\frac{\lambda}{2}\mathbf{E}[(x^{k})^{2}]\\&=\frac{\lambda}{2}\mathbf{E}\left(e_{2}^{T}R^{k}\left(\begin{array}{c}
 y^{0}\\
 x^{0}
-\end{array}\right)+\epsilon_{i}^{k}e_{2}^{T}\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+\end{array}\right)+\epsilon^{k}e_{2}^{T}\sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
 1\\
 -\alpha
 \end{array}\right)\right)^{2}\\&=\frac{\lambda}{2}e_{2}^{T}R^{k}\left(\begin{array}{c}
@@ -1821,20 +1821,19 @@ x^{0}
 \end{array}\right)\right)^{2}\\&=\frac{\lambda}{2}e_{2}^{T}R^{k}\left(\begin{array}{c}
 y^{0}\\
 x^{0}
-\end{array}\right)+\frac{\lambda}{2}\mathbf{E}[\epsilon_{i}^{k}]\,\cdot\,\sum_{i=1}^{k}\left(e_{2}^{T}R^{k-i}\left(\begin{array}{c}
+\end{array}\right)+\frac{\lambda}{2}\mathbf{E}[\epsilon^{k}]\,\cdot\,\sum_{i=1}^{k}\left(e_{2}^{T}R^{k-i}\left(\begin{array}{c}
 1\\
 -\alpha
 \end{array}\right)\right)^{2}\\&=\frac{\lambda}{2}e_{2}^{T}R^{k}\left(\begin{array}{c}
 y^{0}\\
 x^{0}
-\end{array}\right)+\frac{\lambda\sigma}{2}\cdot\sum_{i=1}^{k}\gamma_{i}^{2}
-\end{aligned}
-$$
-where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
+\end{array}\right)+\frac{\lambda\mathbf{E}[\epsilon^{k}}{2}\cdot\sum_{i=1}^{k}\gamma_{i}^{2}, \qquad \gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
 1\\
 -\alpha
-\end{array}\right)$$
-
+\end{array}\right)
+\end{aligned}
+$$
+The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the fourth uses the fact they are uncorrelated. 
 </dt-fn>, visualized here.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
@@ -1894,7 +1893,7 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
   </p>
   <p>
-  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the whole thing together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. The contour plotting library in the hero visualization was provided by Michael Bostock.
+  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. The contour plotting library in the hero visualization was provided by Michael Bostock.
   </p>
 
 </dt-appendix>

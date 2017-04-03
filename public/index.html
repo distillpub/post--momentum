@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <script src="assets/lib/template.v1.js"></script>
 <script type="text/front-matter">
-  title: Why Momentum Works.
+  title: Why Momentum Really Works.
   authors:
     - Gabriel Goh: http://gabgoh.github.io
   affiliations:
@@ -100,7 +100,7 @@
 </svg>
 
 <dt-article class="centered">
-  <h1>How Momentum Really Works</h1>
+  <h1>Why Momentum Really Works</h1>
 
   <figure style = "position:relative; width:984px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
@@ -165,11 +165,14 @@
 
   </script>
   <p>
-<!--   The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite> can sometimes seem inseparable from the physics which has inspired it. It is standard to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima. 
- -->  </p>
+  The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known as the heavy ball method, can sometimes seem inseparable from the physics which has inspired it. It is common to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima. 
+
+  The Momentum algorithm has a very natural physical interpretation. Where gradient descent walks down a hill along the steepest path, momentum is a heavy ball rolling down, ploughing through narrow valleys, small humps, ridges and local minima.  
+
+  </p>
   <p>
-<!--   This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And though it isn't wrong, it is an oversimplification, failing to account for many of momentum's important properties. It does not explain, for example, how much momentum should be used. Momentum works by overshooting the target, and relies on the gradient's corrective forces to set it back on track. But are these wasted iterations really worth it? And if so, how much of a speedup can one expect? Momentum also has the effect of increasing the range of permissible step-sizes. But what are the limits of this expansion, and why does it happen?
- -->  </p>
+  This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And though it isn't wrong, it is an oversimplification, failing to account for many of momentum's important properties. It does not explain, for example, how much momentum should be used. Momentum works by overshooting the target, and relies on the gradient's corrective forces to set it back on track. But are these wasted iterations really worth it? And if so, how much of a speedup can one expect? Momentum also has the effect of increasing the range of permissible step-sizes. But what are the limits of this expansion, and why does it happen?
+  </p>
   <p>
 <!--   In this article, I hope to replace this gross oversimplification with a another, slightly more sophisticated oversimplification - the convex quadaratic. There exists a closed form solution for Momentum on the quadratic, and this will serve as the traction we need to gain a more sophisitcated understanding of the problem.
  -->  </p>
@@ -180,7 +183,7 @@
   </p>
   <hr>
   <p>
-  We begin with Gradient Descent. The iteration has as many virtues, but speed is not one of them. The iteration is is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
+  We begin with Gradient Descent. The iteration has as many virtues, but speed is not one of them. It is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
@@ -1838,8 +1841,10 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   </p>
   <script src="assets/stochastic_milestones.js"></script>
   <figure id="stochastic" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The small black dots are a single run of stochastic gradient descent.</figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:280px; height:120px; font-size:15px"> $\mathbf{E} f(w) - f(w^\star) $</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px">$\mathbf{E} f(w) - f(w^\star) $</span></figcaption>
+  <figcaption style="position:absolute; text-align:right; top:240px; left:12px; width:116px; height:120px"> The small black dots are a single run of stochastic gradient</figcaption>
+
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
@@ -1870,7 +1875,7 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   });
   </script>
   <p>
-  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, disappointingly, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more in machine learning. And in fact, has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing - acting as a implicit regularizer, which like early stopping, prevents the final bit of fine tuning of the model which causes overfitting.
+  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more in machine learning. And in fact, has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing - acting as a implicit regularizer, which like early stopping, prevents the final bit of fine tuning of the model which causes overfitting.
   </p>
   <hr>
   <h2>Onwards and Downwards</h2>

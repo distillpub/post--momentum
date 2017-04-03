@@ -163,33 +163,15 @@
 
   iterChange(getalpha(), getbeta(), getw0() )
 
-  </script><!--
+  </script><
   <p>
-  If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, you start to get a nagging feeling you're not making as much progress as you should be. You're iterating hard, but the loss isn't getting smaller. Should you keep iterating, and hope for the best?
-  </p>
- When optimizing a smooth function $f$, gradient descent
-
-  $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
-
-  Your choice of step-size, $\alpha$ seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things begin quite well - with an impressive, almost immediate decrease in the loss. But after a time, you notice something amiss. The improvements begin to slow. The loss isn't getting smaller. And convergence is nowhere in sight. Something is wrong, but what?
-
-  <p>
-  The problem could be pathological curvature. The landscapes are often described as a valleys, trenches, canals, ravines. In these steep valleys, gradient descent fumbles. All progress along certain directions grind close to a halt. The iterates only approaches the optimum in small, tedious steps, or ossilate between two valleys. These are all classical symptoms of pathological curvature.
-  </p> -->
-<!--   <p>
-  If you've spent enough some time optimizing smooth functions, you may have met this optimizers' old nemesis. The condition has many names, but it always borrows the language of pathology: Ill-conditioning, pathological curvature, dead gradients. You're performing gradient descent. Your choice of step-size, seems correct. The gradients don't blow up. There is no division by zero, no NaNs, no square rooting of minus one. In fact, things often begin quite well - with an impressive, almost immediate decrease in the loss. But as the iterations progress, things start to slow down. You start to get a nagging feeling you're not making as much progress as you should be. Should you keep iterating, and hope for the best?
-  </p>
- -->
-  <p>
-<!--   The standard way to think about momentum is as a ball rolling down a hill. It is a very intuitive, natural story - our iterate is a particle, and momentum gives it inertial energy. Under the influence of the gradient, we're dampening oscillations and reinforcing smooth directions, and granting it force to plough through narrow valleys, small humps, ridges and local minima. While this explanation is powerful, it doesn't explain all of momentum's behavior. How much momentum is a It doesn't explain why momentum typically provides a quadratic speedup. Neither does it explain exactly how momentum allows a larger step size in optimization.
- -->
   The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known by its older name the heavy ball method <dt-fn> or the Chebychev Method </dt-fn>, seems inseparable from its physics which has inspired it. It is often thought of as a ball rolling down a hill. Momentum gives our iterations inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, granting it force and speed to plough through narrow valleys, small humps, ridges and local minima. 
   </p>
   <p>
-  This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And like many cartoons, though it captures very accurately the essence of its subject, still leaves many details unexplained. It is not clear, for example, just how much momentum is a good thing. It has been observed (see e.g. the widget above) that momentum often causes iterates to overshoots its target, relying on the gradient's corrective forces to set it back on track. Are these wasted iterations really worth it? Momentum, too, has the curious effect of increasing the range of permissible stepsizes. But exactly what are the limits of this expansion, an why does this happen?  
+  This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And like many cartoons, though it captures very accurately the essence of the subject, still leaves many details unexplained. It is not clear, for example, just how much momentum is a good thing. It has been observed (see e.g. the widget above) that momentum often causes iterates to overshoots its target, relying on the gradient's corrective forces to set it back on track. Are these wasted iterations really worth it? Momentum, too, has the curious effect of increasing the range of permissible step-sizes. But exactly what are the limits of this expansion, an why does this happen?  
   </p>
   <p>
-  In this article, I hope to replace this gross oversimplification with a another, slighty better oversimplification. Momentum plays well with quadratics, and thus we will use that as a model to derive a closed form solution for the iterates, and ultimately deduce much of momentum's behavior and properties from this formula.
+  In this article, I hope to replace this gross oversimplification with a another, slightly better oversimplification. Momentum plays well with quadratics, and thus we will use that as a model to derive a closed form solution for the iterates. From this, we can deduce much of momentum's more subtle behavior. 
   </p>
 <!--   This explanation is intuitive, and helpful - but it is not the complete story. First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these missteps really worth the extra speed? Next, the optimal parameters of momentum are unclear. And finally, in the noisy setting, it can be argued that momentum helps by smoothing out the noise, or hurts, due to the error compunding. To gain a deeper understanding of momentum, we must delve a little deeper into its dynamics, to piece out its unusal and surprising properties.
  -->
@@ -455,7 +437,8 @@
   <p>
  <h3>Choosing A Step-size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1.<dt-fn>All workable step-sizes, therefore, fall in the interval $0<\alpha<\frac{2}{\lambda_n}$</dt-fn> The overall convergence rate is determined by the slowest error component, which must be either $\lambda_1$ or $\lambda_n$:
+  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step-sizes, therefore, fall in the interval $$0<\alpha\lambda_i<2.$$
+  The overall convergence rate is determined by the slowest error component, which must be either $\lambda_1$ or $\lambda_n$:
   $$
   \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{1}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
   $$
@@ -1017,6 +1000,7 @@ $$
 
   Notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
   </p>
+  <hr>
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
@@ -1245,7 +1229,7 @@ $$
   <p>
   While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
   </p>
-
+  <hr>
   <h2>Example: The Colorization Problem</h2>
 
   <p>
@@ -1715,7 +1699,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <figcaption style="position:absolute; left:50px; top:70px; width:140px;">
-  The true gradient
+  a sum of the true gradient
   </figcaption>
 
   <span style="position:absolute; left:170px; top:9px">
@@ -1725,8 +1709,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <span style="position:absolute; left:230px; top:9px">
   $$\text{error}(w)$$
   </span>  
-  <figcaption style="position:absolute; left:230px; top:70px;width:250px;">
-  And an estimation error. If the estimator is unbiased, then $\mathbf{E}[\text{error}(w)] = 0$
+  <figcaption style="position:absolute; left:230px; top:70px;width:300px;">
+  and an approximation error. If the estimator is unbiased, then $\mathbf{E}[\text{error}(w)] = 0$
   </figcaption>
   </div>
   </figure>
@@ -1757,8 +1741,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   \end{array}\right)$$
   </span>
 
-  <figcaption style="position:absolute; left:00px; top:95px; width:80px;">
-  The iterate is a sum of 
+  <figcaption style="position:absolute; left:00px; top:95px; width:120px;">
+  the noisy iterates are a sum of 
   </figcaption>
 
   <span style="position:absolute; left:120px; top:10px">
@@ -1771,8 +1755,8 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   x_{i}^{0}
   \end{array}\right)$$
   </span>  
-  <figcaption style="position:absolute; left:170px; top:95px;width:130px;">
-  the deterministic momentum iterates
+  <figcaption style="position:absolute; left:170px; top:95px;width:200px;">
+  the noiseless, deterministic iterates and
   </figcaption>
 
   <span style="position:absolute; left:320px; top:10px">
@@ -1788,7 +1772,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span> 
 
   <figcaption style="position:absolute; left:375px; top:95px;width:200px;">
-  a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$
+  a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$.
   </figcaption>
 
   </div>
@@ -1797,7 +1781,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   renderMath(document.getElementById("iteratespluserror"))
   </script>
   <p>
-  The error term, $\epsilon^k$, with its dependence on the iterates, is a fairly hairy object. For the purposes of exposition, let us model this, following <dt-cite key="flammarion2015averaging"></dt-cite> as independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
+  The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. For simplicity, let us model this, following <dt-cite key="flammarion2015averaging"></dt-cite> as independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
      <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, we have the two term
 recurrence
 $$
@@ -1907,7 +1891,10 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   <h3>Acknowledgments</h3>
 
   <p>
-  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations. I would also like to thank Michael Bostock for the contour library used in the hero visualization.
+  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
+  </p>
+  <p>
+  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the whole thing together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. The contour plotting library in the hero visualization was provided by Michael Bostock.
   </p>
 
 </dt-appendix>

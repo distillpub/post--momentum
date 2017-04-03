@@ -904,8 +904,9 @@ Now the term $1-\left(1+\lambda_{i}/\eta\right)^{-1}$ can be seen as a multiplic
 \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
   $$
 
-  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore $\max\{|\sigma_{1}|,|\sigma_{2}|\}$<dt-cite key="flammarion2015averaging"></dt-cite>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior.<dt-fn>
-The eigenvalues are
+  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore $\max\{|\sigma_{1}|,|\sigma_{2}|\}$  
+  <dt-fn>
+We can write out the convergence rates explicitly. The eigenvalues are
 $$
 \begin{aligned}
 \sigma_{1} & =\frac{1}{2}\left(1-\alpha\lambda+\beta+\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)\\[0.6em]
@@ -913,13 +914,18 @@ $$
 \end{aligned}
 $$
 When the $(-\alpha\lambda+\beta+1)^{2}-4\beta<0$ is less than zero,
-then the roots are complex and
+then the roots are complex and the convergence rate is
 $$
 \begin{aligned}
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
 \end{aligned}
 $$
-Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. </dt-fn>, the slowest of the two rates. By plotting this out
+Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. When the roots are real, the convergence rate is 
+$$
+\max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\} 
+$$
+
+ </dt-fn>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-cite key="flammarion2015averaging"></dt-cite>, the slowest of the two rates. By plotting this out
   </p>
 
   <figure id = "momentum2D" style="width:984px; height:540px">
@@ -1005,9 +1011,9 @@ Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\la
   </script>
   <p>
 
-  For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now, for $0 < \beta < 1$,
+  For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out to be
 
-  $$\max \{|\sigma_1|, |\sigma_2|\} < 1 ~~\Longleftrightarrow~~ 0<\alpha\lambda_{i}<2+2\beta  $$
+  $$0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1$$
 
   Notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. But the true magic happens when we find the sweet spot of $\alpha$ and $\beta$.
   </p>
@@ -1700,7 +1706,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Except in the smallest of datasets, the cost of evaluating the gradient, which requires a pass through all the data, is prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
   </p>
-  <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "truegradientpluserror">
 
   <div style="position:relative; top:-45px">
 
@@ -1720,12 +1726,17 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$\text{error}(w)$$
   </span>  
   <figcaption style="position:absolute; left:230px; top:70px;width:250px;">
-  And an estiamtion error. If the estimator is unbiased, then $\mathbf{E}[\text{error}(w)] = 0$
+  And an estimation error. If the estimator is unbiased, then $\mathbf{E}[\text{error}(w)] = 0$
   </figcaption>
   </div>
   </figure>
+  <script>
+  renderMath(document.getElementById("truegradientpluserror"))
+  </script>
+
   <p>
   It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
+  TODO: Finish this derivation
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})  + \text{error}(w^k) \\[0.4em]
@@ -1735,7 +1746,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </dt-fn>
   </p>
 
-  <figure style="width:610px; height:80px; display:block; margin-left:auto; margin-right:auto; position:relative">
+  <figure style="width:610px; height:80px; display:block; margin-left:auto; margin-right:auto; position:relative" id="iteratespluserror">
 
   <div style="position:relative; top:-35px">
 
@@ -1782,7 +1793,9 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   </div>
   </figure>
-
+  <script>
+  renderMath(document.getElementById("iteratespluserror"))
+  </script>
   <p>
   The error term, $\epsilon^k$, with its dependence on the iterates, is a fairly hairy object. For the purposes of exposition, let us model this, following <dt-cite key="flammarion2015averaging"></dt-cite> as independent Gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
      <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, we have the two term
@@ -1842,12 +1855,12 @@ where $$\gamma_i = e_{2}^{T}R^{k-i}\left(\begin{array}{c}
   </p>
   <script src="assets/stochastic_milestones.js"></script>
   <figure id="stochastic" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The small black dots are a single run of stochastic gradient descent with gaussian noise.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. The small black dots are a single run of stochastic gradient descent.</figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:280px; height:120px; font-size:15px"> $\mathbf{E} f(w) - f(w^\star) $</figcaption>
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
-  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient. Here Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient. The iteration stalls till the parameters are adjusted.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient. Here Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient.</figcaption>
 
   <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
   <div id = "stochasticgd" style="position:relative; left:15px"></div>

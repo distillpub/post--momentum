@@ -231,6 +231,10 @@
 
   $$f(w) = \tfrac{1}{2}w^TAw - b^Tw, \qquad w \in \mathbf{R}^n. $$
 
+  When $A$ is invertible, the optimal solution $w^{\star}$ occurs at
+
+  $$ w^{\star} = A^{-1}b.$$
+
   Simple as this model may be, it is rich enough to approximate many functions (think of $A$ as your favorite model of curvature -- the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write an exact closed formula for gradient descent on this function.
   </p>
 

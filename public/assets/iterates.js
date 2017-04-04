@@ -74,7 +74,7 @@ function genIterDiagram(f, xstar, axis) {
 
     circ.append("use")
       .style("cursor", "pointer")
-      .attr("link:href", "#pointerThingy")
+      .attr("xlink:href", "#pointerThingy")
       .attr("transform", "scale(" + pointerScale + ")")
 
     if (showStartingPoint) {

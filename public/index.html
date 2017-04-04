@@ -199,7 +199,7 @@
   <p>
   The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals and ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
-  Momentum proposes the following tweak to gradient descent. We give gradient descent a short term memory:
+  Momentum proposes the following tweak to gradient descent. We give gradient descent a short-term memory:
 
   $$
   \begin{aligned}
@@ -216,7 +216,7 @@
   </p>
 
   <p>
-  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
+  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <dt-fn> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <dt-cite key="lessard2016analysis"></dt-cite> for a counterexample. </dt-fn> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
   </p>
 
   <p>
@@ -1285,7 +1285,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{cases}
   $$
 
-  This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum comes speeds things up significantly.
+  This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum speeds things up significantly.
   </p>
   <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
@@ -1450,7 +1450,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
   <h3>The Resisting Oracle</h3>
   <p>
-  Earlier, when we talked about the colorizer problem, we observed that wiry graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrok,
+  Earlier, when we talked about the colorizer problem, we observed that wiry graphs cause bad conditioning in our optimization problem. Taking this to its extreme, we can look at a graph consisting of a single path -- a function so badly conditioned that Nesterov called a variant of it "the worst function in the world". The function follows the same structure as the colorizer problem, and we shall call this the Convex Rosenbrock,
   </p>
   <figure style="width:610px; height:65px; display:block; margin-left:auto; margin-right:auto; position:relative">
 
@@ -1686,14 +1686,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   $$
   \begin{aligned}
-\|w^{k}-w^{\star}\|_{\infty}&\geq\max_{i}\{|w_{i}^{\star}|\}\\[0.4em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k+1}=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{\infty}
+\|w^{k}-w^{\star}\|_{\infty}&\geq\max_{i}\{|w_{i}^{\star}|\}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k+1}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{\infty}
   \end{aligned}
   $$
 
   As $n$ gets large, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
   </p>
   <p>
-  Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. Many of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. And this lower bound does not preclude the possibility of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
+  Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. This lower bound does not preclude the possibility, for example, of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
   </p>
   <h2>Momentum with Stochastic Gradients</h2>
 
@@ -1901,10 +1901,10 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   <h3>Acknowledgments</h3>
 
   <p>
-  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
+  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided complete redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations. 
   </p>
   <p>
-  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. The contour plotting library in the hero visualization was provided by Mike Bostock.
+  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. I would like to thank Reviewer B, in particular, for pointing out two non-trivial errors in the original manuscript (discussion <a href="https://github.com/distillpub/post--momentum/issues/34">here</a>). The contour plotting library in the hero visualization was provided by Mike Bostock.
   </p>
 
 </dt-appendix>
@@ -2131,7 +2131,20 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   title={Understanding deep learning requires rethinking generalization},
   author={Zhang, Chiyuan and Bengio, Samy and Hardt, Moritz and Recht, Benjamin and Vinyals, Oriol},
   journal={arXiv preprint arXiv:1611.03530},
-  year={2016}
+  year={2016},
+  url={https://arxiv.org/abs/1611.03530}
+}
+
+@article{lessard2016analysis,
+  title={Analysis and design of optimization algorithms via integral quadratic constraints},
+  author={Lessard, Laurent and Recht, Benjamin and Packard, Andrew},
+  journal={SIAM Journal on Optimization},
+  volume={26},
+  number={1},
+  pages={57--95},
+  year={2016},
+  publisher={SIAM},
+  url={https://arxiv.org/abs/1408.3595}
 }
 
 </script>

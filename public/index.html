@@ -166,21 +166,22 @@
 
   </script>
   <p>
-  The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known as the heavy ball method, can sometimes seem inseparable from the physics which has inspired it. It is common to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima. 
+<!--   The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known as the heavy ball method, can sometimes seem inseparable from the physics which has inspired it. It is common to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima. 
 
   The Momentum algorithm has a very natural physical interpretation. Where gradient descent walks down a hill along the steepest path, momentum is a heavy ball rolling down, ploughing through narrow valleys, small humps, ridges and local minima.  
 
   </p>
   <p>
   This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And though it isn't wrong, it is an oversimplification, failing to account for many of momentum's important properties. It does not explain, for example, how much momentum should be used. Momentum works by overshooting the target, and relies on the gradient's corrective forces to set it back on track. But are these wasted iterations really worth it? And if so, how much of a speedup can one expect? Momentum also has the effect of increasing the range of permissible step-sizes. But what are the limits of this expansion, and why does it happen?
+  </p> -->
+  <p>
+  Here’s a popular story about momentum <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>: gradient descent is a man walking down a hill. He follows the steepest path downwards, his progress is slow, but steady. Momentum is a heavy ball rolling down the same hill. The added inertia acts both as a smoother and an accelerator, dampening oscillations and causing us to barrel through narrow valleys, small humps and local minima. 
   </p>
   <p>
-<!--   In this article, I hope to replace this gross oversimplification with a another, slightly more sophisticated oversimplification - the convex quadaratic. There exists a closed form solution for Momentum on the quadratic, and this will serve as the traction we need to gain a more sophisitcated understanding of the problem.
- -->  </p>
-<!--   This explanation is intuitive, and helpful - but it is not the complete story. First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these missteps really worth the extra speed? Next, the optimal parameters of momentum are unclear. And finally, in the noisy setting, it can be argued that momentum helps by smoothing out the noise, or hurts, due to the error compunding. To gain a deeper understanding of momentum, we must delve a little deeper into its dynamics, to piece out its unusal and surprising properties.
- -->
+  This standard story isn’t wrong, but it fails to explain many important behaviors of momentum. In fact, momentum can be understood far more precisely if we study it on the right model.
+  </p>
   <p>
-  <!-- First, when employing momentum, it is not clear much of a speedup to expect. It has been observed that the iterates under momentum often overshoots its target, and relies on the gradient's corrective forces to set it back on track. Are these extra iterations really worth the extra speed? Next, this offers little guidance in the way of how much momentum to use. In this article we will delve a little deeper into the dynamics of momentum, in an attempt to explain some of this behavior. -->
+  One nice model is the convex quadratic. This model is rich enough to reproduce momentum’s local dynamics in real problems, and yet simple enough to be understood in closed form. This balance gives us powerful traction for understanding this algorithm.
   </p>
   <hr>
   <p>

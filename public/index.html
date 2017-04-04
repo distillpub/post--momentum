@@ -928,7 +928,7 @@ $$
       </div>
 
       <figcaption style="position:absolute; width: 204px; height: 80px; left: 645px; top: 86px;">
-      A plot of $\max\{|\sigma_1|, |\sigma_2\|}$ reveals distinct regions, each with its own style of convergence.
+      A plot of $\max\{|\sigma_1|, |\sigma_2|\}$ reveals distinct regions, each with its own style of convergence.
       </figcaption>
 
     </div>
@@ -1684,23 +1684,15 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$
   </div>
   <p>
-  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ to $w_k$. We can therefore sum up the errors which can not have changed yet <dt-fn>
-  The full derivation of these inequalities can are
+  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ to $w_k$. We can therefore sum up the errors which can not have changed yet
 
   $$
-    \begin{aligned}
-\|w^{k}-w^{\star}\|_{1}&\geq\sum_{i=k+1}^{n}|w_{i}^{\star}|\\[0.5em]&=\sum_{i=k+1}^{n}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\[0.5em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\sum_{i=1}^{n-k}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\[0.5em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\left(\|w^{k}-w^{\star}\|_{1}-\sum_{i=n-k+1}^{n}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\right)\\[0.5em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{k}-w^{\star}\|_{1}-\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}\sum_{i=1}^{k}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\[0.5em]&\geq\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{k}-w^{\star}\|_{1}-\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}\sum_{i=1}^{\infty}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}
-    \end{aligned}
-  $$
-  </dt-fn>
-
-  $$
-\begin{aligned}
-\|w^{k}-w^{\star}\|_{1}&\geq\sum_{i=k+1}^{n}\!\!|w_{i}^{\star}|\\[1em]&=\sum_{i=k+1}^{n}\!\!\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\[1em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{1}-\mathcal{O}\left[\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}\right]
-\end{aligned}
+  \begin{aligned}
+\|w^{k}-w^{\star}\|_{\infty}&\geq\max_{i}\{|w_{i}^{\star}|\}\\[0.4em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k+1}=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{\infty}
+  \end{aligned}
   $$
 
-  As $n$ gets large, the final term goes to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
+  As $n$ gets large, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
   </p>
   <p>
   Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. Many of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. And this lower bound does not preclude the possibility of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.

@@ -198,7 +198,7 @@
   </p>
 
   <p>
-  The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals and ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  The problem could be the optimizer's old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals and ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   Momentum proposes the following tweak to gradient descent. We give gradient descent a short-term memory:
 
@@ -326,7 +326,7 @@
   The above equation admits a simple interpretation. Each element of $x^0$ is the component of the error in the initial guess in $Q$-basis. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
   </p>
   <p>
-  For most step-sizes, the eigenvectors with largest eigenvectors converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's error to the loss
+  For most step-sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's error to the loss
   $$
   f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
   $$

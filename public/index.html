@@ -185,11 +185,11 @@
   </p>
   <hr>
   <p>
-  We begin with Gradient Descent. The iteration has as many virtues, but speed is not one of them. It is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
+  We begin with Gradient Descent. The algorithm has as many virtues, but speed is not one of them. It is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  For a step size small enough, gradient descent makes a steady, monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even go there at an exponential rate.
+  For a step size small enough, gradient descent makes a monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even get there at an exponential rate.
   </p>
 
   <p>
@@ -197,7 +197,7 @@
   </p>
 
   <p>
-  The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals, ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  The problem could be the optimizers old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as a valleys, trenches, canals and ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
   <p>
   Momentum proposes the following tweak to gradient descent. We give gradient descent a short term memory:
 
@@ -208,7 +208,7 @@
   \end{aligned}
   $$
 
-  he change is innocent, and costs almost nothing. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
+  the change is innocent, and costs almost nothing. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
 
   </p>
   <p>
@@ -216,7 +216,7 @@
   </p>
 
   <p>
-  The new iteration may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is the speedup you get from the Fast Fourier Transform, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is similar the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
   </p>
 
   <p>

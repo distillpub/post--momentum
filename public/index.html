@@ -596,7 +596,7 @@
   The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$ (the eigenvectors of $Z^T Z$). So let's recast our regression problem in the basis of $Q$. First, we do a change of basis, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
   $$
-  \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad p_{i}=\sum q_{ij}p_j.
+  \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad \bar{p}_{i}=\sum q_{ij}p_j.
   $$
 
   This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the others. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative,

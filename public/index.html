@@ -216,21 +216,21 @@
   </p>
 
   <p>
-  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is similar the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe speeds things up for you quadratically, you should start to pay attention.
+  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior - a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives a guaranteed quadratic speedup on convex functions. This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
   </p>
 
   <p>
-  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is in a certain very narrow and technical sense optimal. Now this doesn't mean it is the best algorithm under any circumstances for all functions. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
+  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is, in a certain very narrow and technical sense, optimal. Now, this doesn't mean it is the best algorithm for all functions in all circumstances. But it does mean it satisfies some curiously beautiful mathematical properties which scratches a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
   </p>
 
 <hr>
   <h2>First Steps: Gradient Descent</h2>
   <p>
-  We begin by studying gradient descent on simplest model possible which isn't trivial. I choose the convex quadratic,
+  We begin by studying gradient descent on the simplest model possible which isn't trivial -- the convex quadratic,
 
   $$f(w) = \tfrac{1}{2}w^TAw - b^Tw, \qquad w \in \mathbf{R}^n. $$
 
-  Simple as this model may be, it is rich enough to approximate of many functions (think of $A$ as your favorite model of curvature - the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write a formula for gradient descent iterations here in closed form, with no approximating bounds or inequalities.
+  Simple as this model may be, it is rich enough to approximate many functions (think of $A$ as your favorite model of curvature -- the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write an exact closed formula for gradient descent on this function.
   </p>
 
   <p>
@@ -240,7 +240,7 @@
   w^{k+1}=w^{k}- \alpha (Aw^{k} - b)
   $$
 
-  Here's the trick. There is a very natural space to view gradient descent where the iterates all act independently - the eigenvectors of $A$.
+  Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently - the eigenvectors of $A$.
   </p>
   <figure style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "change_of_variables">
   <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
@@ -302,7 +302,7 @@
   A=Q \text{diag}(\lambda_{1},\ldots,\lambda_{n})Q^{T},\qquad Q = [q_1,\ldots,q_n],
   $$
 
-  and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. If we perform a change of variables, $x^{k} = Q^T(w^{k} - w^\star)$, the iterations break apart, becoming:
+  and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. If we perform a change of basis, $x^{k} = Q^T(w^{k} - w^\star)$, the iterations break apart, becoming:
 
   $$
   \begin{aligned}
@@ -322,14 +322,14 @@
   </p>
   <h3>Decomposing the Error</h3>
   <p>
-  The above equation admits a simple interpretation. $x^0$ is the component of the error in the initial guess in the space of the eigenvectors of $Z^T Z$, $Q$. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
+  The above equation admits a simple interpretation. Each element of $x^0$ is the component of the error in the initial guess in $Q$-basis. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
   </p>
   <p>
-  For most step-sizes, the eigenvectors with largest eigenvectors converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's sub-optimality to the loss
+  For most step-sizes, the eigenvectors with largest eigenvectors converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's error to the loss
   $$
   f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
   $$
-  we can visualize the contributions of each eigenspace to the loss $f(w^k)$.
+  we can visualize the contributions of each error component to the loss.
   </p>
   <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
   <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=0.01$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=0.1$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=1$ respectively. </figcaption>
@@ -449,7 +449,7 @@
   $$
   </p>
   <p>
-  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvector to converge at the same time. If we work this through we get:
+  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvectors to converge at the same time. If we work this through we get:
 
   $$
   \begin{aligned}
@@ -463,14 +463,14 @@
   $$
   \text{condition number} := \kappa :=\frac{\lambda_n}{\lambda_1}
   $$
-  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context - the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $1$ is ideal, giving convergence in one step (of course, the function is trivial). And larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological curvature.
+  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context, the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $\kappa = 1$ is ideal, giving convergence in one step (of course, the function is trivial). Unfortunately the larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological of curvature.
   </p>
 
 <hr>
 
   <h2>Example: Polynomial Regression</h2>
   <p>
-  The above analysis reveals an insight - all errors are not made equal. Indeed, there are different kinds of errors, $n$, to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors better than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very concrete interpretation.
+  The above analysis reveals an insight : all errors are not made equal. Indeed, there are different kinds of errors, $n$ to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very concrete interpretation.
   </p>
 
 <!--   <p>
@@ -517,8 +517,9 @@
 
   to our observations, $d_i$. This model, though nonlinear in the input $\xi$ is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
   </p>
-
   <figure id = "poly0f" style="width:940px; height:200px">
+  <figcaption>Clusters</figcaption>
+
     <div id = "poly0" style="width:940px; height:185px; position:absolute; top:20px"></div>
   </figure>
   <script src="assets/eigensum.js"></script>
@@ -576,7 +577,7 @@
   </script>
   <p>
 
-  Because of the linearity, we can fit this model at our data $\xi_i$ by using linear regression on the model mismatch
+  Because of the linearity, we can fit this model at our data $\xi_i$ using linear regression on the model mismatch
 
   $$
   \text{minimize}_w \qquad\tfrac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} ~~=~~ \tfrac{1}{2}\|Zw - d\|^2
@@ -593,13 +594,13 @@
   </p>
 
   <p>
-  The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$. So let's recast our regression problem in the space of the eigenvectors of $A$, $Q$. First, we do a change of variables, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
+  The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$ (the eigenvectors of $Z^T Z$). So let's recast our regression problem in the basis of $Q$. First, we do a change of basis, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
   $$
   \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad p_{i}=\sum q_{ij}p_j.
   $$
 
-  This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the other. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative,
+  This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the others. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative,
   </p>
 
 
@@ -688,7 +689,7 @@
   </p>
 
   <p>
-  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" - the eigenspaces which converge the slowest are also those which are most sensitive to noise! So starting at a simple initial point like 0 (by a gross abuse of language, let's think of this as a prior), and track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
+  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" -- the eigenspaces which converge the slowest -- are also those which are most sensitive to noise! So starting at a simple initial point like $0$ (by a gross abuse of language, let's think of this as a prior), we track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
   </p>
 
   <figure id = "poly2" style="width:940px; height:360px"></figure>
@@ -783,7 +784,7 @@
 
   </script>
   <p>
-  This effect is harnessed with the heuristic of early stopping - by noting that by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues, though both through a employ a different method of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+  This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
 $$
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 $$
@@ -797,7 +798,7 @@ $$
 $$
 Gradient descent can be seen as employing a similar decay, but with the decay rate $$ \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)$$
 instead. Note that this decay is dependent on the stepsize.
-</dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't seem to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
+</dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
 <hr>
@@ -813,7 +814,7 @@ instead. Note that this decay is dependent on the stepsize.
   \end{aligned}
   $$
 
-  Since $\nabla f(w^k) = Ax - b$, the update on the quadratic is
+  Since $\nabla f(w^k) = Aw^k - b$, the update on the quadratic is
 
   $$
   \begin{aligned}
@@ -822,7 +823,7 @@ instead. Note that this decay is dependent on the stepsize.
   \end{aligned}
   $$
 
-  following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of variables $
+  following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of basis $
   x^{k} = Q(w^{k} - w^\star)$ and $ y^{k} = Qz^{k}$ to yield the update rule
 
   $$
@@ -832,7 +833,7 @@ instead. Note that this decay is dependent on the stepsize.
   \end{aligned}
   $$
 
-  in which each of the components of $x$ and $y$ act independently of the other coordinates (though $x_i$ and $y_i$ are coupled). And therefore, we can rewrite our iterates as
+  in which each component of acts independently of the other components (though $x^k_i$ and $y^k_i$ are coupled). This lets us rewrite our iterates as
 
   <dt-fn>
   This is true as we can write updates in matrix form as
@@ -893,7 +894,7 @@ instead. Note that this decay is dependent on the stepsize.
 \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
   $$
 
-  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore $\max\{|\sigma_{1}|,|\sigma_{2}|\}$  
+  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore the slowest of the two rates, $\max\{|\sigma_{1}|,|\sigma_{2}|\}$
   <dt-fn>
 We can write out the convergence rates explicitly. The eigenvalues are
 $$
@@ -914,7 +915,7 @@ $$
 \max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\} 
 $$
 
- </dt-fn>, we see that there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-cite key="flammarion2015averaging"></dt-cite>, the slowest of the two rates. By plotting this out
+ </dt-fn>. By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-cite key="flammarion2015averaging"></dt-cite>:
   </p>
 
   <figure id = "momentum2D" style="width:984px; height:540px">
@@ -927,7 +928,7 @@ $$
       </div>
 
       <figcaption style="position:absolute; width: 204px; height: 80px; left: 645px; top: 86px;">
-      A plot of $\max\{\sigma_1, \sigma_2\}$ reveals distinct regions, each with its own style of convergence.
+      A plot of $\max\{|\sigma_1|, |\sigma_2\|}$ reveals distinct regions, each with its own style of convergence.
       </figcaption>
 
     </div>
@@ -1000,17 +1001,21 @@ $$
   </script>
   <p>
 
-  For what values of $\alpha$ and $\beta$ does Momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
+  For what values of $\alpha$ and $\beta$ does momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
 
   $$0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1$$
 
-  We recover the correct range of gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to use a crank up the step-size up by a factor of 2 before diverging. 
+  We recover the previous result for gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to a crank up the step-size up by a factor of 2 before diverging. 
   </p>
   <hr>
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  The true magic happens, however, when we find the sweet spot of $\alpha$ and $\beta$. Let us try to first optimize over $\beta$. When $\alpha$ is small (e.g. in problems with pathological curvature), momentum admits an interesting physical interpretation <dt-cite key="qian1999momentum"></dt-cite> - it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating, like in a video game, in discrete time.
+  The true magic happens, however, when we find the sweet spot of $\alpha$ and $\beta$. Let us try to first optimize over $\beta$.
+  </p>
+
+  <p>
+  Momentum admits an interesting physical interpretation when $\alpha$ is <dt-cite key="qian1999momentum"></dt-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
   </p>
 
   <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1115,7 +1120,7 @@ $$
     });
   </script>
   <p>
-  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both $x^k_i$ and $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equilibrium.
+  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both the position $x^k_i$, and the speed, $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equilibrium.
   </p>
   <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
@@ -1161,7 +1166,7 @@ $$
   </span>
 
   <figcaption style="position:absolute;left: 116px;top: 29px;width:130px;">
-  Convergence rate, <b>Gradient Descent</b>
+  Convergence rate, <b>Momentum</b>
   </figcaption>
 
   <span style="position:absolute; left:313px">
@@ -1170,7 +1175,7 @@ $$
 
 
   <figcaption style="position:absolute;left: 393px;top: 29px;width:150px;">
-  Convergence rate, <b>Momentum</b>
+  Convergence rate, <b>Gradient Descent</b>
   </figcaption>
   </div>
   </figure>
@@ -1184,7 +1189,7 @@ $$
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
   <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd">$\lambda_1=0.01$</span>, <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5">$\lambda_2=0.1$</span>, and <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a">$\lambda_3=1$</span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w^k) - f(w^\star)$</figcaption>
-  <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px">The time to convergence is not proportional to the convergence rate due to a small multiplicative constant.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px"> Note that the optimal parameters do not necessarily imply the fastest convergence, though, only the fastest asymptotic convergence rate. </figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
@@ -1233,7 +1238,7 @@ $$
 
   </script>
   <p>
-  While loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters are required.
+  While the loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters is required.
   </p>
   <hr>
   <h2>Example: The Colorization Problem</h2>
@@ -1273,7 +1278,7 @@ $$
   renderMath(document.getElementById("colorizer_equation"))
   </script>
   <p>
-  The above optimization problem is bounded from below by $0$, and thus the optimal solution, which achieves this, is the vector of all $1$'s. An inspection of the gradient iteration reveals we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The optimal solution to this problem is a vector of all $1$'s <dt-fn>The above optimization problem is bounded from below by $0$, and vector of all $1$'s achieve this. </dt-fn>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   $$
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
@@ -1282,7 +1287,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{cases}
   $$
 
-  This kind of local averaging is effective at smoothing out local variations in the function value, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement through equilibrium is made only through local corrections - and hence left undisturbed, its march towards equilibrium is slow and laborious. Fortunately, momentum comes speeds things up significantly.
+  This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum comes speeds things up significantly.
   </p>
   <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
@@ -1360,12 +1365,12 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </div>
   </figure>
   <p>
-  The Laplacian matrix $L_G$
+  The Laplacian matrix ,$L_G$
   <dt-fn>This can be written explicitly as
   $$
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   $$
-  </dt-fn> dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
+  </dt-fn>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
   </p>
   <figure id="laplacianConditioning" style="width:900px; height:265px">
   <svg width="900" height="300" id="graph"></svg>
@@ -1393,14 +1398,17 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </script>
   <p>
 
-  This observations carries through to the colorization problem, and the intuition behind this should be clear. Well connected graphs allow rapid diffusion of information through the edges, while graphs with poor connectivity do not. And this principle, taken to the extreme, furnish a class of functions so hard to optimize they reveal the limits of the first order optimization.
+  This observations carries through to the colorization problem, and the intuition behind this should be clear. Well connected graphs allow rapid diffusion of information through the edges, while graphs with poor connectivity do not. And this principle, taken to the extreme, furnishes a class of functions so hard to optimize they reveal the limits of first order optimization.
   </p>
 <hr>
   <h2>
   The Limits of Descent
   </h2>
   <p>
-  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond! Now, improvements to the momentum algorithm do exist - but they all run up to a certain, critical, almost inescapable lower bound.
+  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond! 
+  </p>
+  <p>
+  Unfortunately, while improvements to the momentum algorithm do exist, they all run into a certain, critical, almost inescapable lower bound.
   </p>
   <h3>Adventures in Algorithmic Space</h3>
   <p>
@@ -1433,13 +1441,13 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
   $$
 
-  contains momentum, gradient descent and a whole bunch of other iterations you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
+  contains momentum, gradient descent and a whole bunch of other algorithms you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
 
   $$
   w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \quad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
   $$
 
-  This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and Adagrad. We shall refer to this class of methods as "Linear First Order Methods", and we will show a single function all these methods must ultimately fail on.
+  This class of methods has now covers most of the popular algorithms for training neural networks, including ADAM and AdaGrad. We shall refer to this class of methods as "Linear First Order Methods", and we will show a single function all these methods ultimately fail on.
 
   </p>
   <h3>The Resisting Oracle</h3>
@@ -1475,7 +1483,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <figcaption style="position:absolute; left: 275px; top:90px;width:210px;">
-  strong couplings between the variables in the smoother,
+  strong couplings adjacent nodes in the path,
   </figcaption>
 
   <span style="position:absolute; left:475px; top:6px">
@@ -1676,17 +1684,23 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   $$
   </div>
   <p>
-  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ can propagate to $w_k$. We can therefore sum up the errors which can not have changed yet
+  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ to $w_k$. We can therefore sum up the errors which can not have changed yet <dt-fn>
+  The full derivation of these inequalities can are
+
+  $$
+    \begin{aligned}
+\|w^{k}-w^{\star}\|^{2}&\geq\sum_{i=k+1}^{n}w_{i}^{2i}\\&=\sum_{i=k+1}^{n}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2i}\\&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2k}\sum_{i=1}^{n-k}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2i}\\&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2k}\left(\|w^{k}-w^{\star}\|^{2}-\sum_{i=n-k+1}^{n}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2i}\right)\\&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2k}\|w^{k}-w^{\star}\|^{2}-\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2n}\sum_{i=1}^{n}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2i}\\&\geq\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2k}\|w^{k}-w^{\star}\|^{2}-\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2n}\sum_{i=1}^{\infty}\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2i}
+    \end{aligned}
+  $$
+  </dt-fn>
 
   $$
 \begin{aligned}
-\|w^{k}-w^{\star}\| & \geq\sum_{i=k+1}^{n}\!\!w_{i}^{\star}\\[1.7em]
- & =\sum_{i=k+1}^{n}\!\!\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}\\[1.7em]
- & =\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{k}-w^{0}\|+\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}
+\|w^{k}-w^{\star}\|^{2}&\geq\sum_{i=k+1}^{n}\!\![w_{i}^{\star}]^{2}\\&=\sum_{i=k+1}^{n}\!\!\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2i}\\&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{2k}\!\!\|w^{0}-w^{\star}\|^{2}-\mathcal{O}\left[\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{n}\right]
 \end{aligned}
   $$
 
-  As $n$ gets large, the final term goes to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best momentum can do. And we arrive at the disappointing conclusion that on this iteration, this is the best any first order algorithm can do.
+  As $n$ gets large, the final term goes to 0, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
   </p>
   <p>
   Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. Many of our favorite methods, including BFGS, and more, do not fall into the class of linear first order methods. And this lower bound does not preclude the possibility of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
@@ -1694,7 +1708,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  There is a final point worth addressing. All the discussion above assumes access to the true gradient - an luxury seldom afforded in modern machine learning. Computing a full gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
+  There is a final point worth addressing. All the discussion above assumes access to the true gradient -- a luxury seldom afforded in modern machine learning. Computing the exact gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
   </p>
   <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "truegradientpluserror">
 
@@ -1807,7 +1821,7 @@ x_{i}^{k}
   renderMath(document.getElementById("iteratespluserror"))
   </script>
   <p>
-  The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. For simplicity, let us model this, following <dt-cite key="flammarion2015averaging"></dt-cite> as independent 0 mean gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
+  The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0 mean gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
      <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, the objective value is 
 $$
 \begin{aligned}
@@ -1843,14 +1857,14 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   </p>
   <script src="assets/stochastic_milestones.js"></script>
   <figure id="stochastic" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^*)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^\star)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
   <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px">$\mathbf{E} f(w) - f(w^\star) $</span></figcaption>
   <figcaption style="position:absolute; text-align:right; top:240px; left:12px; width:116px; height:120px"> The small black dots are a single run of stochastic gradient</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
-  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient. Here Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient, and Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient, and momentum is less effective.</figcaption>
 
   <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
   <div id = "stochasticgd" style="position:relative; left:15px"></div>
@@ -1877,12 +1891,12 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   });
   </script>
   <p>
-  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more in machine learning. And in fact, has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing - acting as a implicit regularizer, which like early stopping, prevents the final bit of fine tuning of the model which causes overfitting.
+  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more than the fine-tuning phase in machine learning. And in fact, it has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing - acting as a implicit regularizer, which like early stopping, prevents overfitting in the fine tuning phase of optimization.
   </p>
   <hr>
   <h2>Onwards and Downwards</h2>
   <p>
-  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But Like the proverbial blind men feeling elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will unify into a satisfying whole.
+  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But Like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will unify into a satisfying whole.
   </p>
 </dt-article>
 
@@ -1900,7 +1914,7 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
   </p>
   <p>
-  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. The contour plotting library in the hero visualization was provided by Michael Bostock.
+  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. The contour plotting library in the hero visualization was provided by Mike Bostock.
   </p>
 
 </dt-appendix>

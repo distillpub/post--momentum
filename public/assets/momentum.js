@@ -186,10 +186,10 @@ function renderTaxonomy(div) {
   var updateD = genPhase(2,top,spacing*2,[-1.4,1.4], "1-Step Convergence", "When $\\alpha = 1/\\lambda_i$, and $\\beta = 0$, we converge in one step. This is a very special point, and kills the error in the eigenspace completely.")
   updateD(getTrace(0.0213, 0.06,1,1))
 
-  var updateIC = genPhase(3,top,spacing*3,[-1.4,1.4], "Monotonic Oscillations", "When $\\alpha > 1/\\lambda_i$, the sign of the term in the power is negative. The iterates flip between $+$ and $-$ at each iteration.")
+  var updateIC = genPhase(3,top,spacing*3,[-1.4,1.4], "Monotonic Oscillations", "When $\\alpha > 1/\\lambda_i$, the iterates flip between $+$ and $-$ at each iteration. These are often referred to as 'oscillations' in gradient descent.")
   updateIC(getTrace(0.01, 0.0001,1,1))
 
-  var updateMO = genPhase(4,top,spacing*4,[-5,5], "Divergence", "When $\\max\\{\\sigma_1,\\sigma_2\\} > 1$, the iterates diverge.")
+  var updateMO = genPhase(4,top,spacing*4,[-5,5], "Divergence", "When $\\max\\{|\\sigma_1|,|\\sigma_2\\|\\} > 1$, the iterates diverge. ")
   updateMO(getTrace(0.02, 0.045,1,1))
 
   var svg = div.append("svg")

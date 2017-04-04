@@ -52,8 +52,8 @@ function genIterDiagram(f, xstar, axis) {
         .style("position", 'absolute')
         .style("left", 0)
         .style("top", 0)
-        .style("width", w)
-        .style("height", h)
+        .style("width", w + "px")
+        .style("height", h + "px")
         .style("z-index", 2)
 
     var X = d3.scaleLinear().domain(axis[0]).range([0, w])

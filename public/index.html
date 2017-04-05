@@ -475,7 +475,7 @@
 
   <h2>Example: Polynomial Regression</h2>
   <p>
-  The above analysis reveals an insight : all errors are not made equal. Indeed, there are different kinds of errors, $n$ to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very concrete interpretation.
+  The above analysis reveals an insight: all errors are not made equal. Indeed, there are different kinds of errors, $n$ to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very concrete interpretation.
   </p>
 
 <!--   <p>
@@ -520,7 +520,7 @@
 \text{model}(\xi)=w_{1}p_{1}(\xi)+\cdots+w_{n}p_{n}(\xi)\qquad p_{i}=\xi\mapsto\xi^{i-1}
   $$
 
-  to our observations, $d_i$. This model, though nonlinear in the input $\xi$ is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
+  to our observations, $d_i$. This model, though nonlinear in the input $\xi$, is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
   </p>
   <figure id = "poly0f" style="width:940px; height:200px">
     <div id = "poly0" style="width:940px; height:185px; position:absolute; top:20px"></div>
@@ -580,7 +580,7 @@
   </script>
   <p>
 
-  Because of the linearity, we can fit this model at our data $\xi_i$ using linear regression on the model mismatch
+  Because of the linearity, we can fit this model to our data $\xi_i$ using linear regression on the model mismatch
 
   $$
   \text{minimize}_w \qquad\tfrac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} ~~=~~ \tfrac{1}{2}\|Zw - d\|^2
@@ -603,7 +603,7 @@
   \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad \bar{p}_{i}=\sum q_{ij}p_j.
   $$
 
-  This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the others. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative,
+  This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the others. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative:
   </p>
 
 
@@ -688,7 +688,7 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in $d_i$'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in $d_i$'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>

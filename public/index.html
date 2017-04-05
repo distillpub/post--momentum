@@ -242,10 +242,10 @@
   This is how it goes. Since $\nabla f(w)=Aw - b$, the iterates are
 
   $$
-  w^{k+1}=w^{k}- \alpha (Aw^{k} - b)
+  w^{k+1}=w^{k}- \alpha (Aw^{k} - b).
   $$
 
-  Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently - the eigenvectors of $A$.
+  Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently -- the eigenvectors of $A$.
   </p>
   <figure style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "change_of_variables">
   <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
@@ -304,10 +304,10 @@
   Every symmetric matrix $A$ has an eigenvalue decomposition
 
   $$
-  A=Q \text{diag}(\lambda_{1},\ldots,\lambda_{n})Q^{T},\qquad Q = [q_1,\ldots,q_n],
+  A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
   $$
 
-  and as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. If we perform a change of basis, $x^{k} = Q^T(w^{k} - w^\star)$, the iterations break apart, becoming:
+  and, as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. If we perform a change of basis, $x^{k} = Q^T(w^{k} - w^\star)$, the iterations break apart, becoming:
 
   $$
   \begin{aligned}
@@ -322,15 +322,15 @@
   w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
   $$
 
-  and there we have it - gradient descent in closed form.
+  and there we have it -- gradient descent in closed form.
   </p>
   </p>
   <h3>Decomposing the Error</h3>
   <p>
-  The above equation admits a simple interpretation. Each element of $x^0$ is the component of the error in the initial guess in $Q$-basis. There are $n$ such errors, and each of these errors follow their own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
+  The above equation admits a simple interpretation. Each element of $x^0$ is the component of the error in the initial guess in $Q$-basis. There are $n$ such errors, and each of these errors follows its own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
   </p>
   <p>
-  For most step-sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvector's struggles are revealed. By writing the contributions of each eigenspaces's error to the loss
+  For most step sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvectors' struggles are revealed. By writing the contributions of each eigenspace's error to the loss
   $$
   f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
   $$
@@ -445,16 +445,16 @@
     });
   </script>
   <p>
- <h3>Choosing A Step-size</h3>
+ <h3>Choosing A Step Size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step-sizes, therefore, fall in the interval $$0<\alpha\lambda_i<2.$$
+  The above analysis gives us immediate guidance as to how to set a step size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step sizes, therefore, fall in the interval $$0<\alpha\lambda_i<2.$$
   The overall convergence rate is determined by the slowest error component, which must be either $\lambda_1$ or $\lambda_n$:
   $$
   \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{1}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
   $$
   </p>
   <p>
-  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvectors to converge at the same time. If we work this through we get:
+  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvectors to converge at the same rate. If we work this through we get:
 
   $$
   \begin{aligned}
@@ -464,11 +464,11 @@
   $$
   </p>
   <p>
-  Notice the ratio $\lambda_n/\lambda_1$ determines the convergence rate of the problem. In fact, this ratio appears often enough that we give it a name, and a symbol - the condition number.
+  Notice the ratio $\lambda_n/\lambda_1$ determines the convergence rate of the problem. In fact, this ratio appears often enough that we give it a name, and a symbol -- the condition number.
   $$
   \text{condition number} := \kappa :=\frac{\lambda_n}{\lambda_1}
   $$
-  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And in this context, the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $\kappa = 1$ is ideal, giving convergence in one step (of course, the function is trivial). Unfortunately the larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure pathological of curvature.
+  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And, in this context, the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $\kappa = 1$ is ideal, giving convergence in one step (of course, the function is trivial). Unfortunately the larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure of pathological curvature.
   </p>
 
 <hr>

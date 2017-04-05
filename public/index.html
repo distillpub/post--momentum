@@ -808,7 +808,7 @@ instead. Note that this decay is dependent on the stepsize.
   <h2>The Dynamics of Momentum</h2>
 
   <p>
-  Let's turn our attention back to momentum. Recall the momentum update is
+  Let's turn our attention back to momentum. Recall that the momentum update is
 
   $$
   \begin{aligned}
@@ -822,12 +822,12 @@ instead. Note that this decay is dependent on the stepsize.
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+ (Aw^{k}-b)\\[0.4em]
-  w^{k+1}&=w^{k}-\alpha z^{k+1}
+  w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
   $$
 
-  following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of basis $
-  x^{k} = Q(w^{k} - w^\star)$ and $ y^{k} = Qz^{k}$ to yield the update rule
+  Following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of basis $
+  x^{k} = Q(w^{k} - w^\star)$ and $ y^{k} = Qz^{k}$, to yield the update rule
 
   $$
   \begin{aligned}
@@ -1004,11 +1004,11 @@ $$
   </script>
   <p>
 
-  For what values of $\alpha$ and $\beta$ does momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criteria is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
+  For what values of $\alpha$ and $\beta$ does momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criterion is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
 
   $$0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1$$
 
-  We recover the previous result for gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to a crank up the step-size up by a factor of 2 before diverging. 
+  We recover the previous result for gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging. 
   </p>
   <hr>
   <h3>The Critical Damping Coefficient</h3>
@@ -1123,7 +1123,7 @@ $$
     });
   </script>
   <p>
-  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it goes as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both the position $x^k_i$, and the speed, $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equilibrium.
+  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it follows as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both the position $x^k_i$ and the speed $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equilibrium.
   </p>
   <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
@@ -1140,7 +1140,7 @@ $$
 
   </p>
   <p>
-  The critical $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of $1 - \sqrt{\alpha\lambda_i}.$ A square root improvement over gradient descent, $1-\alpha\lambda_i$! Alas, this only applies to the error in the $i^{th}$ eigenspace, with $\alpha$ fixed.
+  The critical value of $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of $1 - \sqrt{\alpha\lambda_i}.$ A square root improvement over gradient descent, $1-\alpha\lambda_i$! Alas, this only applies to the error in the $i^{th}$ eigenspace, with $\alpha$ fixed.
   </p>
 
   <h3>Optimal parameters</h3>

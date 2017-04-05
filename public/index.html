@@ -791,17 +791,17 @@
 $$
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 $$
-Recall that $Z^{T}Z=Q\text{diag}(\Lambda_{1},\ldots,\Lambda_{n})Q^T$. The solution to Tikhonov Regression is therefore
+Recall that $Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T$. The solution to Tikhonov Regression is therefore
 $$
-(Z^{T}Z+\eta I)^{-1}(Zd)=Q\text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
+(Z^{T}Z+\eta I)^{-1}(Zd)=Q\ \text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
 $$
-We can think of regularization as a function which decays the largest eigenvalues, as follows
+We can think of regularization as a function which decays the largest eigenvalues, as follows:
 $$
 \text{Tikhonov Regularized } \lambda_i = \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
 $$
 Gradient descent can be seen as employing a similar decay, but with the decay rate $$ \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)$$
-instead. Note that this decay is dependent on the stepsize.
-</dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
+instead. Note that this decay is dependent on the step-size.
+</dt-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
 <hr>
@@ -913,7 +913,7 @@ $$
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
 \end{aligned}
 $$
-Which is, surprisingly, independent of the stepsize or the eigenvalue $\alpha\lambda$. When the roots are real, the convergence rate is 
+Which is, surprisingly, independent of the step-size or the eigenvalue $\alpha\lambda$. When the roots are real, the convergence rate is 
 $$
 \max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\} 
 $$
@@ -1290,7 +1290,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \end{cases}
   $$
 
-  This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum speeds things up significantly.
+  This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so, left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum speeds things up significantly.
   </p>
   <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
@@ -1415,7 +1415,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </p>
   <h3>Adventures in Algorithmic Space</h3>
   <p>
-  To understand the limits of what we can do, we must first formally define the algorithmic space in which we are searching. Here's one possible definition. The observation we will make is that both Gradient Descent and momentum can be "unrolled". Indeed, since
+  To understand the limits of what we can do, we must first formally define the algorithmic space in which we are searching. Here's one possible definition. The observation we will make is that both gradient descent and momentum can be "unrolled". Indeed, since
   $$
   \begin{array}{lll}
     w^{1} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0})\\[0.35em]
@@ -1426,19 +1426,19 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
    w^{k+1} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0}) ~-~~~~ \cdots\cdots ~~~~-~ \alpha\nabla f(w^{k})
   \end{array}
   $$
-  we can write gradient descent as:
+  we can write gradient descent as
 
   $$
-  w^{k+1} ~~=~~ w^{0} ~-~ \alpha\sum_i^k\nabla f(w^{i})
+  w^{k+1} ~~=~~ w^{0} ~-~ \alpha\sum_i^k\nabla f(w^{i}).
   $$
 
-  A similar trick can be done with momentum,
+  A similar trick can be done with momentum:
 
   $$
-  w^{k+1} ~~=~~ w^{0} ~+~ \alpha\sum_i^k\frac{(1-\beta^{i})}{1-\beta}\nabla f(w^i)
+  w^{k+1} ~~=~~ w^{0} ~+~ \alpha\sum_i^k\frac{(1-\beta^{i})}{1-\beta}\nabla f(w^i).
   $$
 
-  In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more can be written (though not quite so neatly) in this unrolled form. Therefore the class of algorithms for which
+  In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more, can be written (though not quite so neatly) in this unrolled form. Therefore the class of algorithms for which
 
   $$
   w^{k+1} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
@@ -1486,14 +1486,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <figcaption style="position:absolute; left: 275px; top:90px;width:210px;">
-  strong couplings adjacent nodes in the path,
+  strong couplings of adjacent nodes in the path,
   </figcaption>
 
   <span style="position:absolute; left:475px; top:6px">
   $$+$$
   </span>
   <span style="position:absolute; left:505px; top:-2px">
-  $$\frac{2}{\kappa-1}\|w\|^{2}$$
+  $$\frac{2}{\kappa-1}\|w\|^{2}.$$
   </span>
 
   <figcaption style="position:absolute; left:505px; top:90px;width:150px;">
@@ -1673,7 +1673,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \nabla f(x)_{i}=2w_{i}-w_{i-1}-w_{i+1} +\frac{4}{\kappa-1} w_{i}, \qquad i \neq 1.
   $$
 
-  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before and after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
+  Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before or after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
   </p>
   <div style="position:relative; height:178px">
   $$
@@ -1682,20 +1682,20 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     w^{1} & = & [~w_{1}^{1}, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
     w^{2} & = & [~w_{1}^{2}, & w_{2}^{2}, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
      & ~ \vdots \\
-   w^{k} & = & [~w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0~]\\
+   w^{k} & = & [~w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0~].\\
   \end{array}
   $$
   </div>
   <p>
-  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ to $w_k$. We can therefore sum up the errors which can not have changed yet <dt-fn>We use the infinity norm to measure our error, similar results can be derived for the 1 and 2 norms.</dt-fn>
+  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ to $w_k$. We can therefore sum up the errors which cannot have changed yet<dt-fn>We use the infinity norm to measure our error, similar results can be derived for the 1 and 2 norms.</dt-fn>:
 
   $$
   \begin{aligned}
-\|w^{k}-w^{\star}\|_{\infty}&\geq\max_{i}\{|w_{i}^{\star}|\}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k+1}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{\infty}
+\|w^{k}-w^{\star}\|_{\infty}&\geq\max_{i}\{|w_{i}^{\star}|\}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k+1}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{\infty}.
   \end{aligned}
   $$
 
-  As $n$ gets large, and the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes, the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
+  As $n$ gets large, the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes; the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
   </p>
   <p>
   Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. This lower bound does not preclude the possibility, for example, of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
@@ -1703,7 +1703,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  There is a final point worth addressing. All the discussion above assumes access to the true gradient -- a luxury seldom afforded in modern machine learning. Computing the exact gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug in replacement of $\nabla f(w)$. We can write the approximation in two parts,
+  There is a final point worth addressing. All the discussion above assumes access to the true gradient -- a luxury seldom afforded in modern machine learning. Computing the exact gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug-in replacement of $\nabla f(w)$. We can write the approximation in two parts,
   </p>
   <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "truegradientpluserror">
 
@@ -1722,7 +1722,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </span>
 
   <span style="position:absolute; left:230px; top:9px">
-  $$\text{error}(w)$$
+  $$\text{error}(w).$$
   </span>  
   <figcaption style="position:absolute; left:230px; top:70px;width:300px;">
   and an approximation error. <br>If the estimator is unbiased e.g. $\mathbf{E}[\text{error}(w)] = 0$
@@ -1816,7 +1816,7 @@ x_{i}^{k}
   renderMath(document.getElementById("iteratespluserror"))
   </script>
   <p>
-  The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0 mean gaussian noise. In this simplified model, the objective too, breaks into two separable components, a sum of a deterministic error and a stochastic error
+  The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
      <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, the objective value is 
 $$
 \begin{aligned}
@@ -1886,12 +1886,12 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   });
   </script>
   <p>
-  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more than the fine-tuning phase in machine learning. And in fact, it has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing - acting as a implicit regularizer, which like early stopping, prevents overfitting in the fine tuning phase of optimization.
+  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more than the fine-tuning phase in machine learning. And in fact, it has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing -- it acts as a implicit regularizer, which, like early stopping, prevents overfitting in the fine-tuning phase of optimization.
   </p>
   <hr>
   <h2>Onwards and Downwards</h2>
   <p>
-  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will converge into a satisfying whole.
+  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical, interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will converge into a satisfying whole.
   </p>
 </dt-article>
 

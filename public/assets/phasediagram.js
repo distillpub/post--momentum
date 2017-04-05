@@ -157,6 +157,7 @@ function phaseDiagram(divin) {
       .tickSize(5))
 
   axis.selectAll("path").remove()
+  axis.select("text").style("text-anchor", "start");
 
   var html = katex.renderToString("\\beta")
   // Axis

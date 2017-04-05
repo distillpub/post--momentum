@@ -154,7 +154,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
     .style("top", "0px")
     .style("position","absolute")
     .style("pointer-events", "none")
-    .html("Step size α =")
+    .html("Step-size α =")
 
   slider.append("div")
     .attr("class","figtext")
@@ -167,5 +167,5 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
     return reset
 }
 
-// <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
+// <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step-size α = </div>
 // <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>

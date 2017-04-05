@@ -107,7 +107,7 @@
   <figure style = "position:relative; width:984px; height:400px;">
     <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
     <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
-      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step size α = 0.02</text>
+      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step-size α = 0.02</text>
     </div>
     <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
@@ -141,7 +141,7 @@
               .ticks([0,0.003,0.006])
               .ticktitles( function(d,i) { return ["0", "0.003", "0.006"][i]})
               .change( function (i) {
-                d3.select("#sliderAlpha").selectAll(".figtext").html("Step size α = " + getalpha().toPrecision(2) )
+                d3.select("#sliderAlpha").selectAll(".figtext").html("Step-size α = " + getalpha().toPrecision(2) )
                 iterChange(getalpha(), getbeta(), getw0() )
               } )
               .startxval(0.003)
@@ -190,7 +190,7 @@
 
   $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
 
-  For a step size small enough, gradient descent makes a monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even get there at an exponential rate.
+  For a step-size small enough, gradient descent makes a monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even get there at an exponential rate.
   </p>
 
   <p>
@@ -209,7 +209,7 @@
   \end{aligned}
   $$
 
-  The change is innocent, and costs almost nothing. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness they lost, speeding to the optimum with a renewed energy.
+  The change is innocent, and costs almost nothing. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
 
   </p>
   <p>
@@ -330,7 +330,7 @@
   The above equation admits a simple interpretation. Each element of $x^0$ is the component of the error in the initial guess in the $Q$-basis. There are $n$ such errors, and each of these errors follows its own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
   </p>
   <p>
-  For most step sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvectors' struggles are revealed. By writing the contributions of each eigenspace's error to the loss
+  For most step-sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvectors' struggles are revealed. By writing the contributions of each eigenspace's error to the loss
   $$
   f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
   $$
@@ -346,12 +346,12 @@
     <div id="stepSizeMilestones"
          class="figtext"
          style="position:absolute; left:15px; top:15px">
-         Step Size
+         Step-size
     </div>
 
     <div class="figtext2" id="milestones_gd_optstep"
       style="position:absolute; font-size:11px; left:152px; top:18px; z-index:10; cursor: pointer">
-      Optimal Step Size
+      Optimal Step-size
     </div>
 
     <svg style="position:absolute; font-size:10px; left:224px; top:34px">
@@ -445,16 +445,16 @@
     });
   </script>
   <p>
- <h3>Choosing A Step Size</h3>
+ <h3>Choosing A Step-size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step sizes, therefore, fall in the interval $$0<\alpha\lambda_i<2.$$
+  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step-sizes, therefore, fall in the interval $$0<\alpha\lambda_i<2.$$
   The overall convergence rate is determined by the slowest error component, which must be either $\lambda_1$ or $\lambda_n$:
   $$
   \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{1}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
   $$
   </p>
   <p>
-  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step size causes the first and last eigenvectors to converge at the same rate. If we work this through we get:
+  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step-size causes the first and last eigenvectors to converge at the same rate. If we work this through we get:
 
   $$
   \begin{aligned}
@@ -1194,7 +1194,7 @@ $$
   <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w^k) - f(w^\star)$</figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px"> Note that the optimal parameters do not necessarily imply the fastest convergence, though, only the fastest asymptotic convergence rate. </figcaption>
 
-  <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
+  <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
   <div id = "sliderStep2D" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
@@ -1444,7 +1444,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
   $$
 
-  contains momentum, gradient descent and a whole bunch of other algorithms you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step sizes for different directions.
+  contains momentum, gradient descent and a whole bunch of other algorithms you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step-sizes for different directions.
 
   $$
   w^{k} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \quad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
@@ -1514,7 +1514,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   <figure id="rosenViz" style="width:950px; height:630px">
     <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>
-    <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step size α = </div>
+    <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step-size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
     <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 50 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
@@ -1856,7 +1856,7 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px">$\mathbf{E} f(w) - f(w^\star) $</span></figcaption>
   <figcaption style="position:absolute; text-align:right; top:240px; left:12px; width:116px; height:120px"> The small black dots are a single run of stochastic gradient</figcaption>
 
-  <div class="figtext" style="position:absolute; left:705px; top:11px">Step size α = </div>
+  <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
   <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient, and Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient, and momentum is less effective.</figcaption>

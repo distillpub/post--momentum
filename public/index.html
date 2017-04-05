@@ -312,7 +312,7 @@
   $$
   \begin{aligned}
   x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\[0.4em]
-   &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^kx^0_i
+   &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^{k+1}x^0_i
   \end{aligned}
   $$
 
@@ -688,7 +688,7 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principle components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in $d_i$'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in $d_i$'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>
@@ -801,7 +801,7 @@ $$
 $$
 Gradient descent can be seen as employing a similar decay, but with the decay rate $$ \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)$$
 instead. Note that this decay is dependent on the stepsize.
-</dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't to come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
+</dt-fn> But early stopping has a distinct advantage. Once the stepsize is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
 
 <hr>
@@ -1247,7 +1247,7 @@ $$
   <h2>Example: The Colorization Problem</h2>
 
   <p>
-  Lets look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices as pixels, $E$ be the set of edges connecting each pixel to its four neighboring pixels, and $D$ be a small set of a few distinguished vertices. Consider the problem of minimizing
+  Let's look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices as pixels, $E$ be the set of edges connecting each pixel to its four neighboring pixels, and $D$ be a small set of a few distinguished vertices. Consider the problem of minimizing
   </p>
   <figure id = "colorizer_equation" style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
@@ -1438,7 +1438,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   w^{k+1} ~~=~~ w^{0} ~+~ \alpha\sum_i^k\frac{(1-\beta^{i})}{1-\beta}\nabla f(w^i)
   $$
 
-  In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more can be written in (though not quite so neatly) this unrolled form. Therefore the class of algorithms for which
+  In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more can be written (though not quite so neatly) in this unrolled form. Therefore the class of algorithms for which
 
   $$
   w^{k+1} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
@@ -1891,7 +1891,7 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   <hr>
   <h2>Onwards and Downwards</h2>
   <p>
-  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But Like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will unify into a satisfying whole.
+  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will converge into a satisfying whole.
   </p>
 </dt-article>
 
@@ -1910,6 +1910,10 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   </p>
   <p>
   I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. I would like to thank Reviewer B, in particular, for pointing out two non-trivial errors in the original manuscript (discussion <a href="https://github.com/distillpub/post--momentum/issues/34">here</a>). The contour plotting library for the hero visualization is the joint work of Ben Frederickson, Jeff Heer and Mike Bostock.
+  </p>
+
+  <p>
+  Many thanks to the numerous pull requests and issues filed on github. Thanks in particular, to Osemwaro Pedro for spotting an off by one error in one of the equations.
   </p>
 
   <h4>Discussion and Review</h4>

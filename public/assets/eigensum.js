@@ -128,11 +128,12 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
     var update = renderEigenSum(div.append("svg"), x, undefined, function() {}, ["hsl(24, 100%, 50%)", "hsl(24, 100%, 50%)"])
     updates.push(update.poly)
     if (i != 5) {
-      div.append("span").html("+").style("position", "relative").style("top", "-51px")
+      div.append("span").html("+").style("position", "relative").style("top", "-54px").style("display","inline-block")
+      .style("width", "7px").style("left", "-5px")
     }
   }
 
-  div.append("span").html("=").style("position", "relative").style("top", "-51px")
+  div.append("span").html("=").style("position", "relative").style("top", "-54px").style("position", "relative").style("width", "7px").style("left", "-1px")
 
   var updatesum = renderEigenSum(div.append("svg"),x, b,
     refit,

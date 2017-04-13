@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<meta name="viewport" content="width=768, initial-scale=1">
+<meta name="viewport" content="width=1024, initial-scale=1">
 <script src="http://distill.pub/template.v1.js"></script>
 <script type="text/front-matter">
   title: Why Momentum Really Works
@@ -167,16 +167,16 @@
 
   </script>
   <p>
-<!--   The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known as the heavy ball method, can sometimes seem inseparable from the physics which has inspired it. It is common to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima. 
+<!--   The Momentum algorithm <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>, also known as the heavy ball method, can sometimes seem inseparable from the physics which has inspired it. It is common to think of gradient descent as a man walking down a hill, and momentum is a heavy ball rolling down it. Momentum grants iterates inertial energy, dampening oscillations between steep valleys, reinforcing directions which vary smoothly, allowing it to plough through narrow valleys, small humps, ridges and local minima.
 
-  The Momentum algorithm has a very natural physical interpretation. Where gradient descent walks down a hill along the steepest path, momentum is a heavy ball rolling down, ploughing through narrow valleys, small humps, ridges and local minima.  
+  The Momentum algorithm has a very natural physical interpretation. Where gradient descent walks down a hill along the steepest path, momentum is a heavy ball rolling down, ploughing through narrow valleys, small humps, ridges and local minima.
 
   </p>
   <p>
   This story, now a staple of any exposition of the subject, is unfortunately a cartoon. And though it isn't wrong, it is an oversimplification, failing to account for many of momentum's important properties. It does not explain, for example, how much momentum should be used. Momentum works by overshooting the target, and relies on the gradient's corrective forces to set it back on track. But are these wasted iterations really worth it? And if so, how much of a speedup can one expect? Momentum also has the effect of increasing the range of permissible step-sizes. But what are the limits of this expansion, and why does it happen?
   </p> -->
   <p>
-  Here’s a popular story about momentum <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>: gradient descent is a man walking down a hill. He follows the steepest path downwards; his progress is slow, but steady. Momentum is a heavy ball rolling down the same hill. The added inertia acts both as a smoother and an accelerator, dampening oscillations and causing us to barrel through narrow valleys, small humps and local minima. 
+  Here’s a popular story about momentum <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>: gradient descent is a man walking down a hill. He follows the steepest path downwards; his progress is slow, but steady. Momentum is a heavy ball rolling down the same hill. The added inertia acts both as a smoother and an accelerator, dampening oscillations and causing us to barrel through narrow valleys, small humps and local minima.
   </p>
   <p>
   This standard story isn’t wrong, but it fails to explain many important behaviors of momentum. In fact, momentum can be understood far more precisely if we study it on the right model.
@@ -913,9 +913,9 @@ $$
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
 \end{aligned}
 $$
-Which is, surprisingly, independent of the step-size or the eigenvalue $\alpha\lambda$. When the roots are real, the convergence rate is 
+Which is, surprisingly, independent of the step-size or the eigenvalue $\alpha\lambda$. When the roots are real, the convergence rate is
 $$
-\max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\} 
+\max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\}
 $$
 
  </dt-fn>. By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-cite key="flammarion2015averaging"></dt-cite>:
@@ -1008,7 +1008,7 @@ $$
 
   $$0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1$$
 
-  We recover the previous result for gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging. 
+  We recover the previous result for gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging.
   </p>
   <hr>
   <h3>The Critical Damping Coefficient</h3>
@@ -1216,9 +1216,9 @@ $$
     var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
 
     var update = renderMilestones(svg, function() {})
-    var reset = slider2D(d3.select("#sliderStep2D"), 
-                           function(x,y) { update(x,y) }, 
-                           1, 
+    var reset = slider2D(d3.select("#sliderStep2D"),
+                           function(x,y) { update(x,y) },
+                           1,
                            100)
 
     // // Swoopy Annotator
@@ -1326,7 +1326,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
                 ]
               }
             ]
-            var sel = drawAnnotations(d3.select("#flow"), annotations)  
+            var sel = drawAnnotations(d3.select("#flow"), annotations)
             sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
           }
         });
@@ -1408,7 +1408,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   The Limits of Descent
   </h2>
   <p>
-  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond! 
+  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond!
   </p>
   <p>
   Unfortunately, while improvements to the momentum algorithm do exist, they all run into a certain, critical, almost inescapable lower bound.
@@ -1723,7 +1723,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   <span style="position:absolute; left:230px; top:9px">
   $$\text{error}(w).$$
-  </span>  
+  </span>
   <figcaption style="position:absolute; left:230px; top:70px;width:300px;">
   and an approximation error. <br>If the estimator is unbiased e.g. $\mathbf{E}[\text{error}(w)] = 0$
   </figcaption>
@@ -1735,7 +1735,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   <p>
   It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
-  The momentum iterations are 
+  The momentum iterations are
   $$
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+ A w^{k}  + \text{error}(w^k) \\[0.4em]
@@ -1777,7 +1777,7 @@ x_{i}^{k}
   </span>
 
   <figcaption style="position:absolute; left:00px; top:95px; width:120px;">
-  the noisy iterates are a sum of 
+  the noisy iterates are a sum of
   </figcaption>
 
   <span style="position:absolute; left:120px; top:10px">
@@ -1789,7 +1789,7 @@ x_{i}^{k}
   y_{i}^{0}\\
   x_{i}^{0}
   \end{array}\right)$$
-  </span>  
+  </span>
   <figcaption style="position:absolute; left:170px; top:95px;width:200px;">
   the noiseless, deterministic iterates and
   </figcaption>
@@ -1804,7 +1804,7 @@ x_{i}^{k}
 1\\
 -\alpha
 \end{array}\right)$$
-  </span> 
+  </span>
 
   <figcaption style="position:absolute; left:375px; top:95px;width:200px;">
   a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$.
@@ -1817,7 +1817,7 @@ x_{i}^{k}
   </script>
   <p>
   The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
-     <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, the objective value is 
+     <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, the objective value is
 $$
 \begin{aligned}
 \mathbf{E}f(x^{k})&=\frac{\lambda}{2}\mathbf{E}[(x^{k})^{2}]\\&=\frac{\lambda}{2}\mathbf{E}\left(e_{2}^{T}R^{k}\left(\begin{array}{c}
@@ -1847,7 +1847,7 @@ x^{0}
 \end{array}\right)
 \end{aligned}
 $$
-The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the fourth uses the fact they are uncorrelated. 
+The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the fourth uses the fact they are uncorrelated.
 </dt-fn>, visualized here.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
@@ -1906,7 +1906,7 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
   <h3>Acknowledgments</h3>
 
   <p>
-  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided complete redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations. 
+  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided complete redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
   </p>
   <p>
   I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. I would like to thank Reviewer B, in particular, for pointing out two non-trivial errors in the original manuscript (discussion <a href="https://github.com/distillpub/post--momentum/issues/34">here</a>). The contour plotting library for the hero visualization is the joint work of Ben Frederickson, Jeff Heer and Mike Bostock.

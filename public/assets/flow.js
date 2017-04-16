@@ -117,7 +117,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   display(iter(100), jetc) // Set it up to a nice looking default
 
   var barLengths = getStepsConvergence(FlowSigma,step)
-    .map( function(i) {return Math.log(i+1)} ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
+    .map( function(i) {return Math.abs(Math.log(i+1)) } ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
 
   var slideControl = sliderBarGen(barLengths, function(x) { return Math.exp(x-1)} )
                     .height(281)
@@ -136,7 +136,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   slideControl.slidera.init()
 
   function changeStep(alpha, beta) {
-    var iteration = geniterMomentum(FlowU, FlowSigma, b, alpha/FlowSigma[1119], Math.min(beta,0.999999))
+    var iteration = geniterMomentum(FlowU, FlowSigma, b, Math.max(alpha/FlowSigma[1119],0.00000001), Math.min(beta,0.999999))
     iterf = iteration.iter
     var barLengths = getStepsConvergence(iteration.maxLambda.map(function(i) { return 1- i}), 1)
       .map( function(i) {return Math.log(Math.max(i,1))} )

@@ -1148,7 +1148,7 @@ function sliderBarGen(barlengths, expfn) {
 
 	  var step = svg.append("text").attr("class","figtext").attr("x",145).attr("y",15).html("Step k = ")
 
-	  var x = d3.scaleLinear().domain([0,maxX, 100]).range([90, width-45,width+45]);
+	  var x = d3.scaleLinear().domain([0,maxX, 100000]).range([90, width-45,width+45]);
 	  var y = d3.scaleLinear().domain([0,barlengths.length]).range([10, height]);
 
 	//  line.moveToBack()

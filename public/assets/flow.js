@@ -106,7 +106,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   var cacheval  = -1
   var cacheiter = null
   var onDragSlider = function (i) {
-    var i = Math.floor(Math.exp(i))
+    var i = Math.floor(Math.exp(i-1))
     if (cacheval != i) {
       cacheiter = iter(i)
       cacheval = i
@@ -119,7 +119,7 @@ function renderFlowWidget(divin, FlowSigma, M, FlowU) {
   var barLengths = getStepsConvergence(FlowSigma,step)
     .map( function(i) {return Math.log(i+1)} ).filter( function(d,i) { return (i < 50) || i%20 == 0 } )
 
-  var slideControl = sliderBarGen(barLengths, function(x) { return Math.exp(x+1)} )
+  var slideControl = sliderBarGen(barLengths, function(x) { return Math.exp(x-1)} )
                     .height(281)
                     .linewidth(1.3)
                     .maxX(13.3)

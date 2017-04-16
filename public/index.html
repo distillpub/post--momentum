@@ -46,8 +46,7 @@
     .style("border", "0px dashed #DDD")
     .style("opacity", 1)
 
-    return function(callback) { loadingScreen
-                                  .remove() }
+    return function(callback) { loadingScreen.remove() };
 
   }
 
@@ -186,9 +185,9 @@
   </p>
   <hr>
   <p>
-  We begin with gradient descent. The algorithm has many virtues, but speed is not one of them. It is simple -- when optimizing a smooth function $f$, we make a small step in the gradient
+  We begin with gradient descent. The algorithm has many virtues, but speed is not one of them. It is simple -- when optimizing a smooth function <dt-math>f</dt-math>, we make a small step in the gradient
 
-  $$w^{k+1} = w^k-\alpha\nabla f(w^k).$$
+  <dt-math block>w^{k+1} = w^k-\alpha\nabla f(w^k).</dt-math>
 
   For a step-size small enough, gradient descent makes a monotonic improvement at every iteration. It always converges, albeit to a local minimum. And under a few weak curvature conditions it can even get there at an exponential rate.
   </p>
@@ -198,18 +197,18 @@
   </p>
 
   <p>
-  The problem could be the optimizer's old nemesis, pathological curvature. Pathological curvature is, simply put, regions of $f$ which aren't scaled properly. The landscapes are often described as valleys, trenches, canals and ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.  </p>
+  The problem could be the optimizer's old nemesis, pathological curvature. Pathological curvature is, simply put, regions of <dt-math>f</dt-math> which aren't scaled properly. The landscapes are often described as valleys, trenches, canals and ravines. The iterates either jump between valleys, or approach the optimum in small, timid steps. Progress along certain directions grind to a halt. In these unfortunate regions, gradient descent fumbles.</p>
   <p>
   Momentum proposes the following tweak to gradient descent. We give gradient descent a short-term memory:
 
-  $$
+  <dt-math block>
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}
   \end{aligned}
-  $$
+  </dt-math>
 
-  The change is innocent, and costs almost nothing. When $ \beta = 0 $ , we recover gradient descent. But for $ \beta = 0.99 $ (sometimes $ 0.999$, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
+  The change is innocent, and costs almost nothing. When <dt-math>\beta = 0</dt-math> , we recover gradient descent. But for <dt-math>\beta = 0.99</dt-math> (sometimes <dt-math>0.999</dt-math>, if things are really bad), this appears to be the boost we need. Our iterations regain that speed and boldness it lost, speeding to the optimum with a renewed energy.
 
   </p>
   <p>
@@ -229,23 +228,25 @@
   <p>
   We begin by studying gradient descent on the simplest model possible which isn't trivial -- the convex quadratic,
 
-  $$f(w) = \tfrac{1}{2}w^TAw - b^Tw, \qquad w \in \mathbf{R}^n. $$
+  <dt-math block>
+    f(w) = \tfrac{1}{2}w^TAw - b^Tw, \qquad w \in \mathbf{R}^n.
+  </dt-math>
 
-  Assume $A$ is symmetric and invertible, then the optimal solution $w^{\star}$ occurs at
+  Assume <dt-math>A</dt-math> is symmetric and invertible, then the optimal solution <dt-math>w^{\star}</dt-math> occurs at
 
-  $$ w^{\star} = A^{-1}b.$$
+  <dt-math block> w^{\star} = A^{-1}b.</dt-math>
 
-  Simple as this model may be, it is rich enough to approximate many functions (think of $A$ as your favorite model of curvature -- the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write an exact closed formula for gradient descent on this function.
+  Simple as this model may be, it is rich enough to approximate many functions (think of <dt-math>A</dt-math> as your favorite model of curvature -- the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write an exact closed formula for gradient descent on this function.
   </p>
 
   <p>
-  This is how it goes. Since $\nabla f(w)=Aw - b$, the iterates are
+  This is how it goes. Since <dt-math>\nabla f(w)=Aw - b</dt-math>, the iterates are
 
-  $$
+  <dt-math block>
   w^{k+1}=w^{k}- \alpha (Aw^{k} - b).
-  $$
+  </dt-math>
 
-  Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently -- the eigenvectors of $A$.
+  Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently -- the eigenvectors of <dt-math>A</dt-math>.
   </p>
   <figure style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "change_of_variables">
   <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
@@ -301,43 +302,43 @@
 
 </script>
 <p>
-  Every symmetric matrix $A$ has an eigenvalue decomposition
+  Every symmetric matrix <dt-math>A</dt-math> has an eigenvalue decomposition
 
-  $$
+  <dt-math block>
   A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
-  $$
+  </dt-math>
 
-  and, as per convention, we will assume that the $\lambda_i$'s are sorted, from smallest $\lambda_1$ to biggest $\lambda_n$. If we perform a change of basis, $x^{k} = Q^T(w^{k} - w^\star)$, the iterations break apart, becoming:
+  and, as per convention, we will assume that the <dt-math>\lambda_i</dt-math>'s are sorted, from smallest <dt-math>\lambda_1</dt-math> to biggest <dt-math>\lambda_n</dt-math>. If we perform a change of basis, <dt-math>x^{k} = Q^T(w^{k} - w^\star)</dt-math>, the iterations break apart, becoming:
 
-  $$
+  <dt-math block>
   \begin{aligned}
   x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\[0.4em]
    &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^{k+1}x^0_i
   \end{aligned}
-  $$
+  </dt-math>
 
-  Moving back to our original space $w$, we can see that
+  Moving back to our original space <dt-math>w</dt-math>, we can see that
 
-  $$
+  <dt-math block>
   w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
-  $$
+  </dt-math>
 
   and there we have it -- gradient descent in closed form.
   </p>
   </p>
   <h3>Decomposing the Error</h3>
   <p>
-  The above equation admits a simple interpretation. Each element of $x^0$ is the component of the error in the initial guess in the $Q$-basis. There are $n$ such errors, and each of these errors follows its own, solitary path to the minimum, decreasing exponentially with a compounding rate of $1-\alpha\lambda_i$. The closer that number is to $1$, the slower it converges.
+  The above equation admits a simple interpretation. Each element of <dt-math>x^0</dt-math> is the component of the error in the initial guess in the <dt-math>Q</dt-math>-basis. There are <dt-math>n</dt-math> such errors, and each of these errors follows its own, solitary path to the minimum, decreasing exponentially with a compounding rate of <dt-math>1-\alpha\lambda_i</dt-math>. The closer that number is to <dt-math>1</dt-math>, the slower it converges.
   </p>
   <p>
   For most step-sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvectors' struggles are revealed. By writing the contributions of each eigenspace's error to the loss
-  $$
+  <dt-math block>
   f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
-  $$
+  </dt-math>
   we can visualize the contributions of each error component to the loss.
   </p>
   <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
-  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> $\lambda_1=0.01$, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> $\lambda_2=0.1$, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> $\lambda_3=1$ respectively. </figcaption>
+  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> <dt-math>\lambda_1=0.01</dt-math>, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> <dt-math>\lambda_2=0.1</dt-math>, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> <dt-math>\lambda_3=1</dt-math> respectively. </figcaption>
 
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
  -->
@@ -447,80 +448,48 @@
   <p>
  <h3>Choosing A Step-size</h3>
   <p>
-  The above analysis gives us immediate guidance as to how to set a step-size $\alpha$. In order to converge, each $|1-\alpha \lambda_i|$ must be strictly less than 1. All workable step-sizes, therefore, fall in the interval $$0<\alpha\lambda_i<2.$$
-  The overall convergence rate is determined by the slowest error component, which must be either $\lambda_1$ or $\lambda_n$:
-  $$
+  The above analysis gives us immediate guidance as to how to set a step-size <dt-math>\alpha</dt-math>. In order to converge, each <dt-math>|1-\alpha \lambda_i|</dt-math> must be strictly less than 1. All workable step-sizes, therefore, fall in the interval
+
+  <dt-math block>0<\alpha\lambda_i<2.</dt-math>
+
+  The overall convergence rate is determined by the slowest error component, which must be either <dt-math>\lambda_1</dt-math> or <dt-math>\lambda_n</dt-math>:
+  <dt-math block>
   \begin{aligned}\text{rate}(\alpha) & ~=~ \max_{i}\left|1-\alpha\lambda_{i}\right|\\[0.9em] & ~=~ \max\left\{|1-\alpha\lambda_{1}|,~ |1-\alpha\lambda_{n}|\right\} \end{aligned}
-  $$
+  </dt-math>
   </p>
   <p>
-  This overall rate is minimized when the rates for $\lambda_1$ and $\lambda_n$ are the same -- this mirrors our informal observation in the previous section that the optimal step-size causes the first and last eigenvectors to converge at the same rate. If we work this through we get:
+  This overall rate is minimized when the rates for <dt-math>\lambda_1</dt-math> and <dt-math>\lambda_n</dt-math> are the same -- this mirrors our informal observation in the previous section that the optimal step-size causes the first and last eigenvectors to converge at the same rate. If we work this through we get:
 
-  $$
+  <dt-math block>
   \begin{aligned}
   \text{optimal }\alpha ~=~{\mathop{\text{argmin}}\limits_\alpha} ~\text{rate}(\alpha) & ~=~\frac{2}{\lambda_{1}+\lambda_{n}}\\[1.4em]
   \text{optimal rate} ~=~{\min_\alpha} ~\text{rate}(\alpha) & ~=~\frac{\lambda_{n}/\lambda_{1}-1}{\lambda_{n}/\lambda_{1}+1}
   \end{aligned}
-  $$
+  </dt-math>
   </p>
   <p>
-  Notice the ratio $\lambda_n/\lambda_1$ determines the convergence rate of the problem. In fact, this ratio appears often enough that we give it a name, and a symbol -- the condition number.
-  $$
+  Notice the ratio <dt-math>\lambda_n/\lambda_1</dt-math> determines the convergence rate of the problem. In fact, this ratio appears often enough that we give it a name, and a symbol -- the condition number.
+  <dt-math block>
   \text{condition number} := \kappa :=\frac{\lambda_n}{\lambda_1}
-  $$
-  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust $A^{-1}b$ is to perturbations in $b$. And, in this context, the condition number gives us a measure of how poorly gradient descent will perform. A ratio of $\kappa = 1$ is ideal, giving convergence in one step (of course, the function is trivial). Unfortunately the larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure of pathological curvature.
+  </dt-math>
+  The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust <dt-math>A^{-1}b</dt-math> is to perturbations in <dt-math>b</dt-math>. And, in this context, the condition number gives us a measure of how poorly gradient descent will perform. A ratio of <dt-math>\kappa = 1</dt-math> is ideal, giving convergence in one step (of course, the function is trivial). Unfortunately the larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure of pathological curvature.
   </p>
 
 <hr>
 
   <h2>Example: Polynomial Regression</h2>
   <p>
-  The above analysis reveals an insight: all errors are not made equal. Indeed, there are different kinds of errors, $n$ to be exact, one for each of the eigenvectors of $A$. And gradient descent is better at correcting some kinds of errors than others. But what do the eigenvectors of $A$ mean? Surprisingly, in many applications they admit a very concrete interpretation.
-  </p>
-
-<!--   <p>
-  Linear Regression, conveniently a quadratic objective, provides a cartoon we need for understanding pathological curvature in deep learning. Let's do a quick refresher. In Linear Regression we fit $n$ features (the components of $z_i$) to observations $d_i$. Assume there are $m$ data points, stacked to form matrix $Z$. Then the optimization problem we're solving is
-
-  $$
-  \text{minimize}\qquad \frac{1}{2}\sum_i^m (z_i^Tw - d_i)^2 = \tfrac{1}{2}\|Zw-d\|^2
-  $$
-
-  which is equivalent to
-  $$
-  \text{minimize}\qquad\tfrac{1}{2}w^{T}Z^{T}Zw-(Zd)^{T}w
-  $$
-  a quadratic function. To understand gradient descent on linear regression, we must understand the eigenvectors of $Z^TZ$.
-  <h3>Bad Scaling</h3>
-
-  <p>
-  One simple culprit of pathological curvature is a bad scaling of the data. Even if the data were perfectly uncorrelated with mean 0, i.e. $Z^TZ$ was diagonal, the condition number of the matrix still depends on the variance of the individual features (the values of the diagonal). If the ratio of the largest and smallest variances are large, the matrix $Z^TZ$ becomes ill conditioned.<dt-fn>This holds even if the matrix is correlated, see <dt-cite key="wiesler2011convergence"></dt-cite></dt-fn>
+  The above analysis reveals an insight: all errors are not made equal. Indeed, there are different kinds of errors, <dt-math>n</dt-math> to be exact, one for each of the eigenvectors of <dt-math>A</dt-math>. And gradient descent is better at correcting some kinds of errors than others. But what do the eigenvectors of <dt-math>A</dt-math> mean? Surprisingly, in many applications they admit a very concrete interpretation.
   </p>
 
   <p>
-  Fortunately, this kind of pathological curvature is relatively easily fixed. It displays a clear signature - the value of the gradients in the "pathological coordinates" are abnormally small. And they can thus be weighted upwards. This is the principle behind Adagrad <dt-cite key="duchi2011adaptive"></dt-cite> and ADAM <dt-cite key="kingma2014adam"></dt-cite>. And in the training of deep neural networks, we can modify our objective so that the data is normalized before moving to the next layer - this is batch normalization <dt-cite key="ioffe2015batch"></dt-cite>, a surprisingly powerful heuristic. </p>
+  Lets see how this plays out in polynomial regression. Given 1D data, <dt-math>\xi_i</dt-math>, our problem is to fit the model
 
-  <h3>Understanding Early Stopping</h3>
-  <p>
-  The situation where the directions of pathology aren't axis aligned gets more complicated. But by studying this carefully, we can precisely understand and characterize the path the iterates take to the optimum, gain a few insights into a common heuristic in the optimization of neural networks - Early Stopping.
-  </p>
-
-  <p>
-  It has been noted by many practitioners that there exists a turning point sometime in the middle of optimization where the model's generalization capacity peaks. The observation is as follows. Early in the optimization, when we are far from the optimum, both the training and test error goes down - all is well. But somewhere in the middle, we hit a point of negative returns, so to speak. The test error stops going down, and in fact, starts going up! Each iterate now hurts our model, in a classical case of over-fitting. This is a strikingly counterintuitive fact. Too much optimality, it seems, is a bad thing! But how can this be?
-  </p>
-
-  <h4> Example: Polynomial Regression</h4>
-
-  <p>
-  Lets understand this phenomena in the quadratic model.
-  </p> -->
-  <p>
-  Lets see how this plays out in polynomial regression. Given 1D data, $\xi_i$, our problem is to fit the model
-
-  $$
+  <dt-math block>
 \text{model}(\xi)=w_{1}p_{1}(\xi)+\cdots+w_{n}p_{n}(\xi)\qquad p_{i}=\xi\mapsto\xi^{i-1}
-  $$
+  </dt-math>
 
-  to our observations, $d_i$. This model, though nonlinear in the input $\xi$, is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
+  to our observations, <dt-math>d_i</dt-math>. This model, though nonlinear in the input <dt-math>\xi</dt-math>, is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
   </p>
   <figure id = "poly0f" style="width:940px; height:200px">
     <div id = "poly0" style="width:940px; height:185px; position:absolute; top:20px"></div>
@@ -580,30 +549,30 @@
   </script>
   <p>
 
-  Because of the linearity, we can fit this model to our data $\xi_i$ using linear regression on the model mismatch
+  Because of the linearity, we can fit this model to our data <dt-math>\xi_i</dt-math> using linear regression on the model mismatch
 
-  $$
+  <dt-math block>
   \text{minimize}_w \qquad\tfrac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} ~~=~~ \tfrac{1}{2}\|Zw - d\|^2
-  $$
+  </dt-math>
   where
-  $$
+  <dt-math block>
   Z=\left(\begin{array}{ccccc}
   1 & \xi_{1} & \xi_{1}^{2} & \ldots & \xi_{1}^{n-1}\\
   1 & \xi_{2} & \xi_{2}^{2} & \ldots & \xi_{2}^{n-1}\\
   \vdots & \vdots & \vdots & \ddots & \vdots\\
   1 & \xi_{m} & \xi_{m}^{2} & \ldots & \xi_{m}^{n-1}
   \end{array}\right).
-  $$
+  </dt-math>
   </p>
 
   <p>
-  The path of convergence, as we know, is elucidated when we view the iterates in the space of $Q$ (the eigenvectors of $Z^T Z$). So let's recast our regression problem in the basis of $Q$. First, we do a change of basis, by rotating $w$ into $Qw$, and counter-rotating our feature maps $p$ into eigenspace, $\bar{p}$. We can now conceptualize the same regression as one over a different polynomial basis, with the model
+  The path of convergence, as we know, is elucidated when we view the iterates in the space of <dt-math>Q</dt-math> (the eigenvectors of <dt-math>Z^T Z</dt-math>). So let's recast our regression problem in the basis of <dt-math>Q</dt-math>. First, we do a change of basis, by rotating <dt-math>w</dt-math> into <dt-math>Qw</dt-math>, and counter-rotating our feature maps <dt-math>p</dt-math> into eigenspace, <dt-math>\bar{p}</dt-math>. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
-  $$
+  <dt-math block>
   \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad \bar{p}_{i}=\sum q_{ij}p_j.
-  $$
+  </dt-math>
 
-  This model is identical to the old one. But these new features $\bar{p}$ (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the others. Now our optimization problem breaks down, really, into $n$ small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative:
+  This model is identical to the old one. But these new features <dt-math>\bar{p}</dt-math> (which I call "eigenfeatures") and weights have the pleasing property that each coordinate acts independently of the others. Now our optimization problem breaks down, really, into <dt-math>n</dt-math> small 1D optimization problems. And each coordinate can be optimized greedily and independently, one at a time in any order, to produce the final, global, optimum. The eigenfeatures are also much more informative:
   </p>
 
 
@@ -688,11 +657,11 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in $d_i$'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in <dt-math>d_i</dt-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>
-  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" -- the eigenspaces which converge the slowest -- are also those which are most sensitive to noise! So starting at a simple initial point like $0$ (by a gross abuse of language, let's think of this as a prior), we track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
+  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" -- the eigenspaces which converge the slowest -- are also those which are most sensitive to noise! So starting at a simple initial point like <dt-math>0</dt-math> (by a gross abuse of language, let's think of this as a prior), we track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
   </p>
 
   <figure id = "poly2" style="width:940px; height:360px"></figure>
@@ -788,18 +757,19 @@
   </script>
   <p>
   This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
-$$
+<dt-math block>
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
-$$
-Recall that $Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T$. The solution to Tikhonov Regression is therefore
-$$
+</dt-math>
+Recall that <dt-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</dt-math>. The solution to Tikhonov Regression is therefore
+<dt-math block>
 (Z^{T}Z+\eta I)^{-1}(Zd)=Q\ \text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
-$$
+</dt-math>
 We can think of regularization as a function which decays the largest eigenvalues, as follows:
-$$
+<dt-math block>
 \text{Tikhonov Regularized } \lambda_i = \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
-$$
-Gradient descent can be seen as employing a similar decay, but with the decay rate $$ \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)$$
+</dt-math>
+Gradient descent can be seen as employing a similar decay, but with the decay rate
+<dt-math block> \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)</dt-math>
 instead. Note that this decay is dependent on the step-size.
 </dt-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
   </p>
@@ -810,37 +780,37 @@ instead. Note that this decay is dependent on the step-size.
   <p>
   Let's turn our attention back to momentum. Recall that the momentum update is
 
-  $$
+  <dt-math block>
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+\nabla f(w^{k})\\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
-  $$
+  </dt-math>
 
-  Since $\nabla f(w^k) = Aw^k - b$, the update on the quadratic is
+  Since <dt-math>\nabla f(w^k) = Aw^k - b</dt-math>, the update on the quadratic is
 
-  $$
+  <dt-math block>
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+ (Aw^{k}-b)\\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
-  $$
+  </dt-math>
 
-  Following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of basis $
-  x^{k} = Q(w^{k} - w^\star)$ and $ y^{k} = Qz^{k}$, to yield the update rule
+  Following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of basis <dt-math>
+  x^{k} = Q(w^{k} - w^\star)</dt-math> and <dt-math> y^{k} = Qz^{k}</dt-math>, to yield the update rule
 
-  $$
+  <dt-math block>
   \begin{aligned}
   y_{i}^{k+1}&=\beta y_{i}^{k}+\lambda_{i}x_{i}^{k}\\[0.4em]
   x_{i}^{k+1}&=x_{i}^{k}-\alpha y_{i}^{k+1}.
   \end{aligned}
-  $$
+  </dt-math>
 
-  in which each component acts independently of the other components (though $x^k_i$ and $y^k_i$ are coupled). This lets us rewrite our iterates as
+  in which each component acts independently of the other components (though <dt-math>x^k_i</dt-math> and <dt-math>y^k_i</dt-math> are coupled). This lets us rewrite our iterates as
 
   <dt-fn>
   This is true as we can write updates in matrix form as
-  $$
+  <dt-math block>
   \left(\!\!\begin{array}{cc}
   1 & 0\\
   \alpha & 1
@@ -854,10 +824,10 @@ instead. Note that this decay is dependent on the step-size.
   y_{i}^{k}\\
   x_{i}^{k}
   \end{array}\!\!\right)
+  </dt-math>
 
-  $$
   which implies, by inverting the matrix on the left,
-  $$
+  <dt-math block>
   \Bigg(\!\!\begin{array}{c}
   y_{i}^{k+1}\\
   x_{i}^{k+1}
@@ -871,10 +841,10 @@ instead. Note that this decay is dependent on the step-size.
   x_{i}^{0}\\
   y_{i}^{0}
   \end{array}\!\!\right)
-  $$
+  </dt-math>
 
   </dt-fn>
-  $$
+  <dt-math block>
   \left(\!\!\begin{array}{c}
   y_{i}^{k}\\
   x_{i}^{k}
@@ -887,36 +857,36 @@ instead. Note that this decay is dependent on the step-size.
   \beta & \lambda_{i}\\
   -\alpha\beta & 1-\alpha\lambda_{i}
   \end{array}\!\!\right).
-  $$
-  There are many ways of taking a matrix to the $k^{th}$ power. But for the $2 \times 2$ case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvalues of $R$, $\sigma_1$ and $\sigma_2$.
+  </dt-math>
+  There are many ways of taking a matrix to the <dt-math>k^{th}</dt-math> power. But for the <dt-math>2 \times 2</dt-math> case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvalues of <dt-math>R</dt-math>, <dt-math>\sigma_1</dt-math> and <dt-math>\sigma_2</dt-math>.
 
-  $$
+  <dt-math block>
 \color{#AAA}{\color{black}{R^{k}}=\begin{cases}
 \color{black}{\sigma_{1}^{k}}R_{1}-\color{black}{\sigma_{2}^{k}}R_{2} & \sigma_{1}\neq\sigma_{2}\\
 \sigma_{1}^{k}(kR/\sigma_1-(k-1)I) & \sigma_{1}=\sigma_{2}
 \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
-  $$
+  </dt-math>
 
-  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, $1-\alpha\lambda_i$ do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore the slowest of the two rates, $\max\{|\sigma_{1}|,|\sigma_{2}|\}$
+  This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, <dt-math>1-\alpha\lambda_i</dt-math> do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore the slowest of the two rates, <dt-math>\max\{|\sigma_{1}|,|\sigma_{2}|\}</dt-math>
   <dt-fn>
 We can write out the convergence rates explicitly. The eigenvalues are
-$$
+<dt-math block>
 \begin{aligned}
 \sigma_{1} & =\frac{1}{2}\left(1-\alpha\lambda+\beta+\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)\\[0.6em]
 \sigma_{2} & =\frac{1}{2}\left(1-\alpha\lambda+\beta-\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)
 \end{aligned}
-$$
-When the $(-\alpha\lambda+\beta+1)^{2}-4\beta<0$ is less than zero,
+</dt-math>
+When the <dt-math>(-\alpha\lambda+\beta+1)^{2}-4\beta<0</dt-math> is less than zero,
 then the roots are complex and the convergence rate is
-$$
+<dt-math block>
 \begin{aligned}
 |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
 \end{aligned}
-$$
-Which is, surprisingly, independent of the step-size or the eigenvalue $\alpha\lambda$. When the roots are real, the convergence rate is
-$$
+</dt-math>
+Which is, surprisingly, independent of the step-size or the eigenvalue <dt-math>\alpha\lambda</dt-math>. When the roots are real, the convergence rate is
+<dt-math block>
 \max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\}
-$$
+</dt-math>
 
  </dt-fn>. By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-cite key="flammarion2015averaging"></dt-cite>:
   </p>
@@ -931,7 +901,7 @@ $$
       </div>
 
       <figcaption style="position:absolute; width: 204px; height: 80px; left: 645px; top: 86px;">
-      A plot of $\max\{|\sigma_1|, |\sigma_2|\}$ reveals distinct regions, each with its own style of convergence.
+      A plot of <dt-math>\max\{|\sigma_1|, |\sigma_2|\}</dt-math> reveals distinct regions, each with its own style of convergence.
       </figcaption>
 
     </div>
@@ -1004,21 +974,21 @@ $$
   </script>
   <p>
 
-  For what values of $\alpha$ and $\beta$ does momentum converge? Since we need both $\sigma_1$ and $\sigma_2$ to converge, our convergence criterion is now $\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1$. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
+  For what values of <dt-math>\alpha</dt-math> and <dt-math>\beta</dt-math> does momentum converge? Since we need both <dt-math>\sigma_1</dt-math> and <dt-math>\sigma_2</dt-math> to converge, our convergence criterion is now <dt-math>\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1</dt-math>. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
 
-  $$0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1$$
+  <dt-math block>0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1</dt-math>
 
-  We recover the previous result for gradient descent when $\beta = 0$. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging.
+  We recover the previous result for gradient descent when <dt-math>\beta = 0</dt-math>. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging.
   </p>
   <hr>
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  The true magic happens, however, when we find the sweet spot of $\alpha$ and $\beta$. Let us try to first optimize over $\beta$.
+  The true magic happens, however, when we find the sweet spot of <dt-math>\alpha</dt-math> and <dt-math>\beta</dt-math>. Let us try to first optimize over <dt-math>\beta</dt-math>.
   </p>
 
   <p>
-  Momentum admits an interesting physical interpretation when $\alpha$ is <dt-cite key="qian1999momentum"></dt-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
+  Momentum admits an interesting physical interpretation when <dt-math>\alpha</dt-math> is <dt-cite key="qian1999momentum"></dt-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
   </p>
 
   <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1026,20 +996,20 @@ $$
   <div style="position:relative; top:-35px">
 
   <span style="position:absolute; left:0px; top:0px">
-  $$y_{i}^{k+1}$$
+  <dt-math block>y_{i}^{k+1}</dt-math>
   </span>
 
   <span style="position:absolute; left:160px; top:0px">
-  $$=$$
+  <dt-math block>=</dt-math>
   </span>
 
 
   <span style="position:absolute;left: 355px;top:0px;">
-  $$+$$
+  <dt-math block>+</dt-math>
   </span>
 
   <span style="position:absolute; left:410px; top:0px">
-  $$\lambda_{i}x_{i}^{k}$$
+  <dt-math block>\lambda_{i}x_{i}^{k}</dt-math>
   </span>
 
   <figcaption style="position:absolute;left:410px;top: 60px;width:150px;">
@@ -1047,11 +1017,11 @@ $$
   </figcaption>
 
   <figcaption style="position:absolute;left:0px;top: 60px;width:100px;">
-  We can think of $-y_i^k$ as <b>velocity</b>
+  We can think of <dt-math>-y_i^k</dt-math> as <b>velocity</b>
   </figcaption>
 
   <span style="position:absolute; left:200px; top:0px">
-  $$\beta y_{i}^{k}$$
+  <dt-math block>\beta y_{i}^{k}</dt-math>
   </span>
 
   <figcaption style="position:absolute;left:200px;top: 60px;width:130px;">
@@ -1060,23 +1030,23 @@ $$
 
 
   <span style="position:absolute;left: 0px;top: 100px;">
-  $$x_i^{k+1}$$
+  <dt-math block>x_i^{k+1}</dt-math>
   </span>
 
   <span style="position:absolute;left:160px;top: 100px;">
-  $$=$$
+  <dt-math block>=</dt-math>
   </span>
 
   <span style="position:absolute;left:200px;top: 100px;">
-  $$x_i^k - \alpha y_i^{k+1}$$
+  <dt-math block>x_i^k - \alpha y_i^{k+1}</dt-math>
   </span>
 
   <figcaption style="position:absolute;left:0px;top:155px;width:120px;">
-  And $x$ is our particle's <b>position</b>
+  And <dt-math>x</dt-math> is our particle's <b>position</b>
   </figcaption>
 
   <figcaption style="position:absolute;left:200px;top: 155px;width:280px;">
-  which is moved at each step by a small amount in the direction of the velocity $y^{k+1}_i$.
+  which is moved at each step by a small amount in the direction of the velocity <dt-math>y^{k+1}_i</dt-math>.
   </figcaption>
 
 
@@ -1087,7 +1057,7 @@ $$
   renderMath(document.getElementById("momentum_annotations"))
   </script>
   <p>
-  We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for $150$ iterates, the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
+  We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for <dt-math>150</dt-math> iterates, the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
@@ -1123,7 +1093,7 @@ $$
     });
   </script>
   <p>
-  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it follows as it returns to equilibrium. In the analogy, the spring is the source of our external force $\lambda_ix^k_i$, and equilibrium is the state when both the position $x^k_i$ and the speed $y^k_i$ are 0. The choice of $\beta$ crucially affects the rate of return to equilibrium.
+  This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it follows as it returns to equilibrium. In the analogy, the spring is the source of our external force <dt-math>\lambda_ix^k_i</dt-math>, and equilibrium is the state when both the position <dt-math>x^k_i</dt-math> and the speed <dt-math>y^k_i</dt-math> are 0. The choice of <dt-math>\beta</dt-math> crucially affects the rate of return to equilibrium.
   </p>
   <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
   </div>
@@ -1140,13 +1110,13 @@ $$
 
   </p>
   <p>
-  The critical value of $\beta = (1 - \sqrt{\alpha \lambda_i})^2$ gives us a convergence rate (in eigenspace $i$) of $1 - \sqrt{\alpha\lambda_i}.$ A square root improvement over gradient descent, $1-\alpha\lambda_i$! Alas, this only applies to the error in the $i^{th}$ eigenspace, with $\alpha$ fixed.
+  The critical value of <dt-math>\beta = (1 - \sqrt{\alpha \lambda_i})^2</dt-math> gives us a convergence rate (in eigenspace <dt-math>i</dt-math>) of <dt-math>1 - \sqrt{\alpha\lambda_i}.</dt-math> A square root improvement over gradient descent, <dt-math>1-\alpha\lambda_i</dt-math>! Alas, this only applies to the error in the <dt-math>i^{th}</dt-math> eigenspace, with <dt-math>\alpha</dt-math> fixed.
   </p>
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both $\alpha$ and $\beta$. This is a more complicated affair,<dt-fn> We must optimize over
-  $$
+  To get a global convergence rate, we must optimize over both <dt-math>\alpha</dt-math> and <dt-math>\beta</dt-math>. This is a more complicated affair,<dt-fn> We must optimize over
+  <dt-math block>
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
   -\alpha\beta & 1-\alpha\lambda_{i}
@@ -1154,18 +1124,18 @@ $$
   \beta & \lambda_{n}\\
   -\alpha\beta & 1-\alpha\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
-  $$
-  ($\|\cdot \|$ here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> but they work out to be
-  $$
+  </dt-math>
+  (<dt-math>\|\cdot \|</dt-math> here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> but they work out to be
+  <dt-math block>
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
-  $$
+  </dt-math>
   Plug this into the convergence rate, and you get
   </p>
   <figure id = "conv_rate_comparisons" style="width:530px; height:19px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
 
   <span style="position:absolute; left:16px">
-  $$\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}$$
+  <dt-math block>\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}</dt-math>
   </span>
 
   <figcaption style="position:absolute;left: 116px;top: 29px;width:130px;">
@@ -1173,7 +1143,7 @@ $$
   </figcaption>
 
   <span style="position:absolute; left:313px">
-  $$ \frac{\kappa-1}{\kappa+1}$$
+  <dt-math block> \frac{\kappa-1}{\kappa+1}</dt-math>
   </span>
 
 
@@ -1186,12 +1156,15 @@ $$
   renderMath(document.getElementById("conv_rate_comparisons"))
   </script>
   <p>
-  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of $\lambda_1$ and $\lambda_n$. But the formulas reveal a simple guideline. When the problem's conditioning is poor, the optimal $\alpha$ is approximately twice that of gradient descent, and the momentum term is close to $1$. So set $\beta$ as close to $1$ as you can, and then find the highest $\alpha$ which still converges. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
+  With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of <dt-math>\lambda_1</dt-math> and <dt-math>\lambda_n</dt-math>. But the formulas reveal a simple guideline. When the problem's conditioning is poor, the optimal <dt-math>\alpha</dt-math> is approximately twice that of gradient descent, and the momentum term is close to <dt-math>1</dt-math>. So set <dt-math>\beta</dt-math> as close to <dt-math>1</dt-math> as you can, and then find the highest <dt-math>\alpha</dt-math> which still converges. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
 
   <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd">$\lambda_1=0.01$</span>, <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5">$\lambda_2=0.1$</span>, and <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a">$\lambda_3=1$</span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> $f(w^k) - f(w^\star)$</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues
+    <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd"><dt-math>\lambda_1=0.01</dt-math></span>,
+    <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5"><dt-math>\lambda_2=0.1</dt-math></span>, and
+    <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a"><dt-math>\lambda_3=1</dt-math></span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> <dt-math>f(w^k) - f(w^\star)</dt-math></figcaption>
   <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px"> Note that the optimal parameters do not necessarily imply the fastest convergence, though, only the fastest asymptotic convergence rate. </figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
@@ -1247,16 +1220,16 @@ $$
   <h2>Example: The Colorization Problem</h2>
 
   <p>
-  Let's look at how momentum accelerates convergence with a concrete example. On a grid of pixels let $G$ be the graph with vertices as pixels, $E$ be the set of edges connecting each pixel to its four neighboring pixels, and $D$ be a small set of a few distinguished vertices. Consider the problem of minimizing
+  Let's look at how momentum accelerates convergence with a concrete example. On a grid of pixels let <dt-math>G</dt-math> be the graph with vertices as pixels, <dt-math>E</dt-math> be the set of edges connecting each pixel to its four neighboring pixels, and <dt-math>D</dt-math> be a small set of a few distinguished vertices. Consider the problem of minimizing
   </p>
   <figure id = "colorizer_equation" style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
   <div style="position:relative; top:-40px">
   <span style="position:absolute; top:10px">
-  $$\text{minimize} $$
+  <dt-math block>\text{minimize} </dt-math>
   </span>
 
   <span style="position:absolute; left:90px">
-  $$\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 $$
+    <dt-math block>\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 </dt-math>
   </span>
 
   <figcaption style="position:absolute; left:140px; top:100px; width:130px">
@@ -1264,11 +1237,11 @@ $$
   </figcaption>
 
   <span style="position:absolute; left:310px; top:10px">
-  $$+$$
+    <dt-math block>+</dt-math>
   </span>
 
   <span style="position:absolute; left:350px">
-  $$\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.$$
+    <dt-math block>\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.</dt-math>
   </span>
 
 
@@ -1281,21 +1254,21 @@ $$
   renderMath(document.getElementById("colorizer_equation"))
   </script>
   <p>
-  The optimal solution to this problem is a vector of all $1$'s <dt-fn>The above optimization problem is bounded from below by $0$, and vector of all $1$'s achieve this. </dt-fn>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The optimal solution to this problem is a vector of all <dt-math>1</dt-math>'s <dt-fn>The above optimization problem is bounded from below by <dt-math>0</dt-math>, and vector of all <dt-math>1</dt-math>'s achieve this. </dt-fn>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
-  $$
+  <dt-math block>
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 \alpha(w_{i}^{k}-1) & i\in D\\
 0 & i\notin D
 \end{cases}
-  $$
+  </dt-math>
 
   This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so, left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum speeds things up significantly.
   </p>
   <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
   <figcaption style="left:790px; top:430px; position:absolute; width:130px">
-      The eigenvectors of the colorization problem form a generalized Fourier basis for $R^n$. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
+      The eigenvectors of the colorization problem form a generalized Fourier basis for <dt-math>R^n</dt-math>. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
   </figcaption>
 
   </figure>
@@ -1342,7 +1315,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <div style="position:relative; top:-35px">
 
   <span style="position:absolute; left:0px; top:10px">
-  $$\text{minimize}$$
+    <dt-math block>\text{minimize}</dt-math>
   </span>
 
   <figcaption style="position:absolute; left:130px; top:90px; width:140px;">
@@ -1350,30 +1323,30 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figcaption>
 
   <span style="position:absolute; left:310px; top:0px">
-  $$\frac{1}{2}\sum_{i\in D}\left(x^{T}e_{i}e_{i}^{T}x-e_{i}^{T}x\right)$$
+    <dt-math block>\frac{1}{2}\sum_{i\in D}\left(x^{T}e_{i}e_{i}^{T}x-e_{i}^{T}x\right)</dt-math>
   </span>
 
 
   <span style="position:absolute; left:255px; top:10px">
-  $$+$$
+    <dt-math block>+</dt-math>
   </span>
 
   <span style="position:absolute; left:130px; top:0px">
-  $$\frac{1}{2}x^{T}L_{G}x$$
+    <dt-math block>\frac{1}{2}x^{T}L_{G}x</dt-math>
   </span>
 
   <figcaption style="position:absolute; left: 310px; top: 90px;width:250px;">
-  And the colorizer is a small low rank correction with a linear term. $e_i$ is the $i^{th}$ unit vector.
+  And the colorizer is a small low rank correction with a linear term. <dt-math>e_i</dt-math> is the <dt-math>i^{th}</dt-math> unit vector.
   </figcaption>
   </div>
   </figure>
   <p>
-  The Laplacian matrix, $L_G$
+  The Laplacian matrix, <dt-math>L_G</dt-math>
   <dt-fn>This can be written explicitly as
-  $$
+  <dt-math block>
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
-  $$
-  </dt-fn>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of $L_G$, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
+  </dt-math>
+  </dt-fn>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of <dt-math>L_G</dt-math>, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
   </p>
   <figure id="laplacianConditioning" style="width:900px; height:265px">
   <svg width="900" height="300" id="graph"></svg>
@@ -1408,7 +1381,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   The Limits of Descent
   </h2>
   <p>
-  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the $\alpha$'s and $\beta$'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond!
+  Let's take a step back. We have, with a clever trick, improved the convergence of gradient descent by a quadratic factor with the introduction of a single auxiliary sequence. But is this the best we can do? Could we improve convergence even more with two sequences? Could one perhaps choose the <dt-math>\alpha</dt-math>'s and <dt-math>\beta</dt-math>'s intelligently and adaptively? It is tempting to ride this wave of optimism - to the cube root and beyond!
   </p>
   <p>
   Unfortunately, while improvements to the momentum algorithm do exist, they all run into a certain, critical, almost inescapable lower bound.
@@ -1416,7 +1389,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h3>Adventures in Algorithmic Space</h3>
   <p>
   To understand the limits of what we can do, we must first formally define the algorithmic space in which we are searching. Here's one possible definition. The observation we will make is that both gradient descent and momentum can be "unrolled". Indeed, since
-  $$
+  <dt-math block>
   \begin{array}{lll}
     w^{1} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0})\\[0.35em]
     w^{2} & \!= & \!w^{1} ~-~ \alpha\nabla f(w^{1})\\[0.35em]
@@ -1425,30 +1398,30 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
    w^{k+1} & \!= & \!w^{0} ~-~ \alpha\nabla f(w^{0}) ~-~~~~ \cdots\cdots ~~~~-~ \alpha\nabla f(w^{k})
   \end{array}
-  $$
+  </dt-math>
   we can write gradient descent as
 
-  $$
+  <dt-math block>
   w^{k+1} ~~=~~ w^{0} ~-~ \alpha\sum_i^k\nabla f(w^{i}).
-  $$
+  </dt-math>
 
   A similar trick can be done with momentum:
 
-  $$
+  <dt-math block>
   w^{k+1} ~~=~~ w^{0} ~+~ \alpha\sum_i^k\frac{(1-\beta^{k+1-i})}{1-\beta}\nabla f(w^i).
-  $$
+  </dt-math>
 
   In fact, all manner of first order algorithms, including the Conjugate Gradient algorithm, AdaMax, Averaged Gradient and more, can be written (though not quite so neatly) in this unrolled form. Therefore the class of algorithms for which
 
-  $$
+  <dt-math block>
   w^{k+1} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
-  $$
+  </dt-math>
 
   contains momentum, gradient descent and a whole bunch of other algorithms you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step-sizes for different directions.
 
-  $$
+  <dt-math block>
   w^{k+1} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \quad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
-  $$
+  </dt-math>
 
   This class of methods covers most of the popular algorithms for training neural networks, including ADAM and AdaGrad. We shall refer to this class of methods as "Linear First Order Methods", and we will show a single function all these methods ultimately fail on.
 
@@ -1462,11 +1435,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <div style="position:relative; top:-35px">
 
   <span style="position:absolute; left:0px; top:9px">
-  $$f^n(w)$$
+    <dt-math block>f^n(w)</dt-math>
   </span>
 
   <span style="position:absolute; left:72px; top:9px">
-  $$=$$
+    <dt-math block>=</dt-math>
   </span>
 
   <figcaption style="position:absolute; left:105px; top:90px; width:120px;">
@@ -1474,15 +1447,15 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figcaption>
 
   <span style="position:absolute; left:105px; top:0px">
-  $$\frac{1}{2}\left(w_{1}-1\right)^{2}$$
+    <dt-math block>\frac{1}{2}\left(w_{1}-1\right)^{2}</dt-math>
   </span>
 
   <span style="position:absolute; left:240px; top:6px">
-  $$+$$
+    <dt-math block>+</dt-math>
   </span>
 
   <span style="position:absolute; left:275px; top:-10px">
-  $$\frac{1}{2}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}$$
+    <dt-math block>\frac{1}{2}\sum_{i=1}^{n}(w_{i}-w_{i+1})^{2}</dt-math>
   </span>
 
   <figcaption style="position:absolute; left: 275px; top:90px;width:210px;">
@@ -1490,10 +1463,10 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figcaption>
 
   <span style="position:absolute; left:475px; top:6px">
-  $$+$$
+    <dt-math block>+</dt-math>
   </span>
   <span style="position:absolute; left:505px; top:-2px">
-  $$\frac{2}{\kappa-1}\|w\|^{2}.$$
+    <dt-math block>\frac{2}{\kappa-1}\|w\|^{2}.</dt-math>
   </span>
 
   <figcaption style="position:absolute; left:505px; top:90px;width:150px;">
@@ -1505,11 +1478,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   The optimal solution of this problem is
 
-  $$
+  <dt-math block>
   w_{i}^{\star}=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{i}
-  $$
+  </dt-math>
 
-  and the condition number of the problem $f^n$ approaches $\kappa$ as $n$ goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from $w^0 = 0$.
+  and the condition number of the problem <dt-math>f^n</dt-math> approaches <dt-math>\kappa</dt-math> as <dt-math>n</dt-math> goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from <dt-math>w^0 = 0</dt-math>.
   </p>
 
   <figure id="rosenViz" style="width:950px; height:630px">
@@ -1517,7 +1490,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
     <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step-size α = </div>
     <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
-    <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 50 iterates of momentum on the Convex Rosenbrock for $n=25$. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
+    <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 50 iterates of momentum on the Convex Rosenbrock for <dt-math>n=25</dt-math>. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
     <div style="position:absolute; top:150px; left:-80px">
     <figcaption style="width:160px; position:absolute; left:670px; top:90px">This triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
@@ -1669,14 +1642,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   The observations made in the above diagram are true for any Linear First Order algorithm. Let us prove this. First observe that each component of the gradient depends only on the values directly before and after it:
 
-  $$
+  <dt-math block>
 \nabla f(x)_{i}=2w_{i}-w_{i-1}-w_{i+1} +\frac{4}{\kappa-1} w_{i}, \qquad i \neq 1.
-  $$
+  </dt-math>
 
   Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before or after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
   </p>
   <div style="position:relative; height:178px">
-  $$
+  <dt-math block>
   \begin{array}{lllllllll}
     w^{0} & = & [~~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
     w^{1} & = & [~w_{1}^{1}, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
@@ -1684,18 +1657,18 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
      & ~ \vdots \\
    w^{k} & = & [~w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0~].\\
   \end{array}
-  $$
+  </dt-math>
   </div>
   <p>
-  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least $k$ steps to move from $w_0$ to $w_k$. We can therefore sum up the errors which cannot have changed yet<dt-fn>We use the infinity norm to measure our error, similar results can be derived for the 1 and 2 norms.</dt-fn>:
+  Think of this restriction as a "speed of light" of information transfer. Error signals will take at least <dt-math>k</dt-math> steps to move from <dt-math>w_0</dt-math> to <dt-math>w_k</dt-math>. We can therefore sum up the errors which cannot have changed yet<dt-fn>We use the infinity norm to measure our error, similar results can be derived for the 1 and 2 norms.</dt-fn>:
 
-  $$
+  <dt-math block>
   \begin{aligned}
 \|w^{k}-w^{\star}\|_{\infty}&\geq\max_{i\geq k+1}\{|w_{i}^{\star}|\}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k+1}\\[0.9em]&=\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^{k}\|w^{0}-w^{\star}\|_{\infty}.
   \end{aligned}
-  $$
+  </dt-math>
 
-  As $n$ gets large, the condition number of $f^n$ approaches $\kappa$. And the gap therefore closes; the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
+  As <dt-math>n</dt-math> gets large, the condition number of <dt-math>f^n</dt-math> approaches <dt-math>\kappa</dt-math>. And the gap therefore closes; the convergence rate that momentum promises matches the best any linear first order algorithm can do. And we arrive at the disappointing conclusion that on this problem, we cannot do better.
   </p>
   <p>
   Like many such lower bounds, this result must not be taken literally, but spiritually. It, perhaps, gives a sense of closure and finality to our investigation. But this is not the final word on first order optimization. This lower bound does not preclude the possibility, for example, of reformulating the problem to change the condition number itself! There is still much room for speedups, if you understand the right places to look.
@@ -1703,14 +1676,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <h2>Momentum with Stochastic Gradients</h2>
 
   <p>
-  There is a final point worth addressing. All the discussion above assumes access to the true gradient -- a luxury seldom afforded in modern machine learning. Computing the exact gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug-in replacement of $\nabla f(w)$. We can write the approximation in two parts,
+  There is a final point worth addressing. All the discussion above assumes access to the true gradient -- a luxury seldom afforded in modern machine learning. Computing the exact gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug-in replacement of <dt-math>\nabla f(w)</dt-math>. We can write the approximation in two parts,
   </p>
   <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "truegradientpluserror">
 
   <div style="position:relative; top:-45px">
 
   <span style="position:absolute; left:50px; top:9px">
-  $$\nabla f(w)$$
+  <dt-math block>\nabla f(w)</dt-math>
   </span>
 
   <figcaption style="position:absolute; left:50px; top:70px; width:140px;">
@@ -1718,14 +1691,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figcaption>
 
   <span style="position:absolute; left:170px; top:9px">
-  $$+$$
+  <dt-math block>+</dt-math>
   </span>
 
   <span style="position:absolute; left:230px; top:9px">
-  $$\text{error}(w).$$
+  <dt-math block>\text{error}(w).</dt-math>
   </span>
   <figcaption style="position:absolute; left:230px; top:70px;width:300px;">
-  and an approximation error. <br>If the estimator is unbiased e.g. $\mathbf{E}[\text{error}(w)] = 0$
+  and an approximation error. <br>If the estimator is unbiased e.g. <dt-math>\mathbf{E}[\text{error}(w)] = 0</dt-math>
   </figcaption>
   </div>
   </figure>
@@ -1736,14 +1709,14 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
   The momentum iterations are
-  $$
+  <dt-math block>
   \begin{aligned}
   z^{k+1}&=\beta z^{k}+ A w^{k}  + \text{error}(w^k) \\[0.4em]
   w^{k+1}&=w^{k}-\alpha z^{k+1}.
   \end{aligned}
-  $$
+  </dt-math>
   which, after a change of variables, become
-  $$
+  <dt-math block>
 \left(\!\!\begin{array}{cc}
 1 & 0\\
 \alpha & 1
@@ -1760,8 +1733,8 @@ x_{i}^{k}
 \epsilon_{i}^{k}\\
 0
 \end{array}\!\!\right)
-  $$
-  Inverting the $2 \times 2$ matrix on the left, and applying the formula recursively yields the final solution.
+  </dt-math>
+  Inverting the <dt-math>2 \times 2</dt-math> matrix on the left, and applying the formula recursively yields the final solution.
   </dt-fn>
   </p>
 
@@ -1770,10 +1743,10 @@ x_{i}^{k}
   <div style="position:relative; top:-35px">
 
   <span style="position:absolute; left:0px; top:0px">
-  $$    \left(\begin{array}{c}
+  <dt-math block>    \left(\begin{array}{c}
   y_{i}^{k}\\
   x_{i}^{k}
-  \end{array}\right)$$
+  \end{array}\right)</dt-math>
   </span>
 
   <figcaption style="position:absolute; left:00px; top:95px; width:120px;">
@@ -1781,33 +1754,33 @@ x_{i}^{k}
   </figcaption>
 
   <span style="position:absolute; left:120px; top:10px">
-  $$=$$
+  <dt-math block>=</dt-math>
   </span>
 
   <span style="position:absolute; left:170px; top:0px">
-  $$R^{k}\left(\begin{array}{c}
+  <dt-math block>R^{k}\left(\begin{array}{c}
   y_{i}^{0}\\
   x_{i}^{0}
-  \end{array}\right)$$
+  \end{array}\right)</dt-math>
   </span>
   <figcaption style="position:absolute; left:170px; top:95px;width:200px;">
   the noiseless, deterministic iterates and
   </figcaption>
 
   <span style="position:absolute; left:320px; top:10px">
-  $$+$$
+  <dt-math block>+</dt-math>
   </span>
 
 
   <span style="position:absolute; left:375px; top:-10px">
-  $$\epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
+  <dt-math block>\epsilon^k_i \sum_{i=1}^{k}R^{k-i}\left(\begin{array}{c}
 1\\
 -\alpha
-\end{array}\right)$$
+\end{array}\right)</dt-math>
   </span>
 
   <figcaption style="position:absolute; left:375px; top:95px;width:200px;">
-  a decaying sum of the errors, where $\epsilon^k = Q \cdot \text{error}(w^k)$.
+  a decaying sum of the errors, where <dt-math>\epsilon^k = Q \cdot \text{error}(w^k)</dt-math>.
   </figcaption>
 
   </div>
@@ -1816,9 +1789,9 @@ x_{i}^{k}
   renderMath(document.getElementById("iteratespluserror"))
   </script>
   <p>
-  The error term, $\epsilon^k$, with its dependence on the $w^k$, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
-     <dt-fn>On the 1D function $f(x)=\frac{\lambda}{2}x^{2}$, the objective value is
-$$
+  The error term, <dt-math>\epsilon^k</dt-math>, with its dependence on the <dt-math>w^k</dt-math>, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
+     <dt-fn>On the 1D function <dt-math>f(x)=\frac{\lambda}{2}x^{2}</dt-math>, the objective value is
+<dt-math block>
 \begin{aligned}
 \mathbf{E}f(x^{k})&=\frac{\lambda}{2}\mathbf{E}[(x^{k})^{2}]\\&=\frac{\lambda}{2}\mathbf{E}\left(e_{2}^{T}R^{k}\left(\begin{array}{c}
 y^{0}\\
@@ -1846,14 +1819,14 @@ x^{0}
 -\alpha
 \end{array}\right)
 \end{aligned}
-$$
-The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the fourth uses the fact they are uncorrelated.
+</dt-math>
+The third inequality uses the fact that <dt-math>\mathbf{E} \epsilon^k = 0</dt-math> and the fourth uses the fact they are uncorrelated.
 </dt-fn>, visualized here.
   </p>
   <script src="assets/stochastic_milestones.js"></script>
   <figure id="stochastic" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value $\mathbf{E} f(w) - f(w^\star)$ into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px">$\mathbf{E} f(w) - f(w^\star) $</span></figcaption>
+  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value <dt-math>\mathbf{E} f(w) - f(w^\star)</dt-math> into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
+  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px"><dt-math>\mathbf{E} f(w) - f(w^\star) </dt-math></span></figcaption>
   <figcaption style="position:absolute; text-align:right; top:240px; left:12px; width:116px; height:120px"> The small black dots are a single run of stochastic gradient</figcaption>
 
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
@@ -2165,11 +2138,6 @@ The third inequality uses the fact that $\mathbf{E} \epsilon^k = 0$ and the four
 
 </script>
 
-<!-- Katex -->
-<script>
-renderMath(document.body)
-</script>
-
 <!-- Figure render queue -->
 <script>
 
@@ -2181,7 +2149,11 @@ renderMath(document.body)
     var q = d3.queue(1);
 
     d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-      q.defer(function(callback) { fn[1](callback); fn[0](callback); renderMath(document.body) });
+      q.defer(function(callback) {
+        fn[1](callback);
+        fn[0](callback);
+        renderMath(document.body);
+      });
       q.defer(function(callback) {
         setTimeout(function() {
           callback(null);

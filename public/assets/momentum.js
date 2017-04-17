@@ -384,7 +384,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
       .call(d3.axisLeft(ybeta).ticks(1).tickSize(4))
 
 
-    var html = katex.renderToString("\\beta=")
+    var html = document.querySelector("#math-cache .beta-equals").innerHTML;
     divin
       .append("text")
       .style("position","absolute")
@@ -394,7 +394,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
       .attr("class", "figtext")
       .html("Momentum " + html)
 
-    var html = katex.renderToString("\\alpha=")
+    var html = document.querySelector("#math-cache .alpha-equals").innerHTML;
     divin
       .append("text")
       .style("position","absolute")

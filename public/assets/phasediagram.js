@@ -9,7 +9,7 @@ function phaseDiagram(divin) {
     var lambda = [1,100]
     var iter = geniterMomentum([[1, 0],[0, 1]], lambda, [1,sign*100], alpha, beta).iter
     // run for 500 iterations
-    for (var i = 0; i <= totalIters; i++) { 
+    for (var i = 0; i <= totalIters; i++) {
       var x = numeric.add(iter(i)[1],-sign*1)
       var y = numeric.mul(iter(i)[0],(1/200))
       m.push([y[coord], x[coord]])
@@ -75,24 +75,24 @@ function phaseDiagram(divin) {
                   .attr("opacity", 0.7)
 
     if (i == 0) {
-      
+
       var updateAnnotationOverDamp = (function(pathin, divxin, divyin) {
         return function(x,y,d) {
-          pathin.transition().duration(d).attr("d", ringPath([x+10,y],[divxin,divyin]).d) 
+          pathin.transition().duration(d).attr("d", ringPath([x+10,y],[divxin,divyin]).d)
         }
       })(path, divx, divy)
       updateAnnotationOverDamp(X(default_overdamp), 30, 0)
     }
 
     if (i == 1) {
-      path.attr("d", ringPath([X(0.8)+5,30],[divx - 40,divy -40]).d + "L" + divx + "," + divy + " ") 
+      path.attr("d", ringPath([X(0.8)+5,30],[divx - 40,divy -40]).d + "L" + divx + "," + divy + " ")
     }
 
     if (i == 2) {
 
       var updateAnnotationUnderDamp = (function(pathin, divxin, divyin) {
         return function(x,y,d) {
-          pathin.transition().duration(d).attr("d", ringPath([x+10,y],[divxin,divyin]).d) 
+          pathin.transition().duration(d).attr("d", ringPath([x+10,y],[divxin,divyin]).d)
         }
       })(path, divx, divy)
       updateAnnotationUnderDamp(X(default_underdamp), 30, 0)
@@ -125,18 +125,18 @@ function phaseDiagram(divin) {
 
     svg.append("g").attr("class", "grid")
       .attr("transform", "translate(" + w/2 + ",0)")
-      .attr("opacity", 0.2)      
+      .attr("opacity", 0.2)
       .call(d3.axisLeft(X).ticks(0).tickSize(0))
 
     var colorRange = d3.scaleLinear().domain([0, totalIters/16, totalIters/2]).range(colorbrewer.OrRd[3])
-    
+
     var Xaxis = d3.scaleLinear().domain(axis[0]).range([0, w])
     var Yaxis = d3.scaleLinear().domain(axis[1]).range([0, h])
 
     var update = plot2dGen(Xaxis, Yaxis, colorRange)
                   .pathOpacity(1)
                   .pathWidth(1.5)
-                  .circleRadius(1.5) 
+                  .circleRadius(1.5)
                   .stroke(colorbrewer.OrRd[3][0])(svg)
 
     update(getTrace(al, [0.01, optbeta + 0.0001 , default_underdamp][i], 1,1))
@@ -148,7 +148,7 @@ function phaseDiagram(divin) {
     .append("svg")
 
   // Axis
-  var axis = linesvg.append("g")     
+  var axis = linesvg.append("g")
     .attr("class", "figtext")
     .attr("opacity", 0.3)
     .attr("transform", "translate(0,32)")
@@ -159,9 +159,9 @@ function phaseDiagram(divin) {
   axis.selectAll("path").remove()
   axis.select("text").style("text-anchor", "start");
 
-  var html = katex.renderToString("\\beta")
+  var html = document.querySelector("#math-cache .beta").innerHTML;
   // Axis
-  linesvg.append("text")     
+  linesvg.append("text")
     .attr("class", "figtext")
     .attr("opacity", 1)
     .attr("transform", "translate(0,12)")
@@ -175,7 +175,7 @@ function phaseDiagram(divin) {
     .attr("x1", 0)
     .attr("y1", 30)
     .attr("x2", 0 + width_bar)
-    .attr("y2", 30)    
+    .attr("y2", 30)
     .style("border", "solid 2px black")
     .style("stroke", "#CCC")
     .style("fill", "white")
@@ -211,20 +211,20 @@ function phaseDiagram(divin) {
     .attr("x1", 0)
     .attr("y1", 30)
     .attr("x2", 0 + width_bar)
-    .attr("y2", 30)    
+    .attr("y2", 30)
     .style("border", "solid 2px black")
     .style("stroke", "black")
     .style("fill", "white")
     .style("opacity", 0)
-    .style("z-index", 3)    
+    .style("z-index", 3)
     .style("stroke-width", "40px")
-    .on("mousemove", function () { 
+    .on("mousemove", function () {
 
       var pt = d3.mouse(this)
       var beta = X.invert(pt[0])
       if (beta < optbeta) {
         underdamp.attr("cx", pt[0])
-        updateCallbacks[0](getTrace(al, X.invert(pt[0]), 1,1)) 
+        updateCallbacks[0](getTrace(al, X.invert(pt[0]), 1,1))
 
         overdamp.attr("cx", X(default_underdamp))
         updateAnnotationOverDamp(pt[0], 30, 0)
@@ -234,15 +234,15 @@ function phaseDiagram(divin) {
           divs[1].style("opacity",0.2)
           divs[2].style("opacity",0.2)
 
-          updateCallbacks[2](getTrace(al, default_underdamp, 1,1)) 
+          updateCallbacks[2](getTrace(al, default_underdamp, 1,1))
           updateAnnotationUnderDamp(X(default_underdamp), 30, 20)
         }
         prevState = "Over"
-      } 
+      }
       if (beta > optbeta) {
-        overdamp.attr("cx", pt[0])        
+        overdamp.attr("cx", pt[0])
         underdamp.attr("cx", X(default_overdamp))
-        updateCallbacks[2](getTrace(al, Math.min(X.invert(pt[0]),1), 1,1))      
+        updateCallbacks[2](getTrace(al, Math.min(X.invert(pt[0]),1), 1,1))
 
         updateAnnotationUnderDamp(pt[0], 30, 0)
 
@@ -251,28 +251,28 @@ function phaseDiagram(divin) {
           divs[1].style("opacity",0.2)
           divs[2].style("opacity",1)
 
-          updateCallbacks[0](getTrace(al, default_overdamp, 1,1))                
+          updateCallbacks[0](getTrace(al, default_overdamp, 1,1))
           updateAnnotationOverDamp(X(default_overdamp), 30, 20)
         }
         prevState = "Under"
-      } 
+      }
 
     })
-    .on("mouseout", function () { 
+    .on("mouseout", function () {
         divs[0].style("opacity",1)
         divs[1].style("opacity",1)
         divs[2].style("opacity",1)
 
       underdamp.transition().duration(50).attr("cx", X(default_overdamp))
-      updateCallbacks[0](getTrace(al, default_overdamp, 1,1))      
+      updateCallbacks[0](getTrace(al, default_overdamp, 1,1))
 
       overdamp.transition().duration(50).attr("cx", X(default_underdamp))
-      updateCallbacks[2](getTrace(al, default_underdamp, 1,1))   
+      updateCallbacks[2](getTrace(al, default_underdamp, 1,1))
 
       updateAnnotationUnderDamp(X(default_underdamp), 30, 50)
       updateAnnotationOverDamp(X(default_overdamp), 30, 50)
       prevState = ""
-   
+
     })
 
 

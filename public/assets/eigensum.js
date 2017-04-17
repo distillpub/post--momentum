@@ -6,7 +6,14 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   var startpoint = 0
   var witemp = 0
 
-  var equations = []
+  var equations = [];
+
+  function renderEquation(hat, value, number) {
+    var html = hat ? document.querySelector("#math-cache .phat").innerHTML : document.querySelector("#math-cache .p").innerHTML;
+    html = html.replace('<span class="mord mathrm">0</span>', value);
+    html = html.replace('<span class="mord mathrm">1</span>', number);
+    return html;
+  }
 
   if (!(renderStars === undefined)) {
     for (var i = 0; i < 7; i++) {
@@ -18,7 +25,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .style("width", "110px")
         .style("height", "25px")
         .style("font-size", "16px")
-        .html(katex.renderToString("\\star"))
+        .html(document.querySelector("#math-cache .star").innerHTML);
 
 
       // Add pluses and equal signs
@@ -42,13 +49,15 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
 
     }
   }
+
+
+
   // Render Equations
   for (var i =0; i < 7; i++) {
 
+    var html = document.querySelector("#math-cache .model").innerHTML;
     if (i != 6) {
-      var html = katex.renderToString(wi[i].toPrecision(3) + (hat ? " \\bar{p}_" : " p_")+(i+1))
-    } else{
-      var html = katex.renderToString("\\text{model}")
+      html = renderEquation(hat, wi[i].toPrecision(3), i+1);
     }
 
     if (i != 6) {
@@ -68,8 +77,13 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .on("drag", (function(i) { return function() {
           var xi = xrange(d3.mouse(this)[0] - startpoint) + wi[i]
           witemp = wi.slice(0); witemp[i] = xi
-          var str = (witemp[i]).toPrecision(3) + (hat ? " \\bar{p}_" : "p_")+(i+1)
-          d3.select(this).html(katex.renderToString(str))
+          // var str = hat ? document.querySelector("#math-cache .phat").innerHTML : document.querySelector("#math-cache .p").innerHTML;
+          // str = str.replace("000", (witemp[i]).toPrecision(3));
+          // str = str.replace("111", i+1);
+          // var str = (witemp[i]).toPrecision(3) + (hat ? " \\bar{p}_" : "p_")+(i+1)
+          var str = renderEquation(hat, (witemp[i]).toPrecision(3), i+1);
+          d3.select(this).html(str)
+
           var w = zeros(6); w[i] = xi
           updates[i](numeric.dot(numeric.transpose(U),w))
           updatesum(numeric.dot(numeric.transpose(U),witemp))
@@ -91,7 +105,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
 
     // Add pluses and equal signs
     if (i < 5) {
-      var html = katex.renderToString("+")
+      var html = document.querySelector("#math-cache .plus").innerHTML;
       mathdiv.append("span").style("text-align","center")
       .style("display","inline-block")
       .style("width", "25px")
@@ -100,7 +114,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
       .html(html)
     } else{
     if (i == 5) {
-      var html = katex.renderToString("=")
+      var html = document.querySelector("#math-cache .equals").innerHTML;
          mathdiv.append("span").style("text-align","center")
       .style("display","inline-block")
       .style("width", "26px")
@@ -142,7 +156,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   function updateweights(win) {
     wi = win
     for (var i = 0; i < 6; i++ ){
-      var html = katex.renderToString(win[i].toPrecision(3) + (hat ? " \\bar{p}_" : " p_")+(i+1))
+      var html = renderEquation(hat, win[i].toPrecision(3), i + 1);
       equations[i].html(html)
       var w = zeros(6); w[i] = win[i]
       updates[i](numeric.dot(w,U))
@@ -273,8 +287,6 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
             })
           )
 
-    console.log()
-
     var vongroup = svg.append("g")
 
     var dragging = false
@@ -326,7 +338,6 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
                 .attr("d", function(d, i) { return "M" + d.join("L") + "Z"; })
             })
             .on("end", function(d,i) {
-              console.log("end")
               dragging = false
               d3.select(datalinessvg.selectAll("line").nodes()[i]).style("stroke-width", "0px");
               d3.select(data.selectAll("circle").nodes()[i]).style("fill", "black");

@@ -12,8 +12,8 @@
 </script>
 
 <!-- Katex -->
-<script src="assets/lib/auto-render.min.js"></script>
-<script src="assets/lib/katex.min.js"></script>
+<!--<script src="assets/lib/auto-render.min.js"></script>-->
+<!--<script src="assets/lib/katex.min.js"></script>-->
 <link rel="stylesheet" href="assets/lib/katex.min.css">
 <link rel="stylesheet" type="text/css" href="assets/widgets.css">
 
@@ -23,15 +23,15 @@
 <script>
   var renderQueue = [];
   function renderMath(elem) {
-  renderMathInElement(
-      elem,
-      {
-          delimiters: [
-              {left: "$$", right: "$$", display: true},
-              {left: "$", right: "$", display: false},
-          ]
-      }
-  );
+    // renderMathInElement(
+    //     elem,
+    //     {
+    //         delimiters: [
+    //             {left: "$$", right: "$$", display: true},
+    //             {left: "$", right: "$", display: false},
+    //         ]
+    //     }
+    // );
   }
 
   var deleteQueue = [];
@@ -51,6 +51,18 @@
   }
 
 </script>
+<div id="math-cache" style="display: none;">
+  <dt-math class="star">\star</dt-math>
+  <dt-math class="plus">+</dt-math>
+  <dt-math class="equals">=</dt-math>
+  <dt-math class="alpha">\alpha</dt-math>
+  <dt-math class="beta">\beta</dt-math>
+  <dt-math class="alpha-equals">\alpha=</dt-math>
+  <dt-math class="beta-equals">\beta=</dt-math>
+  <dt-math class="model">\text{model}</dt-math>
+  <dt-math class="p">0 p_1</dt-math>
+  <dt-math class="phat">0 \bar{p}_1</dt-math>
+</div>
 <svg style="display: none;">
   <g id="pointerThingy">
     <circle fill="none" stroke="#FF6C00" stroke-linecap="round" cx="0" cy="0" r="14"/>
@@ -382,12 +394,14 @@
                         .style("position","absolute")
                         .style("left", "15px")
 
-      var updateSliderGD = renderMilestones(svg, function() {})
+      var updateSliderGD = renderMilestones(svg, function() {});
+
+      var alphaHTML = document.querySelector("#math-cache .alpha-equals").innerHTML;
 
       var slidera = sliderGen([250, 80])
                   .ticks([0,1,200/(101),2])
                   .change( function (i) {
-                    var html = katex.renderToString("\\alpha = " + i.toPrecision(4) )
+                    var html = alphaHTML + '<span style="font-weight: normal;">' + i.toPrecision(4) + "</span>";
                     d3.select("#stepSizeMilestones")
                       .html("Stepsize " + html )
                     updateSliderGD(i,0.000)

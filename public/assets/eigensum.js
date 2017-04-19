@@ -9,7 +9,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   var equations = [];
 
   function renderEquation(hat, value, number) {
-    var html = hat ? document.querySelector("#math-cache .phat").innerHTML : document.querySelector("#math-cache .p").innerHTML;
+    var html = hat ? MathCache("phat") : MathCache("p");
     html = html.replace('<span class="mord mathrm">0</span>', value);
     html = html.replace('<span class="mord mathrm">1</span>', number);
     return html;
@@ -25,7 +25,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .style("width", "110px")
         .style("height", "25px")
         .style("font-size", "16px")
-        .html(document.querySelector("#math-cache .star").innerHTML);
+        .html(MathCache("star"));
 
 
       // Add pluses and equal signs
@@ -55,7 +55,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   // Render Equations
   for (var i =0; i < 7; i++) {
 
-    var html = document.querySelector("#math-cache .model").innerHTML;
+    var html = MathCache("model");
     if (i != 6) {
       html = renderEquation(hat, wi[i].toPrecision(3), i+1);
     }
@@ -77,10 +77,6 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .on("drag", (function(i) { return function() {
           var xi = xrange(d3.mouse(this)[0] - startpoint) + wi[i]
           witemp = wi.slice(0); witemp[i] = xi
-          // var str = hat ? document.querySelector("#math-cache .phat").innerHTML : document.querySelector("#math-cache .p").innerHTML;
-          // str = str.replace("000", (witemp[i]).toPrecision(3));
-          // str = str.replace("111", i+1);
-          // var str = (witemp[i]).toPrecision(3) + (hat ? " \\bar{p}_" : "p_")+(i+1)
           var str = renderEquation(hat, (witemp[i]).toPrecision(3), i+1);
           d3.select(this).html(str)
 
@@ -105,7 +101,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
 
     // Add pluses and equal signs
     if (i < 5) {
-      var html = document.querySelector("#math-cache .plus").innerHTML;
+      var html = MathCache("plus");
       mathdiv.append("span").style("text-align","center")
       .style("display","inline-block")
       .style("width", "25px")
@@ -114,7 +110,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
       .html(html)
     } else{
     if (i == 5) {
-      var html = document.querySelector("#math-cache .equals").innerHTML;
+      var html = MathCache("equals");
          mathdiv.append("span").style("text-align","center")
       .style("display","inline-block")
       .style("width", "26px")

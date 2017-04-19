@@ -54,15 +54,34 @@
 <div id="math-cache" style="display: none;">
   <dt-math class="star">\star</dt-math>
   <dt-math class="plus">+</dt-math>
+  <dt-math class="minus">-</dt-math>
   <dt-math class="equals">=</dt-math>
   <dt-math class="alpha">\alpha</dt-math>
+  <dt-math class="lambda">\lambda</dt-math>
   <dt-math class="beta">\beta</dt-math>
+  <dt-math class="r">R</dt-math>
   <dt-math class="alpha-equals">\alpha=</dt-math>
   <dt-math class="beta-equals">\beta=</dt-math>
+  <dt-math class="beta-equals-zero">\beta = 0</dt-math>
+  <dt-math class="beta-equals-one">\beta=1</dt-math>
+  <dt-math class="alpha-equals-one-over-lambda-i">\alpha = 1/\lambda_i</dt-math>
   <dt-math class="model">\text{model}</dt-math>
   <dt-math class="p">0 p_1</dt-math>
   <dt-math class="phat">0 \bar{p}_1</dt-math>
+  <dt-math class="two-sqrt-beta">2\sqrt{\beta}</dt-math>
+  <dt-math class="lambda-i">\lambda_i</dt-math>
+  <dt-math class="lambda-i-equals-zero">\lambda_i = 0</dt-math>
+  <dt-math class="alpha-gt-one-over-lambda-i">\alpha > 1/\lambda_i</dt-math>
+  <dt-math class="max-sigma-one">\max\{|\sigma_1|,|\sigma_2|\} > 1</dt-math>
+  <dt-math class="x-i-k">x_i^k - x_i^*</dt-math>
+  <dt-math class="xi-i">\xi_i</dt-math>
+  <dt-math class="beta-equals-one-minus">\beta = (1 - \sqrt{\alpha \lambda_i})^2</dt-math>
 </div>
+<script>
+  function MathCache(id) {
+    return document.querySelector("#math-cache ." + id).innerHTML;
+  }
+</script>
 <svg style="display: none;">
   <g id="pointerThingy">
     <circle fill="none" stroke="#FF6C00" stroke-linecap="round" cx="0" cy="0" r="14"/>
@@ -396,7 +415,7 @@
 
       var updateSliderGD = renderMilestones(svg, function() {});
 
-      var alphaHTML = document.querySelector("#math-cache .alpha-equals").innerHTML;
+      var alphaHTML = MathCache("alpha-equals");
 
       var slidera = sliderGen([250, 80])
                   .ticks([0,1,200/(101),2])
@@ -2177,7 +2196,7 @@ The third inequality uses the fact that <dt-math>\mathbf{E} \epsilon^k = 0</dt-m
     });
     q.await(function(error) {
       if (error) {
-        console.error("Render error.")
+        console.error("Render error.", error)
       } else {
         console.log("Render done.")
       }

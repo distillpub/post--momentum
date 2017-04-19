@@ -259,7 +259,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
   var borderTop = 20
   var borderLeft = -5
   var axis = [-1, 1]
-  var ylabel = "$x_i^k - x_i^*$"
+  var ylabel = MathCache("x-i-k");
   var ylabelsize = "13px"
   var r1 = 2
   var r2 = 0
@@ -407,26 +407,6 @@ function stackedBarchartGen(n, m) {
 		var height = dheight - margin.top - margin.bottom;
 
 		var graphsvg = svg.append("g").attr("transform", "translate(" + translatex + "," + translatey + ")")
-
-		// graphDiv.append("span")
-		//   .style("top", (dheight/2 - margin.top) + "px")
-		//   .style("left", (-dheight/2 - margin.top) + "px" )
-		//   .style("position", "absolute")
-		//   .style("width", (dheight - margin.top) + "px")
-		//   .style("height", "20px")
-		//   .style("position", "absolute")
-		//   .style("transform", "rotate(-90deg)")
-		//   .style("text-align", "center")
-		//   .style("font-size", "13px")
-		//   .html("$f(w^k) - f(x^*)$")
-
-		// graphDiv.append("text")
-		//         .style("position", "absolute")
-		//         .style("top", (height/2) + "px")
-		//         .style("left", "-5px")
-		//         .style("transform", "rotate(270deg)")
-		//         .style("font-size", "12px")
-		//         .text("loss")
 
 		var stack = zeros2D(n,m)
 		var axisheight = 10

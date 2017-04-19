@@ -8,12 +8,12 @@ function phaseDiagram_dec(divin) {
     var W = []; var Z = []; var z = zeros(w0.length); var w = w0
     z[1] = 1
     var gx = f(w0);
-    W.push(w0); 
+    W.push(w0);
     Z.push(numeric.mul(-1,z));
     for (var i = 0; i < totalIters; i++) {
       var z = numeric.add(numeric.mul(beta, z), gx)
       var w = numeric.add(w, numeric.mul(-alpha, z))
-      gx = f(w); 
+      gx = f(w);
       if (w.every(isFinite)) {
         W.push(w)
         Z.push(numeric.mul(-1, z))
@@ -24,9 +24,9 @@ function phaseDiagram_dec(divin) {
 
   function getTrace(alpha, beta, lambda) {
     var m = []
-    var iter = myRunMomentum(function(x) { return [x[0],lambda*x[1]] }, [2,0.92], alpha, beta, totalIters) 
+    var iter = myRunMomentum(function(x) { return [x[0],lambda*x[1]] }, [2,0.92], alpha, beta, totalIters)
     // run for 500 iterations
-    for (var i = 0; i <= totalIters; i++) { 
+    for (var i = 0; i <= totalIters; i++) {
       var x = -1*iter[1][i][1]
       var y = (1.4)*iter[0][i][1]
       m.push([y, x])
@@ -81,7 +81,7 @@ function phaseDiagram_dec(divin) {
       .style("height", h + "px")
       .style("left", 0 + "px")
       .style("top", 50 + 125*j + "px")
-      .attr("class", "figtext")      
+      .attr("class", "figtext")
       .style("border-right", "1px solid black" )
       .html( (j != 0 ? "&nbsp" : "<br>λ = ") + lambdas[j])
   }
@@ -128,16 +128,7 @@ function phaseDiagram_dec(divin) {
     .style("left", 730 + "px")
     .style("top", 60 + "px")
     .style("font-size", "12px")
-    .html("<b>$\\beta$: Horizontal Axis</b><br>When $\\lambda_i = 0$ and $\\beta=1$, the object moves at constant speed. As $\\beta$ goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
-
-  // divin.append("figcaption")
-  //   .style("position","absolute")
-  //   .style("width",160 + "px")
-  //   .style("height",h + "px")
-  //   .style("left", 730 + "px")
-  //   .style("top", (150 + 45) + "px")
-  //   .style("font-size", "12px")
-  //   .html("Here the velocity is modiﬁed by an external force field. This force field varies in proportion to the particle’s distance from $0$, and moves in a periodic trajectory.")
+    .html("<b>" + MathCache("beta") + ": Horizontal Axis</b><br>When " + MathCache("lambda-i-equals-zero") + " and " + MathCache("beta-equals-one") + ", the object moves at constant speed. As " + MathCache("beta") + " goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
 
   divin.append("figcaption")
     .style("position","absolute")
@@ -146,7 +137,7 @@ function phaseDiagram_dec(divin) {
     .style("left", 730 + "px")
     .style("top", (120*2 + 50) + "px")
     .style("font-size", "12px")
-    .html("<b> $\\lambda$: Vertical Axis</b><br> The external force causes the particle to return to the origin. Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
+    .html("<b> " + MathCache("lambda") + ": Vertical Axis</b><br> The external force causes the particle to return to the origin. Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
 
   for (var i = 0; i < 6; i ++ ) {
     for (var j = 0; j < 4; j ++) {
@@ -175,18 +166,18 @@ function phaseDiagram_dec(divin) {
 
       svg.append("g").attr("class", "grid")
         .attr("transform", "translate(" + w/2 + ",0)")
-        .attr("opacity", 0.2)      
+        .attr("opacity", 0.2)
         .call(d3.axisLeft(d3.scaleLinear().domain([0,1]).range([hborder, h+hborder])).ticks(0).tickSize(0))
 
       var colorRange = d3.scaleLinear().domain([0, 10, 50, totalIters]).range(colorbrewer.OrRd[4])
-      
+
       var Xaxis = d3.scaleLinear().domain(axis[0]).range([0, w])
       var Yaxis = d3.scaleLinear().domain(axis[1]).range([hborder, h+hborder])
 
       var update = plot2dGen(Xaxis, Yaxis, colorRange)
                     .pathOpacity(1)
                     .pathWidth(0.5)
-                    .circleRadius(1) 
+                    .circleRadius(1)
                     .stroke(colorbrewer.OrRd[5][2])(svg)
 
       update(getTrace(0.02, betas[i], lambdas[j]))

@@ -18,9 +18,9 @@ function phaseDiagram(divin) {
     return m
   }
 
-  var textCaptions = ["<center><b style=\"color:black\">Overdamping</b></center><div style=\"margin:5px\"></div> When $\\beta$ is too small (e.g. in Gradient Descent, $\\beta = 0$), we're over-damping. The particle is immersed in a viscous fluid which saps it of its kinetic energy at every timestep.",
-                      "<b style=\"color:black\"><center>Critical Damping</center></b> <div style=\"margin:5px\"></div>The best value of $\\beta$ lies in the middle of the two extremes. This sweet spot happens when the eigenvalues of $R$ are repeated, when $\\beta = (1 - \\sqrt{\\alpha \\lambda_i})^2$.",
-                      "<b style=\"color:black\"><center>Underdamping</center></b><div style=\"margin:5px\"></div> When $\\beta$ is too large we're under-damping. Here the resistance is too small, and spring oscillates up and down forever, missing the optimal value over and over. "]
+  var textCaptions = ["<center><b style=\"color:black\">Overdamping</b></center><div style=\"margin:5px\"></div> When " + MathCache("beta") + " is too small (e.g. in Gradient Descent, " + MathCache("beta-equals-zero") + "), we're over-damping. The particle is immersed in a viscous fluid which saps it of its kinetic energy at every timestep.",
+                      "<b style=\"color:black\"><center>Critical Damping</center></b> <div style=\"margin:5px\"></div>The best value of " + MathCache("beta") + " lies in the middle of the two extremes. This sweet spot happens when the eigenvalues of " + MathCache("r") + " are repeated, when " + MathCache("beta-equals-one-minus") + ".",
+                      "<b style=\"color:black\"><center>Underdamping</center></b><div style=\"margin:5px\"></div> When " + MathCache("beta") + " is too large we're under-damping. Here the resistance is too small, and spring oscillates up and down forever, missing the optimal value over and over. "]
 
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
@@ -159,7 +159,7 @@ function phaseDiagram(divin) {
   axis.selectAll("path").remove()
   axis.select("text").style("text-anchor", "start");
 
-  var html = document.querySelector("#math-cache .beta").innerHTML;
+  var html = MathCache("beta");
   // Axis
   linesvg.append("text")
     .attr("class", "figtext")

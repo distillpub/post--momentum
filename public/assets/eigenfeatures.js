@@ -5,8 +5,8 @@ Render the Polynomial fitting widget
 */
 function renderEigenFeatures(divin) {
 
-  /* 
-    Data on eigenvectors 
+  /*
+    Data on eigenvectors
 
     xv - x values (\xi in paper)
     U - eigenvectors
@@ -22,7 +22,7 @@ function renderEigenFeatures(divin) {
   var w = zeros(100) // initial weights, to start everything off
 
   /**************************************************************************
-    START VISUALIZATION 
+    START VISUALIZATION
   ***************************************************************************/
 
   var width = 920
@@ -41,7 +41,7 @@ function renderEigenFeatures(divin) {
         .attr("class", "figtext")
         .style("width", "300px")
         .style("text-align", "left")
-        .html("The x coordinates of the black dots are $\\xi_i$. Our data corresponds to 5 clusters of points, centered around -1, 0.5, 0, 0.5, and 1.")
+        .html("The x coordinates of the black dots are " + MathCache("xi-i") + ". Our data corresponds to 5 clusters of points, centered around -1, 0.5, 0, 0.5, and 1.")
 
   var x = d3.scaleLinear().domain([-1.1,1.1]).range([0, width]);
   var y = d3.scaleLinear().domain([-3,3]).range([height, 0]);
@@ -56,12 +56,12 @@ function renderEigenFeatures(divin) {
   var display_eigen = function (i) {
     eigenpath.attr("class", "line")
       .transition()
-      .duration(100)  
+      .duration(100)
       .attr("d", valueline(evalPoly(numeric.mul(3/Math.pow(Lambda[i],0.5),U[i]) )))
       .style("opacity",1)
 
     var pd = polyC.selectAll("circle").data(xv).merge(polyC).transition()
-      .duration(100) 
+      .duration(100)
 
     pd.attr("cy", function (d) {
       return y(poly(numeric.mul(3/Math.pow(Lambda[i],0.5),U[i]), d))
@@ -75,17 +75,17 @@ function renderEigenFeatures(divin) {
 
     eigenpath.attr("class", "line")
       .transition()
-      .duration(100)  
+      .duration(100)
       .attr("d", valueline(evalPoly(ei) ))
       .style("opacity",1)
 
     var pd = polyC.selectAll("circle").data(xv).merge(polyC).transition()
-      .duration(100) 
+      .duration(100)
 
     pd.attr("cy", function (d) {
       return y(poly(ei, d))
     })
-  }  
+  }
 
   /*
    * Add eigenvalue plot at the bottom.
@@ -132,7 +132,7 @@ function renderEigenFeatures(divin) {
     .style("stroke-width", "1px")
     .style("stroke", colors[1])
 
-  eigensvg.append("g")     
+  eigensvg.append("g")
     .attr("class", "grid")
     .attr("transform", "translate(0," + (height/2) + ")")
     .call(d3.axisTop(x)
@@ -269,7 +269,7 @@ function renderNN(eigenCallback, polyCallback) {
       .attr("class", "cell")
       .attr("transform", function(d, i) { return "translate(" + xb(i) + ", " + nodeMargin + ")"; })
       .on("mouseover", function(d, i) {
-        eigenCallback(i)      
+        eigenCallback(i)
         link.style("display", function(ld) {
           return ld.bi === i ? "" : "none";
         });

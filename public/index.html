@@ -18,45 +18,11 @@
     }</script>
   </d-front-matter>
 
-  <link rel="stylesheet" href="assets/lib/katex.min.css">
   <link rel="stylesheet" type="text/css" href="assets/widgets.css">
 
   <!-- Required -->
   <script src="assets/lib/lib.js"></script>
   <script src="assets/utils.js"></script>
-  <script>
-    var renderQueue = [];
-    function renderMath(elem) {
-      // renderMathInElement(
-      //     elem,
-      //     {
-      //         delimiters: [
-      //             {left: "$$", right: "$$", display: true},
-      //             {left: "$", right: "$", display: false},
-      //         ]
-      //     }
-      // );
-    }
-
-    var deleteQueue = [];
-    function renderLoading(figure) {
-      // var loadingScreen = figure.append("svg")
-      // .style("width", figure.style("width"))
-      // .style("height", figure.style("height"))
-      // .style("position","absolute")
-      // .style("top", "0px")
-      // .style("left","0px")
-      // .style("background","white")
-      // .style("border", "0px dashed #DDD")
-      // .style("opacity", 1)
-
-      return function(callback) {
-        // loadingScreen.remove()
-      };
-
-    }
-
-  </script>
 </head>
 <div id="math-cache" style="display: none;">
   <d-math class="star">\star</d-math>
@@ -246,7 +212,7 @@
   </p>
 
   <p>
-  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior -- a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <dt-fn> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <d-cite key="lessard2016analysis"></d-cite> for a counterexample. </dt-fn> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
+  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior -- a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <d-fn> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <d-cite key="lessard2016analysis"></d-cite> for a counterexample. </d-fn> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
   </p>
 
   <p>
@@ -279,80 +245,72 @@
   Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently -- the eigenvectors of <d-math>A</d-math>.
   </p>
   <figure id="change_of_variables" style="width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative">
-    <d-figure id="mom1" style="width:400px; height:340px; position:absolute; left:0px; top:0px"></d-figure>
-    <d-figure id="mom2" style="width:400px; height:340px; position:absolute; left:400px; top:0px"></d-figure>
+    <d-figure id="mom1" style="width:340px; height:340px; position:absolute; left:0; top:0; border: 1px solid rgba(0, 0, 0, 0.2);"></d-figure>
+    <d-figure id="mom2" style="width:340px; height:340px; position:absolute; left:360px; top:0px; border: 1px solid rgba(0, 0, 0, 0.2);"></d-figure>
   </figure>
   <script>
-  // deleteQueue.push(renderLoading(d3.select("#change_of_variables")))
-  document.querySelector("#mom1").addEventListener("ready", () => {
-    var U = givens(Math.PI/4)
-    var Ut = numeric.transpose(U)
-    // Render Foreground
-    var left = d3.select("#mom1").style("border", "1px solid rgba(0, 0, 0, 0.2)")
+    document.querySelector("#mom1").addEventListener("ready", () => {
+      var U = givens(Math.PI/4);
+      var Ut = numeric.transpose(U);
 
-    var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
-              .width(340)
-              .height(340)
-              .iters(300)
-              .alpha(0.018)
-              .showSolution(false)
-              .pathWidth(1)
-              .circleRadius(1.5)
-              .pointerScale(0.8)
-              .showStartingPoint(false)
-              .drag(function() {
-                c2.control(c1.alpha(),
-                          c1.beta(),
-                          numeric.dot(U,c1.w0())) })
-              (left)
+      var left = d3.select("#mom1")
+      var c1 = genIterDiagram(quadf,  [0,0], [[-3,3],[-3,3]])
+        .width(340)
+        .height(340)
+        .iters(300)
+        .alpha(0.018)
+        .showSolution(false)
+        .pathWidth(1)
+        .circleRadius(1.5)
+        .pointerScale(0.8)
+        .showStartingPoint(false)
+        .drag(function() {
+          c2.control(c1.alpha(), c1.beta(), numeric.dot(U,c1.w0()));
+        })(left);
 
-    var right = d3.select("#mom2").style("border", "1px solid rgba(0, 0, 0, 0.2)")
-    var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
-              .width(340)
-              .height(340)
-              .iters(300)
-              .alpha(0.018)
-              .showSolution(false)
-              .pathWidth(1)
-              .circleRadius(1.5)
-              .pointerScale(0.8)
-              .showStartingPoint(false)
-              .drag(function() {
-                c1.control(c2.alpha(),
-                          c2.beta(),
-                          numeric.dot(Ut,c2.w0())) })
-              (right)
+      var right = d3.select("#mom2")
+      var c2 = genIterDiagram(eyef,  [0,0], [[-3,3],[-3,3]])
+        .width(340)
+        .height(340)
+        .iters(300)
+        .alpha(0.018)
+        .showSolution(false)
+        .pathWidth(1)
+        .circleRadius(1.5)
+        .pointerScale(0.8)
+        .showStartingPoint(false)
+        .drag(function() {
+          c1.control(c2.alpha(), c2.beta(), numeric.dot(Ut,c2.w0()));
+        })(right);
 
-    // Initialize
-    c2.control(0.018,0,[-2.5,1])
-    c1.control(0.018,0,numeric.dot(Ut,[-2.5,1]));
-  });
+      c2.control(0.018,0,[-2.5,1])
+      c1.control(0.018,0,numeric.dot(Ut,[-2.5,1]));
+    });
 
-</script>
-<p>
-  Every symmetric matrix <d-math>A</d-math> has an eigenvalue decomposition
-
-  <d-math block>
-  A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
-  </d-math>
-
-  and, as per convention, we will assume that the <d-math>\lambda_i</d-math>'s are sorted, from smallest <d-math>\lambda_1</d-math> to biggest <d-math>\lambda_n</d-math>. If we perform a change of basis, <d-math>x^{k} = Q^T(w^{k} - w^\star)</d-math>, the iterations break apart, becoming:
-
-  <d-math block>
-  \begin{aligned}
-  x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\[0.4em]
-   &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^{k+1}x^0_i
-  \end{aligned}
-  </d-math>
-
-  Moving back to our original space <d-math>w</d-math>, we can see that
-
-  <d-math block>
-  w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
-  </d-math>
-
-  and there we have it -- gradient descent in closed form.
+  </script>
+  <p>
+    Every symmetric matrix <d-math>A</d-math> has an eigenvalue decomposition
   </p>
+  <d-math block>
+    A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
+  </d-math>
+  <p>
+    and, as per convention, we will assume that the <d-math>\lambda_i</d-math>'s are sorted, from smallest <d-math>\lambda_1</d-math> to biggest <d-math>\lambda_n</d-math>. If we perform a change of basis, <d-math>x^{k} = Q^T(w^{k} - w^\star)</d-math>, the iterations break apart, becoming:
+  </p>
+  <d-math block>
+    \begin{aligned}
+    x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\[0.4em]
+     &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^{k+1}x^0_i
+    \end{aligned}
+  </d-math>
+  <p>
+    Moving back to our original space <d-math>w</d-math>, we can see that
+  </p>
+  <d-math block>
+    w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
+  </d-math>
+  <p>
+    and there we have it -- gradient descent in closed form.
   </p>
   <h3>Decomposing the Error</h3>
   <p>
@@ -365,74 +323,62 @@
   </d-math>
   we can visualize the contributions of each error component to the loss.
   </p>
-  <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
-  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> <d-math>\lambda_1=0.01</d-math>, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> <d-math>\lambda_2=0.1</d-math>, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> <d-math>\lambda_3=1</d-math> respectively. </figcaption>
-
-<!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
- -->
-  <div id = "sliderStep" style="position:absolute; left:550px; width:250px; height:100px">
-
-    <div id="stepSizeMilestones"
-         class="figtext"
-         style="position:absolute; left:15px; top:15px">
-         Step-size
+  <figure style="position:relative; width:920px; height:360px" id="milestones_gd">
+    <figcaption style="position:absolute; text-align:left; width:380px; height:80px">
+      Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> <d-math>\lambda_1=0.01</d-math>, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> <d-math>\lambda_2=0.1</d-math>, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> <d-math>\lambda_3=1</d-math> respectively.
+    </figcaption>
+    <div id="sliderStep" style="position:absolute; top: -16px; left:450px; width:250px; height:100px;">
+      <div id="stepSizeMilestones"
+           class="figtext"
+           style="position:absolute; left:15px; top:15px">
+           Step-size
+      </div>
+      <div class="figtext2" id="milestones_gd_optstep"
+        style="position:absolute; font-size:11px; left:152px; top:18px; z-index:10; cursor: pointer">
+        Optimal Step-size
+      </div>
+      <svg style="position:absolute; font-size:10px; left:224px; top:34px">
+        <line marker-end="url(#arrowhead)" style="stroke: black; stroke-width: 1.5; visibility: visible;" x2="5" y2="10" x1="5" y1="0"></line>
+      </svg>
     </div>
-
-    <div class="figtext2" id="milestones_gd_optstep"
-      style="position:absolute; font-size:11px; left:152px; top:18px; z-index:10; cursor: pointer">
-      Optimal Step-size
-    </div>
-
-    <svg style="position:absolute; font-size:10px; left:224px; top:34px">
-<line marker-end="url(#arrowhead)" style="stroke: black; stroke-width: 1.5; visibility: visible;" x2="5" y2="10" x1="5" y1="0"></line>
-    </svg>
-
-  </div>
-  <div id = "obj"></div>
+    <d-figure id="obj" style="height: 500px;"></d-figure>
   </figure>
   <script src="assets/milestones.js"></script>
   <script>
-    deleteQueue.push(renderLoading(d3.select("#milestones_gd")))
-    renderQueue.push(function(callback) {
+    document.querySelector("#obj").addEventListener("ready", () => {
       var graphDiv = d3.select("#obj")
-                      .style("width",  920 + "px")
-                      .style("height", 300 + "px")
-                      .style("top", "90px")
-                      .style("position", "relative")
-                      .style("margin-left", "auto")
-                      .style("margin-right", "auto")
-                      .attr("width", 920)
-                      .attr("height", 500)
+        .style("width",  920 + "px")
+        .style("height", 300 + "px")
+        .style("top", "90px")
+        .style("position", "relative")
+        .style("margin-left", "auto")
+        .style("margin-right", "auto")
+        .attr("width", 920)
+        .attr("height", 500)
 
       var svg = graphDiv.append("svg")
-                        .attr("width", 920)
-                        .attr("height", 300)
-                        .style("position","absolute")
-                        .style("left", "15px")
+        .attr("width", 920)
+        .attr("height", 300)
+        .style("position","absolute");
 
       var updateSliderGD = renderMilestones(svg, function() {});
 
       var alphaHTML = MathCache("alpha-equals");
 
       var slidera = sliderGen([250, 80])
-                  .ticks([0,1,200/(101),2])
-                  .change( function (i) {
-                    var html = alphaHTML + '<span style="font-weight: normal;">' + i.toPrecision(4) + "</span>";
-                    d3.select("#stepSizeMilestones")
-                      .html("Stepsize " + html )
-                    updateSliderGD(i,0.000)
-                  } )
-                  .ticktitles(function(d,i) { return [0,1,"",2][i] })
-                  .startxval(200/(101))
-                  .cRadius(7)
-                  .shifty(-12)
-                  .shifty(10)
-                  .margins(20,20)(d3.select("#sliderStep"))
-
-
-      // renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.1)
-      // renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.1)
-      // renderDraggable(svg, [132.5, 154], [114.5, 100], 2, " ").attr("opacity", 0.1)
+        .ticks([0,1,200/(101),2])
+        .change( function (i) {
+          var html = alphaHTML + '<span style="font-weight: normal;">' + i.toPrecision(4) + "</span>";
+          d3.select("#stepSizeMilestones")
+          .html("Stepsize " + html )
+          updateSliderGD(i,0.000)
+        })
+        .ticktitles(function(d,i) { return [0,1,"",2][i] })
+        .startxval(200/(101))
+        .cRadius(7)
+        .shifty(-12)
+        .shifty(10)
+        .margins(20,20)(d3.select("#sliderStep"))
 
       d3.select("#milestones_gd_optstep").on("click", slidera.init)
 
@@ -446,8 +392,6 @@
         .attr("fill", "gray")
         .html("f(w<tspan baseline-shift = \"super\" font-size = \"15\">k</tspan>) - f(w<tspan baseline-shift = \"super\" font-size = \"15\">*</tspan>)")
 
-
-
       svg.append("text")
         .style("font-size", "13px")
         .attr("x", 0)
@@ -457,10 +401,9 @@
         .attr("class", "caption")
         .attr("text-anchor", "end")
         .attr("fill", "gray")
-        .text("At the initial point, the error in each component is equal.")
+        .text("At the initial point, the error in each component is equal.");
 
-      svg.selectAll(".caption").call(wrap, 100)
-
+      svg.selectAll(".caption").call(wrap, 100);
 
       svg.append("text")
         .style("font-size", "13px")
@@ -470,15 +413,12 @@
         .attr("dx", -295)
         .attr("text-anchor", "start")
         .attr("fill", "gray")
-        .text("At the optimum, the rates of convergence of the largest and smallest eigenvalues equalize.")
-
-      callback(null);
+        .text("At the optimum, the rates of convergence of the largest and smallest eigenvalues equalize.");
     });
   </script>
+   <h3>Choosing A Step-size</h3>
   <p>
- <h3>Choosing A Step-size</h3>
-  <p>
-  The above analysis gives us immediate guidance as to how to set a step-size <d-math>\alpha</d-math>. In order to converge, each <d-math>|1-\alpha \lambda_i|</d-math> must be strictly less than 1. All workable step-sizes, therefore, fall in the interval
+    The above analysis gives us immediate guidance as to how to set a step-size <d-math>\alpha</d-math>. In order to converge, each <d-math>|1-\alpha \lambda_i|</d-math> must be strictly less than 1. All workable step-sizes, therefore, fall in the interval
 
   <d-math block>0<\alpha\lambda_i<2.</d-math>
 
@@ -505,7 +445,7 @@
   The condition number means many things. It is a measure of how close to singular a matrix is. It is a measure of how robust <d-math>A^{-1}b</d-math> is to perturbations in <d-math>b</d-math>. And, in this context, the condition number gives us a measure of how poorly gradient descent will perform. A ratio of <d-math>\kappa = 1</d-math> is ideal, giving convergence in one step (of course, the function is trivial). Unfortunately the larger the ratio, the slower gradient descent will be. The condition number is therefore a direct measure of pathological curvature.
   </p>
 
-<hr>
+<!-- <hr> -->
 
   <h2>Example: Polynomial Regression</h2>
   <p>
@@ -521,78 +461,74 @@
 
   to our observations, <d-math>d_i</d-math>. This model, though nonlinear in the input <d-math>\xi</d-math>, is linear in the weights, and therefore we can write the model as a linear combination of monomials, like:
   </p>
-  <figure id = "poly0f" style="width:940px; height:200px">
-    <div id = "poly0" style="width:940px; height:185px; position:absolute; top:20px"></div>
+
+  <figure id="poly0f" style="width:940px; height:200px">
+    <d-figure id="poly0" style="width:940px; height:185px; position:absolute; top:20px"></d-figure>
   </figure>
   <script src="assets/eigensum.js"></script>
   <script>
-  deleteQueue.push(renderLoading(d3.select("#poly0")))
-  renderQueue.push(function(callback) {
+    document.querySelector("#poly0").addEventListener("ready", () => {
 
-    // Preprocess x, get eigendecomposition, etc
-    var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
-    var D = vandermonde(x, 5)
-    var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
-    var U = Eigs.U
-    var lambda = Eigs.lambda
+      // Preprocess x, get eigendecomposition, etc
+      var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+      var D = vandermonde(x, 5)
+      var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+      var U = Eigs.U
+      var lambda = Eigs.lambda
 
-    // Preprocess y
-    var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
-    var Dtb = numeric.dot(b,D)
-    var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-
-    var step = 1.8/lambda[0]
-    var iter = geniter(U, lambda, Dtb, step)
-
-    var eigensum = d3.select("#poly0")
-
-    var wi = [-2,-2,2,2,2,-2]
-
-    function refit(b) {
+      // Preprocess y
+      var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
       var Dtb = numeric.dot(b,D)
       var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-      var Utsol = numeric.dot(sol,U)
-      eigenControl.updateweights(Utsol)
-    }
 
-    var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit);
+      var step = 1.8/lambda[0]
+      var iter = geniter(U, lambda, Dtb, step)
 
-    // Swoopy Annotator
-    var annotations = [
-    {
-      "x": 0,
-      "y": 0,
-      "path": "M 60,5 A 19.018 19.018 0 0 0 36,27",
-      "text": "scrub values",
-      "textOffset": [
-        64,
-        9
-      ]
-    }
-    ]
+      var eigensum = d3.select("#poly0")
 
-    drawAnnotations(d3.select("#poly0f"), annotations)
+      var wi = [-2,-2,2,2,2,-2]
 
-    callback(null);
-  });
+      function refit(b) {
+        var Dtb = numeric.dot(b,D)
+        var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
+        var Utsol = numeric.dot(sol,U)
+        eigenControl.updateweights(Utsol)
+      }
 
+      var eigenControl = renderEigenPanel(eigensum, numeric.identity(6), x, b, wi, refit);
+
+      // Swoopy Annotator
+      var annotations = [
+        {
+          "x": 0,
+          "y": 0,
+          "path": "M 60,5 A 19.018 19.018 0 0 0 36,27",
+          "text": "scrub values",
+          "textOffset": [
+            64,
+            9
+          ]
+        }
+      ];
+      drawAnnotations(d3.select("#poly0f"), annotations);
+    });
   </script>
+
   <p>
+    Because of the linearity, we can fit this model to our data <d-math>\xi_i</d-math> using linear regression on the model mismatch
 
-  Because of the linearity, we can fit this model to our data <d-math>\xi_i</d-math> using linear regression on the model mismatch
-
-  <d-math block>
-  \text{minimize}_w \qquad\tfrac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} ~~=~~ \tfrac{1}{2}\|Zw - d\|^2
-  </d-math>
-  where
-  <d-math block>
-  Z=\left(\begin{array}{ccccc}
-  1 & \xi_{1} & \xi_{1}^{2} & \ldots & \xi_{1}^{n-1}\\
-  1 & \xi_{2} & \xi_{2}^{2} & \ldots & \xi_{2}^{n-1}\\
-  \vdots & \vdots & \vdots & \ddots & \vdots\\
-  1 & \xi_{m} & \xi_{m}^{2} & \ldots & \xi_{m}^{n-1}
-  \end{array}\right).
-  </d-math>
+    <d-math block>
+    \text{minimize}_w \qquad\tfrac{1}{2}\sum_i (\text{model}(\xi_{i})-d_{i})^{2} ~~=~~ \tfrac{1}{2}\|Zw - d\|^2
+    </d-math>
+    where
+    <d-math block>
+    Z=\left(\begin{array}{ccccc}
+    1 & \xi_{1} & \xi_{1}^{2} & \ldots & \xi_{1}^{n-1}\\
+    1 & \xi_{2} & \xi_{2}^{2} & \ldots & \xi_{2}^{n-1}\\
+    \vdots & \vdots & \vdots & \ddots & \vdots\\
+    1 & \xi_{m} & \xi_{m}^{2} & \ldots & \xi_{m}^{n-1}
+    \end{array}\right).
+    </d-math>
   </p>
 
   <p>
@@ -606,99 +542,101 @@
   </p>
 
 
-  <figure id = "poly1" style="width:940px; height:285px"></figure>
+  <figure>
+    <d-figure id="poly1" style="width:940px; height:285px"></d-figure>
+  </figure>
 
   <script>
-  deleteQueue.push(renderLoading(d3.select("#poly1")))
-  renderQueue.push(function(callback) {
-    var inv = function(lambda) { return 1/lambda }
-    var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
+    document.querySelector("#poly1").addEventListener("ready", () => {
+      var inv = function(lambda) { return 1/lambda }
+      var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
 
-    // Preprocess x, get eigendecomposition, etc
-    var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
-    var D = vandermonde(x, 5)
-    var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
-    var U = Eigs.U
-    var lambda = Eigs.lambda
+      // Preprocess x, get eigendecomposition, etc
+      var x = [-0.6, -0.55,-0.5,-0.45,-0.4,0.4,0.45,0.5,0.55,0.6]
+      var D = vandermonde(x, 5)
+      var Eigs = eigSym(numeric.dot(numeric.transpose(D),D))
+      var U = Eigs.U
+      var lambda = Eigs.lambda
 
-    // Preprocess y
-    var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
-    var Dtb = numeric.dot(b,D)
-    var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-
-    var step = 1.8/lambda[0]
-    var iter = geniter(U, lambda, Dtb, step)
-
-    var eigensum = d3.select("#poly1")
-
-    var wi = lambda.slice(0).map(scal)
-
-    function refit(b) {
+      // Preprocess y
+      var b = [-3/2,-4/2,-5/2,-3/2,-2/2,1/2,2/2,3/2,2/2,1/2]
       var Dtb = numeric.dot(b,D)
       var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
-      var Utsol = numeric.dot(sol,U)
-      eigenControl.updateweights(sol)
-    }
 
-    var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
+      var step = 1.8/lambda[0]
+      var iter = geniter(U, lambda, Dtb, step)
 
-    var annotate = eigensum
+      var eigensum = d3.select("#poly1")
 
-    annotate.append("figcaption")
-    .style("width", 230 + "px")
-    .style("height", 150 + "px")
-    .style("left", "0px")
-    .style("position", "absolute")
-      .style("padding", "10px")
-    .html("The data comes in 2 clusters. The first 2 eigenfeatures capture variations between the clusters. ")
+      var wi = lambda.slice(0).map(scal)
 
-    annotate.append("figcaption")
-    .style("width", 230 + "px")
-    .style("height", 150 + "px")
-    .style("left", "260px")
-    .style("position", "absolute")
-    .style("padding", "10px")
-    .html("Next there are smooth variations within clusters, peaks within clusters,")
+      function refit(b) {
+        var Dtb = numeric.dot(b,D)
+        var sol = numeric.mul(numeric.dot(U, Dtb), lambda.map(inv))
+        var Utsol = numeric.dot(sol,U)
+        eigenControl.updateweights(sol)
+      }
 
-    annotate.append("figcaption")
-    .style("width", 230 + "px")
-    .style("height", 150 + "px")
-    .style("left", 530 + "px")
-    .style("position", "absolute")
-    .style("padding", "10px")
-    .html("and finally, jagged polynomials which differ wildly on neighboring points. ");
+      var eigenControl = renderEigenPanel(eigensum, U, x, b, wi, refit, true)
 
-    // Swoopy Annotator
-    var annotations = [
-    {
-      "x": 0,
-      "y": 0,
-      "path": "M 807,198 A 26.661 26.661 0 0 1 838,159",
-      "text": "drag points to fit data",
-      "textOffset": [
-        799,
-        214
-      ]
-    }]
+      var annotate = eigensum
 
-    drawAnnotations(eigensum, annotations)
-    callback(null);
-  });
+      annotate.append("figcaption")
+        .style("width", 230 + "px")
+        .style("height", 150 + "px")
+        .style("left", "0px")
+        .style("position", "absolute")
+        .style("padding", "10px")
+        .html("The data comes in 2 clusters. The first 2 eigenfeatures capture variations between the clusters. ")
 
+      annotate.append("figcaption")
+        .style("width", 230 + "px")
+        .style("height", 150 + "px")
+        .style("left", "260px")
+        .style("position", "absolute")
+        .style("padding", "10px")
+        .html("Next there are smooth variations within clusters, peaks within clusters,")
+
+      annotate.append("figcaption")
+        .style("width", 230 + "px")
+        .style("height", 150 + "px")
+        .style("left", 530 + "px")
+        .style("position", "absolute")
+        .style("padding", "10px")
+        .html("and finally, jagged polynomials which differ wildly on neighboring points. ");
+
+      // Swoopy Annotator
+      var annotations = [
+        {
+          "x": 0,
+          "y": 0,
+          "path": "M 807,198 A 26.661 26.661 0 0 1 838,159",
+          "text": "drag points to fit data",
+          "textOffset": [
+            799,
+            214
+          ]
+        }
+      ];
+
+      drawAnnotations(eigensum, annotations)
+    });
   </script>
+
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in <d-math>d_i</d-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+    The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in <d-math>d_i</d-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>
-  This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" -- the eigenspaces which converge the slowest -- are also those which are most sensitive to noise! So starting at a simple initial point like <d-math>0</d-math> (by a gross abuse of language, let's think of this as a prior), we track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
+    This measure of robustness, by a rather convenient coincidence, is also a measure of how easily an eigenspace converges. And thus, the "pathological directions" -- the eigenspaces which converge the slowest -- are also those which are most sensitive to noise! So starting at a simple initial point like <d-math>0</d-math> (by a gross abuse of language, let's think of this as a prior), we track the iterates till a desired level of complexity is reached. Let's see how this plays out in gradient descent.
   </p>
 
-  <figure id = "poly2" style="width:940px; height:360px"></figure>
+  <figure>
+    <d-figure id="poly2" style="width:940px; height:360px"></d-figure>
+  </figure>
 
   <script>
-  deleteQueue.push(renderLoading(d3.select("#poly2")))
-  renderQueue.push(function(callback) {
+  document.querySelector("#poly2").addEventListener("ready", () => {
     var inv = function(lambda) { return 1/lambda }
     var scal = function(lambda) { return lambda < 1e-10 ? -100 : 1.5/Math.sqrt(lambda) }
 
@@ -747,23 +685,6 @@
 
     sliderControl.slidera.init()
 
-    // var figwidth = d3.select("#poly2").style("width")
-    // var figheight = d3.select("#poly2").style("height")
-    // var svgannotate = d3.select("#poly2")
-    //                     .append("svg")
-    //                     .style("width", figwidth)
-    //                     .style("height", figheight)
-    //                     .style("position", "absolute")
-    //                     .style("top","0px")
-    //                     .style("left","0px")
-    //                     .style("pointer-events","none")
-
-    // renderDraggable(svgannotate,
-    //                 [139.88888549804688, 243.77951049804688],
-    //                 [121.88888549804688, 200.77951049804688],
-    //                 5,
-    //                 "We begin at x=w=0");
-
     // Swoopy Annotator
     var annotations = [
       {
@@ -778,33 +699,30 @@
       }
     ]
 
-    drawAnnotations(d3.select("#poly2"), annotations)
-
-
-    callback(null);
+    drawAnnotations(d3.select("#poly2"), annotations);
   });
 
   </script>
   <p>
-  This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
-<d-math block>
-\text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
-</d-math>
-Recall that <d-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</d-math>. The solution to Tikhonov Regression is therefore
-<d-math block>
-(Z^{T}Z+\eta I)^{-1}(Zd)=Q\ \text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
-</d-math>
-We can think of regularization as a function which decays the largest eigenvalues, as follows:
-<d-math block>
-\text{Tikhonov Regularized } \lambda_i = \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
-</d-math>
-Gradient descent can be seen as employing a similar decay, but with the decay rate
-<d-math block> \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)</d-math>
-instead. Note that this decay is dependent on the step-size.
-</dt-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <d-cite key="hintonNIPS"></d-cite> indeed.
+    This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<d-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+    <d-math block>
+    \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
+    </d-math>
+    Recall that <d-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</d-math>. The solution to Tikhonov Regression is therefore
+    <d-math block>
+    (Z^{T}Z+\eta I)^{-1}(Zd)=Q\ \text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
+    </d-math>
+    We can think of regularization as a function which decays the largest eigenvalues, as follows:
+    <d-math block>
+    \text{Tikhonov Regularized } \lambda_i = \frac{1}{\lambda_{i}+\eta}=\frac{1}{\lambda_{i}}\left(1-\left(1+\lambda_{i}/\eta\right)^{-1}\right).
+    </d-math>
+    Gradient descent can be seen as employing a similar decay, but with the decay rate
+    <d-math block> \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)</d-math>
+    instead. Note that this decay is dependent on the step-size.
+    </d-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <d-cite key="hintonNIPS"></d-cite> indeed.
   </p>
 
-<hr>
+<!-- <hr> -->
   <h2>The Dynamics of Momentum</h2>
 
   <p>
@@ -838,7 +756,7 @@ instead. Note that this decay is dependent on the step-size.
 
   in which each component acts independently of the other components (though <d-math>x^k_i</d-math> and <d-math>y^k_i</d-math> are coupled). This lets us rewrite our iterates as
 
-  <dt-fn>
+  <d-fn>
   This is true as we can write updates in matrix form as
   <d-math block>
   \left(\!\!\begin{array}{cc}
@@ -873,280 +791,243 @@ instead. Note that this decay is dependent on the step-size.
   \end{array}\!\!\right)
   </d-math>
 
-  </dt-fn>
+  </d-fn>
   <d-math block>
-  \left(\!\!\begin{array}{c}
-  y_{i}^{k}\\
-  x_{i}^{k}
-  \end{array}\!\!\right)=R^k\left(\!\!\begin{array}{c}
-  y_{i}^{0}\\
-  x_{i}^{0}
-  \end{array}\!\!\right)
-  \qquad
-  R = \left(\!\!\begin{array}{cc}
-  \beta & \lambda_{i}\\
-  -\alpha\beta & 1-\alpha\lambda_{i}
-  \end{array}\!\!\right).
+    \left(\!\!\begin{array}{c}
+    y_{i}^{k}\\
+    x_{i}^{k}
+    \end{array}\!\!\right)=R^k\left(\!\!\begin{array}{c}
+    y_{i}^{0}\\
+    x_{i}^{0}
+    \end{array}\!\!\right)
+    \qquad
+    R = \left(\!\!\begin{array}{cc}
+    \beta & \lambda_{i}\\
+    -\alpha\beta & 1-\alpha\lambda_{i}
+    \end{array}\!\!\right).
   </d-math>
   There are many ways of taking a matrix to the <d-math>k^{th}</d-math> power. But for the <d-math>2 \times 2</d-math> case there is an elegant and little known formula <d-cite key="williamsnthpower"></d-cite> in terms of the eigenvalues of <d-math>R</d-math>, <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math>.
 
   <d-math block>
-\color{#AAA}{\color{black}{R^{k}}=\begin{cases}
-\color{black}{\sigma_{1}^{k}}R_{1}-\color{black}{\sigma_{2}^{k}}R_{2} & \sigma_{1}\neq\sigma_{2}\\
-\sigma_{1}^{k}(kR/\sigma_1-(k-1)I) & \sigma_{1}=\sigma_{2}
-\end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
+    \color{#AAA}{\color{black}{R^{k}}=\begin{cases}
+    \color{black}{\sigma_{1}^{k}}R_{1}-\color{black}{\sigma_{2}^{k}}R_{2} & \sigma_{1}\neq\sigma_{2}\\
+    \sigma_{1}^{k}(kR/\sigma_1-(k-1)I) & \sigma_{1}=\sigma_{2}
+    \end{cases},\qquad R_{j}=\frac{R-\sigma_{j}I}{\sigma_{1}-\sigma_{2}}}
   </d-math>
 
   This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, <d-math>1-\alpha\lambda_i</d-math> do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore the slowest of the two rates, <d-math>\max\{|\sigma_{1}|,|\sigma_{2}|\}</d-math>
-  <dt-fn>
-We can write out the convergence rates explicitly. The eigenvalues are
-<d-math block>
-\begin{aligned}
-\sigma_{1} & =\frac{1}{2}\left(1-\alpha\lambda+\beta+\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)\\[0.6em]
-\sigma_{2} & =\frac{1}{2}\left(1-\alpha\lambda+\beta-\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)
-\end{aligned}
-</d-math>
-When the <d-math>(-\alpha\lambda+\beta+1)^{2}-4\beta<0</d-math> is less than zero,
-then the roots are complex and the convergence rate is
-<d-math block>
-\begin{aligned}
-|\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
-\end{aligned}
-</d-math>
-Which is, surprisingly, independent of the step-size or the eigenvalue <d-math>\alpha\lambda</d-math>. When the roots are real, the convergence rate is
-<d-math block>
-\max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\}
-</d-math>
-
- </dt-fn>. By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <d-cite key="flammarion2015averaging"></d-cite>:
+  <d-fn>
+    We can write out the convergence rates explicitly. The eigenvalues are
+    <d-math block>
+      \begin{aligned}
+      \sigma_{1} & =\frac{1}{2}\left(1-\alpha\lambda+\beta+\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)\\[0.6em]
+      \sigma_{2} & =\frac{1}{2}\left(1-\alpha\lambda+\beta-\sqrt{(-\alpha\lambda+\beta+1)^{2}-4\beta}\right)
+      \end{aligned}
+    </d-math>
+    When the <d-math>(-\alpha\lambda+\beta+1)^{2}-4\beta<0</d-math> is less than zero,
+    then the roots are complex and the convergence rate is
+    <d-math block>
+      \begin{aligned}
+      |\sigma_{1}|=|\sigma_{2}| & =\sqrt{(1-\alpha\lambda+\beta)^{2}+|(-\alpha\lambda+\beta+1)^{2}-4\beta|}=2\sqrt{\beta}
+      \end{aligned}
+    </d-math>
+    Which is, surprisingly, independent of the step-size or the eigenvalue <d-math>\alpha\lambda</d-math>. When the roots are real, the convergence rate is
+    <d-math block>
+      \max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\}
+    </d-math>
+  </d-fn>
+  . By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <d-cite key="flammarion2015averaging"></d-cite>:
   </p>
 
-  <figure id = "momentum2D" style="width:984px; height:540px">
-    <div class = "l-body" style="display:block">
-      <div id = "momentumCanvas" style="position:absolute; left:45px"></div>
-      <div id = "momentumAnnotation" style="position:absolute; width: 204px; height: 80px; left: 630px; top: 20px;"></div>
-      <div style="position:absolute; width: 204px; height: 80px; left: 643px; top: 10px;" class ="figtext" >
-        Convergence Rate
-
+  <figure>
+    <d-figure id="momentum2D" style="width:984px; height:540px">
+      <div class = "l-body" style="display:block">
+        <div id="momentumCanvas" style="position:absolute; left:45px"></div>
+        <div id="momentumAnnotation" style="position:absolute; width: 204px; height: 80px; left: 630px; top: 20px;"></div>
+        <div style="position:absolute; width: 204px; height: 80px; left: 643px; top: 10px;" class ="figtext" >
+          Convergence Rate
+        </div>
+        <figcaption style="position:absolute; width: 204px; height: 80px; left: 645px; top: 86px;">
+        A plot of <d-math>\max\{|\sigma_1|, |\sigma_2|\}</d-math> reveals distinct regions, each with its own style of convergence.
+        </figcaption>
       </div>
-
-      <figcaption style="position:absolute; width: 204px; height: 80px; left: 645px; top: 86px;">
-      A plot of <d-math>\max\{|\sigma_1|, |\sigma_2|\}</d-math> reveals distinct regions, each with its own style of convergence.
-      </figcaption>
-
-    </div>
-    <div id = "taxonomy"></div>
-    <svg id="momentumOverlay" style="position:absolute; width:984px; height:540px; z-index:4; pointer-events:none"></svg>
+      <div id="taxonomy"></div>
+      <svg id="momentumOverlay" style="position:absolute; width:984px; height:540px; z-index:4; pointer-events:none"></svg>
+    </d-figure>
   </figure>
   <script src="assets/momentum.js"></script>
   <script>
-  deleteQueue.push(renderLoading(d3.select("#momentum2D")))
-  renderQueue.push(function(callback) {
-    var defaults = [[0.0015, 0.9],
-                    [0.0015, 0.125],
-                    [0.01, 0.00001],
-                    [0.02, 0.05   ],
-                    [0.025, 0.235 ]]
+    document.querySelector("#momentum2D").addEventListener("ready", () => {
+      var defaults = [[0.0015, 0.9],
+                      [0.0015, 0.125],
+                      [0.01, 0.00001],
+                      [0.02, 0.05   ],
+                      [0.025, 0.235 ]]
 
-    coor = render2DSliderGen(
-      function(a,b,bold) {
-        var xy = coor(a,b)
-        updatePaths[0](xy[0], xy[1],bold)
-        updateStemGraphs[0](a,b)
-      },
-      function(a,b,bold) {
-        var xy = coor(a,b)
-        updatePaths[1](xy[0], xy[1],bold)
-        updateStemGraphs[1](a,b)
-      },
-      function(a,b,bold) {
-        var xy = coor(a,b)
-        updatePaths[2](xy[0], xy[1],bold)
-        updateStemGraphs[2](a,b)
-      },
-      function(a,b,bold) {
-        var xy = coor(a,b)
-        updatePaths[3](xy[0], xy[1],bold)
-        updateStemGraphs[3](a,b)
-      },
-      function(a,b,bold) {
-        var xy = coor(a,b)
-        updatePaths[4](xy[0], xy[1],bold)
-        updateStemGraphs[4](a,b)
-      }, defaults)(d3.select("#momentumCanvas"))
+      coor = render2DSliderGen(
+        function(a,b,bold) {
+          var xy = coor(a,b)
+          updatePaths[0](xy[0], xy[1],bold)
+          updateStemGraphs[0](a,b)
+        },
+        function(a,b,bold) {
+          var xy = coor(a,b)
+          updatePaths[1](xy[0], xy[1],bold)
+          updateStemGraphs[1](a,b)
+        },
+        function(a,b,bold) {
+          var xy = coor(a,b)
+          updatePaths[2](xy[0], xy[1],bold)
+          updateStemGraphs[2](a,b)
+        },
+        function(a,b,bold) {
+          var xy = coor(a,b)
+          updatePaths[3](xy[0], xy[1],bold)
+          updateStemGraphs[3](a,b)
+        },
+        function(a,b,bold) {
+          var xy = coor(a,b)
+          updatePaths[4](xy[0], xy[1],bold)
+          updateStemGraphs[4](a,b)
+        }, defaults)(d3.select("#momentumCanvas"))
 
-    var tax = renderTaxonomy(d3.select("#momentum2D"))
+      var tax = renderTaxonomy(d3.select("#momentum2D"))
 
-    var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
-    var updateStemGraphs = tax.update
+      var updatePaths = renderOverlay(d3.select("#momentumOverlay"), tax.div)
+      var updateStemGraphs = tax.update
 
-    colorMap(
-      d3.select("#momentumAnnotation"),
-      180,
-      d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.YlGnBu[5].concat(["black"])),
-      d3.scaleLinear().domain([0,1.2001]).range([0, 180])
-    )
+      colorMap(
+        d3.select("#momentumAnnotation"),
+        180,
+        d3.scaleLinear().domain([0,0.3,0.5,0.7,1,1.01]).range(colorbrewer.YlGnBu[5].concat(["black"])),
+        d3.scaleLinear().domain([0,1.2001]).range([0, 180])
+      )
 
-    var up = function (i, alpha, beta) {
-              var xy = coor(alpha, beta)
-              updatePaths[i](xy[0], xy[1], true)
-              updateStemGraphs[i](alpha,beta)
-            }
+      var up = function (i, alpha, beta) {
+                var xy = coor(alpha, beta)
+                updatePaths[i](xy[0], xy[1], true)
+                updateStemGraphs[i](alpha,beta)
+              }
 
-    for (var i = 0; i<5; i++) {
-      up(i,defaults[i][0], defaults[i][1])
-    }
+      for (var i = 0; i<5; i++) {
+        up(i,defaults[i][0], defaults[i][1])
+      }
 
-    renderMath(document.getElementById("momentum2D"))
-
-    callback(null);
-  });
+    });
   </script>
+
   <p>
+    For what values of <d-math>\alpha</d-math> and <d-math>\beta</d-math> does momentum converge? Since we need both <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math> to converge, our convergence criterion is now <d-math>\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1</d-math>. The range of available step-sizes work out <d-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</d-fn> to be
 
-  For what values of <d-math>\alpha</d-math> and <d-math>\beta</d-math> does momentum converge? Since we need both <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math> to converge, our convergence criterion is now <d-math>\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1</d-math>. The range of available step-sizes work out <dt-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</dt-fn> to be
+    <d-math block>0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1</d-math>
 
-  <d-math block>0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1</d-math>
-
-  We recover the previous result for gradient descent when <d-math>\beta = 0</d-math>. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging.
+    We recover the previous result for gradient descent when <d-math>\beta = 0</d-math>. But notice an immediate boon we get. Momentum allows us to crank up the step-size up by a factor of 2 before diverging.
   </p>
-  <hr>
+
+  <!-- <hr> -->
   <h3>The Critical Damping Coefficient</h3>
 
   <p>
-  The true magic happens, however, when we find the sweet spot of <d-math>\alpha</d-math> and <d-math>\beta</d-math>. Let us try to first optimize over <d-math>\beta</d-math>.
+    The true magic happens, however, when we find the sweet spot of <d-math>\alpha</d-math> and <d-math>\beta</d-math>. Let us try to first optimize over <d-math>\beta</d-math>.
   </p>
 
   <p>
-  Momentum admits an interesting physical interpretation when <d-math>\alpha</d-math> is <d-cite key="qian1999momentum"></d-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
+    Momentum admits an interesting physical interpretation when <d-math>\alpha</d-math> is <d-cite key="qian1999momentum"></d-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
   </p>
 
-  <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
-
-  <div style="position:relative; top:-35px">
-
-  <span style="position:absolute; left:0px; top:0px">
-  <d-math block>y_{i}^{k+1}</d-math>
-  </span>
-
-  <span style="position:absolute; left:160px; top:0px">
-  <d-math block>=</d-math>
-  </span>
-
-
-  <span style="position:absolute;left: 355px;top:0px;">
-  <d-math block>+</d-math>
-  </span>
-
-  <span style="position:absolute; left:410px; top:0px">
-  <d-math block>\lambda_{i}x_{i}^{k}</d-math>
-  </span>
-
-  <figcaption style="position:absolute;left:410px;top: 60px;width:150px;">
-  and perturbed by an external force field
-  </figcaption>
-
-  <figcaption style="position:absolute;left:0px;top: 60px;width:100px;">
-  We can think of <d-math>-y_i^k</d-math> as <b>velocity</b>
-  </figcaption>
-
-  <span style="position:absolute; left:200px; top:0px">
-  <d-math block>\beta y_{i}^{k}</d-math>
-  </span>
-
-  <figcaption style="position:absolute;left:200px;top: 60px;width:130px;">
-  which is dampened at each step
-  </figcaption>
-
-
-  <span style="position:absolute;left: 0px;top: 100px;">
-  <d-math block>x_i^{k+1}</d-math>
-  </span>
-
-  <span style="position:absolute;left:160px;top: 100px;">
-  <d-math block>=</d-math>
-  </span>
-
-  <span style="position:absolute;left:200px;top: 100px;">
-  <d-math block>x_i^k - \alpha y_i^{k+1}</d-math>
-  </span>
-
-  <figcaption style="position:absolute;left:0px;top:155px;width:120px;">
-  And <d-math>x</d-math> is our particle's <b>position</b>
-  </figcaption>
-
-  <figcaption style="position:absolute;left:200px;top: 155px;width:280px;">
-  which is moved at each step by a small amount in the direction of the velocity <d-math>y^{k+1}_i</d-math>.
-  </figcaption>
-
-
-  </div>
+  <figure>
+    <d-figure id="momentum_annotations" style="width:530px; height:150px; display:block; position:relative; margin-top: -20px;">
+      <span style="position:absolute; left:0px; top:0px">
+        <d-math block>y_{i}^{k+1}</d-math>
+      </span>
+      <span style="position:absolute; left:160px; top:0px">
+        <d-math block>=</d-math>
+      </span>
+      <span style="position:absolute;left: 355px;top:0px;">
+        <d-math block>+</d-math>
+      </span>
+      <span style="position:absolute; left:410px; top:0px">
+        <d-math block>\lambda_{i}x_{i}^{k}</d-math>
+      </span>
+      <figcaption style="position:absolute;left:410px;top: 60px;width:150px;">
+        and perturbed by an external force field
+      </figcaption>
+      <figcaption style="position:absolute;left:0px;top: 60px;width:100px;">
+        We can think of <d-math>-y_i^k</d-math> as <b>velocity</b>
+      </figcaption>
+      <span style="position:absolute; left:200px; top:0px">
+        <d-math block>\beta y_{i}^{k}</d-math>
+      </span>
+      <figcaption style="position:absolute;left:200px;top: 60px;width:130px;">
+        which is dampened at each step
+      </figcaption>
+      <span style="position:absolute;left: 0px;top: 100px;">
+        <d-math block>x_i^{k+1}</d-math>
+      </span>
+      <span style="position:absolute;left:160px;top: 100px;">
+      <d-math block>=</d-math>
+      </span>
+      <span style="position:absolute;left:200px;top: 100px;">
+      <d-math block>x_i^k - \alpha y_i^{k+1}</d-math>
+      </span>
+      <figcaption style="position:absolute;left:0px;top:155px;width:120px;">
+        And <d-math>x</d-math> is our particle's <b>position</b>
+      </figcaption>
+      <figcaption style="position:absolute;left:200px;top: 155px;width:280px;">
+        which is moved at each step by a small amount in the direction of the velocity <d-math>y^{k+1}_i</d-math>.
+      </figcaption>
+    </d-figure>
   </figure>
 
-  <script>
-  renderMath(document.getElementById("momentum_annotations"))
-  </script>
   <p>
-  We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for <d-math>150</d-math> iterates, the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
+    We can break this equation apart to see how each component affects the dynamics of the system. Here we plot, for <d-math>150</d-math> iterates, the particle's velocity (the horizontal axis) against its position (the vertical axis), in a phase diagram.
   </p>
 
   <script src = "assets/phasediagram_description.js"></script>
-  <figure id = "phasediagram0" style="position:relative; width:970px; height:540px;margin-left:auto; margin-right:auto">
-  <div id = "phasediagram0div"; style="position:absolute; left:80px; top:10px"></div>
+  <figure>
+    <d-figure id="phasediagram0" style="position:relative; width:970px; height:540px;">
+      <div id="phasediagram0div"; style="position:absolute; left:80px; top:10px"></div>
+    </d-figure>
   </figure>
   <script>
-    deleteQueue.push(renderLoading(d3.select("#phasediagram0")))
-    renderQueue.push(function(callback) {
+    document.querySelector("#phasediagram0").addEventListener("ready", () => {
       phaseDiagram_dec(d3.select("#phasediagram0div"))
-      renderMath(d3.select("#phasediagram0div").node())
 
       var figure = d3.select("#phasediagram0")
       var figwidth = figure.style("width")
       var figheight = figure.style("height")
 
       var svg = figure.append("svg")
-                .style("width", figwidth)
-                .style("height", figheight)
-                .style("position", "absolute")
-                .style("top","0px")
-                .style("left","0px")
-                .style("pointer-events", "none")
+        .style("width", figwidth)
+        .style("height", figheight)
+        .style("position", "absolute")
+        .style("top","0px")
+        .style("left","0px")
+        .style("pointer-events", "none")
 
       renderDraggable(svg, [178.5, 66], [199.5, 66], 4, "Initial point <tspan x=\"0\" dy=\"1.2em\">x = 1, y = 1</tspan>").attr("opacity", 0.5)
-      // renderDraggable(svg, [185, 116], [234, 174], 4, "constant speed").attr("opacity", 0.5)
-      // renderDraggable(svg, [470, 86], [445, 71], 4, "slows to a halt").attr("opacity", 0.5)
-      // renderDraggable(svg, [740, 64], [718, 97], 4, "all energy lost in 1 step").attr("opacity", 0.5)
-      // renderDraggable(svg, [219, 269], [246, 327], 4, "particle returns slowly").attr("opacity", 0.5)
-      // renderDraggable(svg, [250, 433], [287, 468], 4, "particle returns quickly").attr("opacity", 0.5)
-      callback(null);
-      renderMath(document.getElementById("phasediagram0"))
-
     });
   </script>
   <p>
   This system is best imagined as a weight suspended on a spring. We pull the weight down by one unit, and we study the path it follows as it returns to equilibrium. In the analogy, the spring is the source of our external force <d-math>\lambda_ix^k_i</d-math>, and equilibrium is the state when both the position <d-math>x^k_i</d-math> and the speed <d-math>y^k_i</d-math> are 0. The choice of <d-math>\beta</d-math> crucially affects the rate of return to equilibrium.
   </p>
-  <figure id = "phasediagram1" style="position:relative; width:648px; height:490px; margin-left: auto; margin-right: auto"></figure>
+  <figure>
+    <d-figure id="phasediagram1" style="position:relative; width:648px; height:490px;"></d-figure>
+  </figure>
   </div>
   <script src="assets/phasediagram.js"></script>
   <script>
-    deleteQueue.push(renderLoading(d3.select("#phasediagram1")))
-    renderQueue.push(function(callback) {
+    document.querySelector("#phasediagram1").addEventListener("ready", function() {
       phaseDiagram(d3.select("#phasediagram1"));
-      renderMath(document.getElementById("phasediagram1"))
-      callback(null);
     });
   </script>
-  <p>
-
-  </p>
   <p>
   The critical value of <d-math>\beta = (1 - \sqrt{\alpha \lambda_i})^2</d-math> gives us a convergence rate (in eigenspace <d-math>i</d-math>) of <d-math>1 - \sqrt{\alpha\lambda_i}.</d-math> A square root improvement over gradient descent, <d-math>1-\alpha\lambda_i</d-math>! Alas, this only applies to the error in the <d-math>i^{th}</d-math> eigenspace, with <d-math>\alpha</d-math> fixed.
   </p>
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both <d-math>\alpha</d-math> and <d-math>\beta</d-math>. This is a more complicated affair,<dt-fn> We must optimize over
+  To get a global convergence rate, we must optimize over both <d-math>\alpha</d-math> and <d-math>\beta</d-math>. This is a more complicated affair,<d-fn> We must optimize over
   <d-math block>
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
@@ -1156,136 +1037,124 @@ Which is, surprisingly, independent of the step-size or the eigenvalue <d-math>\
   -\alpha\beta & 1-\alpha\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   </d-math>
-  (<d-math>\|\cdot \|</d-math> here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </dt-fn> but they work out to be
+  (<d-math>\|\cdot \|</d-math> here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </d-fn> but they work out to be
   <d-math block>
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   </d-math>
   Plug this into the convergence rate, and you get
   </p>
-  <figure id = "conv_rate_comparisons" style="width:530px; height:19px; display:block; margin-left:auto; margin-right:auto; position:relative">
-  <div style="position:relative; top:-40px">
 
-  <span style="position:absolute; left:16px">
-  <d-math block>\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}</d-math>
-  </span>
+  <figure id="conv_rate_comparisons" style="width:530px; height:19px; display:block; margin-left:auto; margin-right:auto; position:relative">
+    <div style="position:relative; top:-40px">
 
-  <figcaption style="position:absolute;left: 116px;top: 29px;width:130px;">
-  Convergence rate, <b>Momentum</b>
-  </figcaption>
+    <span style="position:absolute; left:16px">
+    <d-math block>\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}</d-math>
+    </span>
 
-  <span style="position:absolute; left:313px">
-  <d-math block> \frac{\kappa-1}{\kappa+1}</d-math>
-  </span>
+    <figcaption style="position:absolute;left: 116px;top: 29px;width:130px;">
+    Convergence rate, <b>Momentum</b>
+    </figcaption>
+
+    <span style="position:absolute; left:313px">
+    <d-math block> \frac{\kappa-1}{\kappa+1}</d-math>
+    </span>
 
 
-  <figcaption style="position:absolute;left: 393px;top: 29px;width:150px;">
-  Convergence rate, <b>Gradient Descent</b>
-  </figcaption>
-  </div>
+    <figcaption style="position:absolute;left: 393px;top: 29px;width:150px;">
+    Convergence rate, <b>Gradient Descent</b>
+    </figcaption>
+    </div>
   </figure>
-  <script>
-  renderMath(document.getElementById("conv_rate_comparisons"))
-  </script>
+
   <p>
   With barely a modicum of extra effort, we have essentially square rooted the condition number! These gains, in principle, require explicit knowledge of <d-math>\lambda_1</d-math> and <d-math>\lambda_n</d-math>. But the formulas reveal a simple guideline. When the problem's conditioning is poor, the optimal <d-math>\alpha</d-math> is approximately twice that of gradient descent, and the momentum term is close to <d-math>1</d-math>. So set <d-math>\beta</d-math> as close to <d-math>1</d-math> as you can, and then find the highest <d-math>\alpha</d-math> which still converges. Being at the knife's edge of divergence, like in gradient descent, is a good place to be.
   </p>
 
-  <figure id="milestonesMomentumFig" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues
-    <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd"><d-math>\lambda_1=0.01</d-math></span>,
-    <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5"><d-math>\lambda_2=0.1</d-math></span>, and
-    <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a"><d-math>\lambda_3=1</d-math></span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> <d-math>f(w^k) - f(w^\star)</d-math></figcaption>
-  <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px"> Note that the optimal parameters do not necessarily imply the fastest convergence, though, only the fastest asymptotic convergence rate. </figcaption>
+  <figure>
+    <d-figure id="milestonesMomentumFig" style="position:relative; width:920px; height:470px">
+      <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We can do the same decomposition here with momentum, with eigenvalues
+        <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fde0dd"><d-math>\lambda_1=0.01</d-math></span>,
+        <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #fa9fb5"><d-math>\lambda_2=0.1</d-math></span>, and
+        <span style="display: inline-block; padding-left: 4px; border-left: 3px solid #c51b8a"><d-math>\lambda_3=1</d-math></span>. Though the decrease is no longer monotonic, but significantly faster. </figcaption>
+      <figcaption style="position:absolute; text-align:left; top:210px; left:15px; width:280px; height:120px; font-size:15px"> <d-math>f(w^k) - f(w^\star)</d-math></figcaption>
+      <figcaption style="position:absolute; text-align:left; top:430px; left:140px; width:780px; height:120px"> Note that the optimal parameters do not necessarily imply the fastest convergence, though, only the fastest asymptotic convergence rate. </figcaption>
 
-  <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
-  <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
+      <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
+      <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
-  <div id = "sliderStep2D" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
-  <div id = "milestonesMomentum" style="position:relative; left:15px"></div>
+      <div id="sliderStep2D" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
+      <div id="milestonesMomentum" style="position:relative; left:15px"></div>
+    </d-figure>
   </figure>
   <script>
-    deleteQueue.push(renderLoading(d3.select("#milestonesMomentumFig")))
-    renderQueue.push(function(callback) {
+    document.querySelector("#milestonesMomentumFig").addEventListener("ready", function() {
       var graphDiv = d3.select("#milestonesMomentum")
-                   .style("width",  920 + "px")
-                   .style("height", 300 + "px")
-                   .style("top", "170px")
-                   .style("position", "relative")
-                   .style("margin-left", "auto")
-                   .style("margin-right", "auto")
-                   .attr("width", 920)
-                   .attr("height", 500)
+        .style("width",  920 + "px")
+        .style("height", 300 + "px")
+        .style("top", "170px")
+        .style("position", "relative")
+        .style("margin-left", "auto")
+        .style("margin-right", "auto")
+        .attr("width", 920)
+        .attr("height", 500);
 
-    var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+      var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500);
 
-    var update = renderMilestones(svg, function() {})
-    var reset = slider2D(d3.select("#sliderStep2D"),
-                           function(x,y) { update(x,y) },
-                           1,
-                           100)
+      var update = renderMilestones(svg, function() {})
+      var reset = slider2D(d3.select("#sliderStep2D"), function(x,y) { update(x,y) }, 1, 100);
 
-    // // Swoopy Annotator
-    annotations = [
-      {
-        "x": 0,
-        "y": 0,
-        "path": "M 798,98 A 27.97 27.97 0 0 0 760.9999389648438,70.9999771118164",
-        "text": "Optimal parameters",
-        "textOffset": [
-          740,
-          109
-        ]
-      }
-    ]
-    var sel = drawAnnotations(d3.select("#milestonesMomentumFig"), annotations)
-    sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
-    callback(null);
-  });
-
+      // // Swoopy Annotator
+      annotations = [
+        {
+          "x": 0,
+          "y": 0,
+          "path": "M 798,98 A 27.97 27.97 0 0 0 760.9999389648438,70.9999771118164",
+          "text": "Optimal parameters",
+          "textOffset": [
+            740,
+            109
+          ]
+        }
+      ]
+      var sel = drawAnnotations(d3.select("#milestonesMomentumFig"), annotations);
+      sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset);
+    });
   </script>
   <p>
   While the loss function of gradient descent had a graceful, monotonic curve, optimization with momentum displays clear oscillations. These ripples are not restricted to quadratics, and occur in all kinds of functions in practice. They are not cause for alarm, but are an indication that extra tuning of the hyperparameters is required.
   </p>
-  <hr>
+
+  <!-- <hr> -->
   <h2>Example: The Colorization Problem</h2>
 
   <p>
   Let's look at how momentum accelerates convergence with a concrete example. On a grid of pixels let <d-math>G</d-math> be the graph with vertices as pixels, <d-math>E</d-math> be the set of edges connecting each pixel to its four neighboring pixels, and <d-math>D</d-math> be a small set of a few distinguished vertices. Consider the problem of minimizing
   </p>
-  <figure id = "colorizer_equation" style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
-  <div style="position:relative; top:-40px">
-  <span style="position:absolute; top:10px">
-  <d-math block>\text{minimize} </d-math>
-  </span>
-
-  <span style="position:absolute; left:90px">
-    <d-math block>\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 </d-math>
-  </span>
-
-  <figcaption style="position:absolute; left:140px; top:100px; width:130px">
-  The <b>colorizer</b> pulls distinguished pixels towards 1
-  </figcaption>
-
-  <span style="position:absolute; left:310px; top:10px">
-    <d-math block>+</d-math>
-  </span>
-
-  <span style="position:absolute; left:350px">
-    <d-math block>\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.</d-math>
-  </span>
-
-
-  <figcaption style="position:absolute; left:353px; top:100px; width:150px">
-  The <b>smoother</b> spreads out the color
-  </figcaption>
-  </div>
+  <figure id="colorizer_equation" style="width:530px; height:95px; display:block; margin-left:auto; margin-right:auto; position:relative">
+    <div style="position:relative; top:-40px">
+    <span style="position:absolute; top:10px">
+    <d-math block>\text{minimize} </d-math>
+    </span>
+    <span style="position:absolute; left:90px">
+      <d-math block>\qquad  \frac{1}{2} \sum_{i\in D} (w_i - 1)^2 </d-math>
+    </span>
+    <figcaption style="position:absolute; left:140px; top:100px; width:130px">
+    The <b>colorizer</b> pulls distinguished pixels towards 1
+    </figcaption>
+    <span style="position:absolute; left:310px; top:10px">
+      <d-math block>+</d-math>
+    </span>
+    <span style="position:absolute; left:350px">
+      <d-math block>\frac{1}{2} \sum_{i,j\in E} (w_i - w_j)^2.</d-math>
+    </span>
+    <figcaption style="position:absolute; left:353px; top:100px; width:150px">
+    The <b>smoother</b> spreads out the color
+    </figcaption>
+    </div>
   </figure>
-  <script>
-  renderMath(document.getElementById("colorizer_equation"))
-  </script>
+
   <p>
-  The optimal solution to this problem is a vector of all <d-math>1</d-math>'s <dt-fn>The above optimization problem is bounded from below by <d-math>0</d-math>, and vector of all <d-math>1</d-math>'s achieve this. </dt-fn>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The optimal solution to this problem is a vector of all <d-math>1</d-math>'s <d-fn>The above optimization problem is bounded from below by <d-math>0</d-math>, and vector of all <d-math>1</d-math>'s achieve this. </d-fn>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   <d-math block>
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
@@ -1296,17 +1165,17 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   This kind of local averaging is effective at smoothing out local variations in the pixels, but poor at taking advantage of global structure. The updates are akin to a drop of ink, diffusing through water. Movement towards equilibrium is made only through local corrections and so, left undisturbed, its march towards the solution is slow and laborious. Fortunately, momentum speeds things up significantly.
   </p>
-  <figure id = "flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
 
-  <figcaption style="left:790px; top:430px; position:absolute; width:130px">
-      The eigenvectors of the colorization problem form a generalized Fourier basis for <d-math>R^n</d-math>. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
-  </figcaption>
-
+  <figure>
+    <d-figure id="flow" style="position: relative;display: block;margin-left: auto;margin-right: auto;width: 920px;height: 705px;">
+      <figcaption style="left:790px; top:430px; position:absolute; width:130px">
+          The eigenvectors of the colorization problem form a generalized Fourier basis for <d-math>R^n</d-math>. The smallest eigenvalues have low frequencies, hence gradient descent corrects high frequency errors well but not low frequency ones.
+      </figcaption>
+    </d-figure>
   </figure>
   <script src="assets/flow.js"></script>
   <script>
-    deleteQueue.push(renderLoading(d3.select("#flow")))
-    renderQueue.push(function(callback) {
+    document.querySelector("#flow").addEventListener("ready", function(callback) {
       d3.queue()
         .defer(d3.json, "assets/data/Sigma.json")
         .defer(d3.json, "assets/data/matrix.json")
@@ -1314,8 +1183,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
         .await(function(error, FlowSigma, M, FlowU) {
           if (error) {
             console.error("Error loading data files");
-          }
-          else {
+          } else {
             var reset = renderFlowWidget(d3.select("#flow"), FlowSigma, M, FlowU)
             // Swoopy Annotator
             var annotations = [
@@ -1334,7 +1202,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
             sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
           }
         });
-      callback(null);
     });
   </script>
   <p>
@@ -1373,41 +1240,38 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
   <p>
   The Laplacian matrix, <d-math>L_G</d-math>
-  <dt-fn>This can be written explicitly as
+  <d-fn>This can be written explicitly as
   <d-math block>
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   </d-math>
-  </dt-fn>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of <d-math>L_G</d-math>, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
+  </d-fn>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of <d-math>L_G</d-math>, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
   </p>
-  <figure id="laplacianConditioning" style="width:900px; height:265px">
-  <svg width="900" height="300" id="graph"></svg>
-  <figcaption id = "expander" style="position:absolute; left:70px; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
-
-  <figcaption id = "expander" style="position:absolute; left:370px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
-
-  <figcaption id = "expander" style="position:absolute; left:670px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
-
+  <figure>
+    <d-figure id="laplacianConditioning" style="width:900px; height:265px">
+      <svg width="900" height="300" id="graph"></svg>
+      <figcaption id="expander" style="position:absolute; top:210px; width:200px">Small world graphs, like expanders and dense graphs, have excellent conditioning</figcaption>
+      <figcaption id="expander" style="position:absolute; left:300px; top:210px; width:200px">The conditioning of grids improves with its dimensionality.</figcaption>
+      <figcaption id="expander" style="position:absolute; left:600px; top:210px; width:200px">And long, wiry graphs, like paths, condition poorly. </figcaption>
+    </d-figure>
   </figure>
+
   <script src="assets/graph.js"></script>
   <script>
-    deleteQueue.push(renderLoading(d3.select("#laplacianConditioning")))
-    renderQueue.push(function(callback) {
-      var g1 = d3.select("#graph").append("g")
-      genExpander(g1)
-
-      var g2 = d3.select("#graph").append("g").attr("transform", "translate(300,0)")
-      genGrid(g2)
-
-      var g3 = d3.select("#graph").append("g").attr("transform", "translate(600,0)")
+    document.querySelector("#laplacianConditioning").addEventListener("ready", function() {
+      var g1 = d3.select("#graph").append("g").attr("transform", "translate(-70,0)");
+      genExpander(g1);
+      var g2 = d3.select("#graph").append("g").attr("transform", "translate(230,0)");
+      genGrid(g2);
+      var g3 = d3.select("#graph").append("g").attr("transform", "translate(530,0)");
       genPath(g3);
-      callback(null);
     });
   </script>
   <p>
 
   These observations carry through to the colorization problem, and the intuition behind it should be clear. Well connected graphs allow rapid diffusion of information through the edges, while graphs with poor connectivity do not. And this principle, taken to the extreme, furnishes a class of functions so hard to optimize they reveal the limits of first order optimization.
   </p>
-<hr>
+
+  <!-- <hr> -->
   <h2>
   The Limits of Descent
   </h2>
@@ -1516,157 +1380,157 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   and the condition number of the problem <d-math>f^n</d-math> approaches <d-math>\kappa</d-math> as <d-math>n</d-math> goes to infinity. Now observe the behavior of the momentum algorithm on this function, starting from <d-math>w^0 = 0</d-math>.
   </p>
 
-  <figure id="rosenViz" style="width:950px; height:630px">
-    <div id = "sliderz" style="position:absolute;top: 14px;left:575px;"></div>
-    <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step-size α = </div>
-    <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
+  <figure>
+    <d-figure id="rosenViz" style="width:950px; height:630px">
+      <div id="sliderz" style="position:absolute;top: 14px;left:575px;"></div>
+      <div class="figtext" style="position:absolute; pointer-events:none; top:14px; width:300px; left:729px; height:100px">Step-size α = </div>
+      <div class="figtext" style="position:absolute; pointer-events:none; top:35px; width:488px; left:488px; height:100px">Momentum β = </div>
 
-    <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 50 iterates of momentum on the Convex Rosenbrock for <d-math>n=25</d-math>. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
+      <figcaption style="width:270px; position:absolute; left:150px; top:38px">Here we see the first 50 iterates of momentum on the Convex Rosenbrock for <d-math>n=25</d-math>. The behavior here is similar to that of any Linear First Order Algorithm. </figcaption>
 
-    <div style="position:absolute; top:150px; left:-80px">
-    <figcaption style="width:160px; position:absolute; left:670px; top:90px">This triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
-    <figcaption style="width:160px; position:absolute; left:670px; top:310px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
-    <div id = "iterates" style="position:absolute; top:60px; left:0"></div>
-    <div class="figtext" style="position:absolute; top:-2px; width:300px; left:452px; height:100px">Error</div>
-    <div id = "rosen_colorbar1" style="position:absolute; top:0px; width:300px; left:440px; height:100px"></div>
-    <div class="figtext" style="position:absolute; top:-2px; width:300px; left:232px; height:100px">Weights</div>
-    <div id = "rosen_colorbar2" style="position:absolute; top:0px; width:300px; left:220px; height:100px"></div>
-    </div>
+      <div style="position:absolute; top:150px; left:-80px">
+      <figcaption style="width:160px; position:absolute; left:670px; top:90px">This triangle is a "dead zone" of our iterates. The iterates are always 0, no matter what the parameters. </figcaption>
+      <figcaption style="width:160px; position:absolute; left:670px; top:310px">The remaining expanding space is the "light cone" of our iterate's influence. Momentum does very well here with the optimal parameters. </figcaption>
+      <div id="iterates" style="position:absolute; top:60px; left:0"></div>
+      <div class="figtext" style="position:absolute; top:-2px; width:300px; left:452px; height:100px">Error</div>
+      <div id="rosen_colorbar1" style="position:absolute; top:0px; width:300px; left:440px; height:100px"></div>
+      <div class="figtext" style="position:absolute; top:-2px; width:300px; left:232px; height:100px">Weights</div>
+      <div id="rosen_colorbar2" style="position:absolute; top:0px; width:300px; left:220px; height:100px"></div>
+      </div>
+    </d-figure>
   </figure>
   <script>
-  deleteQueue.push(renderLoading(d3.select("#rosenViz")))
-  renderQueue.push(function(callback) {
-    var RQ = [[0.033430859446525574,0.06637421995401382,0.09834969788789749,0.1288910210132599,0.1575528085231781,0.18391713500022888,0.20759953558444977,0.22825466096401215,0.24558131396770477,0.25932684540748596,0.2692908048629761,0.2753278911113739,0.2773500978946686,0.2753278911113739,0.2692908048629761,0.25932684540748596,0.24558131396770477,0.22825466096401215,0.20759953558444977,0.18391713500022888,0.1575528085231781,0.1288910210132599,0.09834969788789749,0.06637421995401382,0.033430859446525574],[-0.06637421995401382,-0.1288910210132599,-0.18391713500022888,-0.22825466096401215,-0.25932684540748596,-0.2753278911113739,-0.2753278911113739,-0.25932684540748596,-0.22825466096401215,-0.18391713500022888,-0.1288910210132599,-0.06637421995401382,-1.917815576756455e-14,0.06637421995401382,0.1288910210132599,0.18391713500022888,0.22825466096401215,0.25932684540748596,0.2753278911113739,0.2753278911113739,0.25932684540748596,0.22825466096401215,0.18391713500022888,0.1288910210132599,0.06637421995401382],[0.09834969788789749,0.18391713500022888,0.24558131396770477,0.2753278911113739,0.2692908048629761,0.22825466096401215,0.1575528085231781,0.06637421995401382,-0.033430859446525574,-0.1288910210132599,-0.20759953558444977,-0.25932684540748596,-0.2773500978946686,-0.25932684540748596,-0.20759953558444977,-0.1288910210132599,-0.033430859446525574,0.06637421995401382,0.1575528085231781,0.22825466096401215,0.2692908048629761,0.2753278911113739,0.24558131396770477,0.18391713500022888,0.09834969788789749],[0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599,-1.2834394835694717e-14,0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599],[-0.1575528085231781,-0.25932684540748596,-0.2692908048629761,-0.18391713500022888,-0.033430859446525574,0.1288910210132599,0.24558131396770477,0.2753278911113739,0.20759953558444977,0.06637421995401382,-0.09834969788789749,-0.22825466096401215,-0.2773500978946686,-0.22825466096401215,-0.09834969788789749,0.06637421995401382,0.20759953558444977,0.2753278911113739,0.24558131396770477,0.1288910210132599,-0.033430859446525574,-0.18391713500022888,-0.2692908048629761,-0.25932684540748596,-0.1575528085231781],[-0.18391713500022888,-0.2753278911113739,-0.22825466096401215,-0.06637421995401382,0.1288910210132599,0.25932684540748596,0.25932684540748596,0.1288910210132599,-0.06637421995401382,-0.22825466096401215,-0.2753278911113739,-0.18391713500022888,-4.583645525716709e-15,0.18391713500022888,0.2753278911113739,0.22825466096401215,0.06637421995401382,-0.1288910210132599,-0.25932684540748596,-0.25932684540748596,-0.1288910210132599,0.06637421995401382,0.22825466096401215,0.2753278911113739,0.18391713500022888],[-0.20759953558444977,-0.2753278911113739,-0.1575528085231781,0.06637421995401382,0.24558131396770477,0.25932684540748596,0.09834969788789749,-0.1288910210132599,-0.2692908048629761,-0.22825466096401215,-0.033430859446525574,0.18391713500022888,0.2773500978946686,0.18391713500022888,-0.033430859446525574,-0.22825466096401215,-0.2692908048629761,-0.1288910210132599,0.09834969788789749,0.25932684540748596,0.24558131396770477,0.06637421995401382,-0.1575528085231781,-0.2753278911113739,-0.20759953558444977],[-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215,4.337912797388764e-15,-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215],[-0.24558131396770477,-0.22825466096401215,0.033430859446525574,0.25932684540748596,0.20759953558444977,-0.06637421995401382,-0.2692908048629761,-0.18391713500022888,0.09834969788789749,0.2753278911113739,0.1575528085231781,-0.1288910210132599,-0.2773500978946686,-0.1288910210132599,0.1575528085231781,0.2753278911113739,0.09834969788789749,-0.18391713500022888,-0.2692908048629761,-0.06637421995401382,0.20759953558444977,0.25932684540748596,0.033430859446525574,-0.22825466096401215,-0.24558131396770477],[-0.25932684540748596,-0.18391713500022888,0.1288910210132599,0.2753278911113739,0.06637421995401382,-0.22825466096401215,-0.22825466096401215,0.06637421995401382,0.2753278911113739,0.1288910210132599,-0.18391713500022888,-0.25932684540748596,-2.6265288907570752e-15,0.25932684540748596,0.18391713500022888,-0.1288910210132599,-0.2753278911113739,-0.06637421995401382,0.22825466096401215,0.22825466096401215,-0.06637421995401382,-0.2753278911113739,-0.1288910210132599,0.18391713500022888,0.25932684540748596],[0.2692908048629761,0.1288910210132599,-0.20759953558444977,-0.22825466096401215,0.09834969788789749,0.2753278911113739,0.033430859446525574,-0.25932684540748596,-0.1575528085231781,0.18391713500022888,0.24558131396770477,-0.06637421995401382,-0.2773500978946686,-0.06637421995401382,0.24558131396770477,0.18391713500022888,-0.1575528085231781,-0.25932684540748596,0.033430859446525574,0.2753278911113739,0.09834969788789749,-0.22825466096401215,-0.20759953558444977,0.1288910210132599,0.2692908048629761],[0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739,-2.224606886845463e-15,0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739],[0.2773500978946686,1.2625047254649028e-16,-0.2773500978946686,-6.312523627324514e-16,0.2773500978946686,8.83753307825432e-16,-0.2773500978946686,-8.83753307825432e-16,0.2773500978946686,1.5781309068311285e-15,-0.2773500978946686,-4.734392720493385e-16,0.2773500978946686,2.0200075607438445e-15,-0.2773500978946686,-1.7990691808479273e-15,0.2773500978946686,1.6728188141805554e-15,-0.2773500978946686,-1.4518804342846382e-15,0.2773500978946686,-3.4718879950284827e-16,-0.2773500978946686,1.2625047254649028e-15,0.2773500978946686],[-0.2753278911113739,0.06637421995401382,0.25932684540748596,-0.1288910210132599,-0.22825466096401215,0.18391713500022888,0.18391713500022888,-0.22825466096401215,-0.1288910210132599,0.25932684540748596,0.06637421995401382,-0.2753278911113739,-1.0026396759284933e-15,0.2753278911113739,-0.06637421995401382,-0.25932684540748596,0.1288910210132599,0.22825466096401215,-0.18391713500022888,-0.18391713500022888,0.22825466096401215,0.1288910210132599,-0.25932684540748596,-0.06637421995401382,0.2753278911113739],[0.2692908048629761,-0.1288910210132599,-0.20759953558444977,0.22825466096401215,0.09834969788789749,-0.2753278911113739,0.033430859446525574,0.25932684540748596,-0.1575528085231781,-0.18391713500022888,0.24558131396770477,0.06637421995401382,-0.2773500978946686,0.06637421995401382,0.24558131396770477,-0.18391713500022888,-0.1575528085231781,0.25932684540748596,0.033430859446525574,-0.2753278911113739,0.09834969788789749,0.22825466096401215,-0.20759953558444977,-0.1288910210132599,0.2692908048629761],[-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596,1.770693656524247e-16,-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596],[0.24558131396770477,-0.22825466096401215,-0.033430859446525574,0.25932684540748596,-0.20759953558444977,-0.06637421995401382,0.2692908048629761,-0.18391713500022888,-0.09834969788789749,0.2753278911113739,-0.1575528085231781,-0.1288910210132599,0.2773500978946686,-0.1288910210132599,-0.1575528085231781,0.2753278911113739,-0.09834969788789749,-0.18391713500022888,0.2692908048629761,-0.06637421995401382,-0.20759953558444977,0.25932684540748596,-0.033430859446525574,-0.22825466096401215,0.24558131396770477],[0.22825466096401215,-0.25932684540748596,0.06637421995401382,0.18391713500022888,-0.2753278911113739,0.1288910210132599,0.1288910210132599,-0.2753278911113739,0.18391713500022888,0.06637421995401382,-0.25932684540748596,0.22825466096401215,9.870699398085384e-16,-0.22825466096401215,0.25932684540748596,-0.06637421995401382,-0.18391713500022888,0.2753278911113739,-0.1288910210132599,-0.1288910210132599,0.2753278911113739,-0.18391713500022888,-0.06637421995401382,0.25932684540748596,-0.22825466096401215],[-0.20759953558444977,0.2753278911113739,-0.1575528085231781,-0.06637421995401382,0.24558131396770477,-0.25932684540748596,0.09834969788789749,0.1288910210132599,-0.2692908048629761,0.22825466096401215,-0.033430859446525574,-0.18391713500022888,0.2773500978946686,-0.18391713500022888,-0.033430859446525574,0.22825466096401215,-0.2692908048629761,0.1288910210132599,0.09834969788789749,-0.25932684540748596,0.24558131396770477,-0.06637421995401382,-0.1575528085231781,0.2753278911113739,-0.20759953558444977],[-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888,8.371955066048889e-16,-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888],[-0.1575528085231781,0.25932684540748596,-0.2692908048629761,0.18391713500022888,-0.033430859446525574,-0.1288910210132599,0.24558131396770477,-0.2753278911113739,0.20759953558444977,-0.06637421995401382,-0.09834969788789749,0.22825466096401215,-0.2773500978946686,0.22825466096401215,-0.09834969788789749,-0.06637421995401382,0.20759953558444977,-0.2753278911113739,0.24558131396770477,-0.1288910210132599,-0.033430859446525574,0.18391713500022888,-0.2692908048629761,0.25932684540748596,-0.1575528085231781],[-0.1288910210132599,0.22825466096401215,-0.2753278911113739,0.25932684540748596,-0.18391713500022888,0.06637421995401382,0.06637421995401382,-0.18391713500022888,0.25932684540748596,-0.2753278911113739,0.22825466096401215,-0.1288910210132599,-3.0802549003271684e-16,0.1288910210132599,-0.22825466096401215,0.2753278911113739,-0.25932684540748596,0.18391713500022888,-0.06637421995401382,-0.06637421995401382,0.18391713500022888,-0.25932684540748596,0.2753278911113739,-0.22825466096401215,0.1288910210132599],[-0.09834969788789749,0.18391713500022888,-0.24558131396770477,0.2753278911113739,-0.2692908048629761,0.22825466096401215,-0.1575528085231781,0.06637421995401382,0.033430859446525574,-0.1288910210132599,0.20759953558444977,-0.25932684540748596,0.2773500978946686,-0.25932684540748596,0.20759953558444977,-0.1288910210132599,0.033430859446525574,0.06637421995401382,-0.1575528085231781,0.22825466096401215,-0.2692908048629761,0.2753278911113739,-0.24558131396770477,0.18391713500022888,-0.09834969788789749],[-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382,6.798085926082532e-17,-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382],[0.033430859446525574,-0.06637421995401382,0.09834969788789749,-0.1288910210132599,0.1575528085231781,-0.18391713500022888,0.20759953558444977,-0.22825466096401215,0.24558131396770477,-0.25932684540748596,0.2692908048629761,-0.2753278911113739,0.2773500978946686,-0.2753278911113739,0.2692908048629761,-0.25932684540748596,0.24558131396770477,-0.22825466096401215,0.20759953558444977,-0.18391713500022888,0.1575528085231781,-0.1288910210132599,0.09834969788789749,-0.06637421995401382,0.033430859446525574]]
+  document.querySelector("#rosenViz").addEventListener("ready", function(callback) {
+      var RQ = [[0.033430859446525574,0.06637421995401382,0.09834969788789749,0.1288910210132599,0.1575528085231781,0.18391713500022888,0.20759953558444977,0.22825466096401215,0.24558131396770477,0.25932684540748596,0.2692908048629761,0.2753278911113739,0.2773500978946686,0.2753278911113739,0.2692908048629761,0.25932684540748596,0.24558131396770477,0.22825466096401215,0.20759953558444977,0.18391713500022888,0.1575528085231781,0.1288910210132599,0.09834969788789749,0.06637421995401382,0.033430859446525574],[-0.06637421995401382,-0.1288910210132599,-0.18391713500022888,-0.22825466096401215,-0.25932684540748596,-0.2753278911113739,-0.2753278911113739,-0.25932684540748596,-0.22825466096401215,-0.18391713500022888,-0.1288910210132599,-0.06637421995401382,-1.917815576756455e-14,0.06637421995401382,0.1288910210132599,0.18391713500022888,0.22825466096401215,0.25932684540748596,0.2753278911113739,0.2753278911113739,0.25932684540748596,0.22825466096401215,0.18391713500022888,0.1288910210132599,0.06637421995401382],[0.09834969788789749,0.18391713500022888,0.24558131396770477,0.2753278911113739,0.2692908048629761,0.22825466096401215,0.1575528085231781,0.06637421995401382,-0.033430859446525574,-0.1288910210132599,-0.20759953558444977,-0.25932684540748596,-0.2773500978946686,-0.25932684540748596,-0.20759953558444977,-0.1288910210132599,-0.033430859446525574,0.06637421995401382,0.1575528085231781,0.22825466096401215,0.2692908048629761,0.2753278911113739,0.24558131396770477,0.18391713500022888,0.09834969788789749],[0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599,-1.2834394835694717e-14,0.1288910210132599,0.22825466096401215,0.2753278911113739,0.25932684540748596,0.18391713500022888,0.06637421995401382,-0.06637421995401382,-0.18391713500022888,-0.25932684540748596,-0.2753278911113739,-0.22825466096401215,-0.1288910210132599],[-0.1575528085231781,-0.25932684540748596,-0.2692908048629761,-0.18391713500022888,-0.033430859446525574,0.1288910210132599,0.24558131396770477,0.2753278911113739,0.20759953558444977,0.06637421995401382,-0.09834969788789749,-0.22825466096401215,-0.2773500978946686,-0.22825466096401215,-0.09834969788789749,0.06637421995401382,0.20759953558444977,0.2753278911113739,0.24558131396770477,0.1288910210132599,-0.033430859446525574,-0.18391713500022888,-0.2692908048629761,-0.25932684540748596,-0.1575528085231781],[-0.18391713500022888,-0.2753278911113739,-0.22825466096401215,-0.06637421995401382,0.1288910210132599,0.25932684540748596,0.25932684540748596,0.1288910210132599,-0.06637421995401382,-0.22825466096401215,-0.2753278911113739,-0.18391713500022888,-4.583645525716709e-15,0.18391713500022888,0.2753278911113739,0.22825466096401215,0.06637421995401382,-0.1288910210132599,-0.25932684540748596,-0.25932684540748596,-0.1288910210132599,0.06637421995401382,0.22825466096401215,0.2753278911113739,0.18391713500022888],[-0.20759953558444977,-0.2753278911113739,-0.1575528085231781,0.06637421995401382,0.24558131396770477,0.25932684540748596,0.09834969788789749,-0.1288910210132599,-0.2692908048629761,-0.22825466096401215,-0.033430859446525574,0.18391713500022888,0.2773500978946686,0.18391713500022888,-0.033430859446525574,-0.22825466096401215,-0.2692908048629761,-0.1288910210132599,0.09834969788789749,0.25932684540748596,0.24558131396770477,0.06637421995401382,-0.1575528085231781,-0.2753278911113739,-0.20759953558444977],[-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215,4.337912797388764e-15,-0.22825466096401215,-0.25932684540748596,-0.06637421995401382,0.18391713500022888,0.2753278911113739,0.1288910210132599,-0.1288910210132599,-0.2753278911113739,-0.18391713500022888,0.06637421995401382,0.25932684540748596,0.22825466096401215],[-0.24558131396770477,-0.22825466096401215,0.033430859446525574,0.25932684540748596,0.20759953558444977,-0.06637421995401382,-0.2692908048629761,-0.18391713500022888,0.09834969788789749,0.2753278911113739,0.1575528085231781,-0.1288910210132599,-0.2773500978946686,-0.1288910210132599,0.1575528085231781,0.2753278911113739,0.09834969788789749,-0.18391713500022888,-0.2692908048629761,-0.06637421995401382,0.20759953558444977,0.25932684540748596,0.033430859446525574,-0.22825466096401215,-0.24558131396770477],[-0.25932684540748596,-0.18391713500022888,0.1288910210132599,0.2753278911113739,0.06637421995401382,-0.22825466096401215,-0.22825466096401215,0.06637421995401382,0.2753278911113739,0.1288910210132599,-0.18391713500022888,-0.25932684540748596,-2.6265288907570752e-15,0.25932684540748596,0.18391713500022888,-0.1288910210132599,-0.2753278911113739,-0.06637421995401382,0.22825466096401215,0.22825466096401215,-0.06637421995401382,-0.2753278911113739,-0.1288910210132599,0.18391713500022888,0.25932684540748596],[0.2692908048629761,0.1288910210132599,-0.20759953558444977,-0.22825466096401215,0.09834969788789749,0.2753278911113739,0.033430859446525574,-0.25932684540748596,-0.1575528085231781,0.18391713500022888,0.24558131396770477,-0.06637421995401382,-0.2773500978946686,-0.06637421995401382,0.24558131396770477,0.18391713500022888,-0.1575528085231781,-0.25932684540748596,0.033430859446525574,0.2753278911113739,0.09834969788789749,-0.22825466096401215,-0.20759953558444977,0.1288910210132599,0.2692908048629761],[0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739,-2.224606886845463e-15,0.2753278911113739,0.06637421995401382,-0.25932684540748596,-0.1288910210132599,0.22825466096401215,0.18391713500022888,-0.18391713500022888,-0.22825466096401215,0.1288910210132599,0.25932684540748596,-0.06637421995401382,-0.2753278911113739],[0.2773500978946686,1.2625047254649028e-16,-0.2773500978946686,-6.312523627324514e-16,0.2773500978946686,8.83753307825432e-16,-0.2773500978946686,-8.83753307825432e-16,0.2773500978946686,1.5781309068311285e-15,-0.2773500978946686,-4.734392720493385e-16,0.2773500978946686,2.0200075607438445e-15,-0.2773500978946686,-1.7990691808479273e-15,0.2773500978946686,1.6728188141805554e-15,-0.2773500978946686,-1.4518804342846382e-15,0.2773500978946686,-3.4718879950284827e-16,-0.2773500978946686,1.2625047254649028e-15,0.2773500978946686],[-0.2753278911113739,0.06637421995401382,0.25932684540748596,-0.1288910210132599,-0.22825466096401215,0.18391713500022888,0.18391713500022888,-0.22825466096401215,-0.1288910210132599,0.25932684540748596,0.06637421995401382,-0.2753278911113739,-1.0026396759284933e-15,0.2753278911113739,-0.06637421995401382,-0.25932684540748596,0.1288910210132599,0.22825466096401215,-0.18391713500022888,-0.18391713500022888,0.22825466096401215,0.1288910210132599,-0.25932684540748596,-0.06637421995401382,0.2753278911113739],[0.2692908048629761,-0.1288910210132599,-0.20759953558444977,0.22825466096401215,0.09834969788789749,-0.2753278911113739,0.033430859446525574,0.25932684540748596,-0.1575528085231781,-0.18391713500022888,0.24558131396770477,0.06637421995401382,-0.2773500978946686,0.06637421995401382,0.24558131396770477,-0.18391713500022888,-0.1575528085231781,0.25932684540748596,0.033430859446525574,-0.2753278911113739,0.09834969788789749,0.22825466096401215,-0.20759953558444977,-0.1288910210132599,0.2692908048629761],[-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596,1.770693656524247e-16,-0.25932684540748596,0.18391713500022888,0.1288910210132599,-0.2753278911113739,0.06637421995401382,0.22825466096401215,-0.22825466096401215,-0.06637421995401382,0.2753278911113739,-0.1288910210132599,-0.18391713500022888,0.25932684540748596],[0.24558131396770477,-0.22825466096401215,-0.033430859446525574,0.25932684540748596,-0.20759953558444977,-0.06637421995401382,0.2692908048629761,-0.18391713500022888,-0.09834969788789749,0.2753278911113739,-0.1575528085231781,-0.1288910210132599,0.2773500978946686,-0.1288910210132599,-0.1575528085231781,0.2753278911113739,-0.09834969788789749,-0.18391713500022888,0.2692908048629761,-0.06637421995401382,-0.20759953558444977,0.25932684540748596,-0.033430859446525574,-0.22825466096401215,0.24558131396770477],[0.22825466096401215,-0.25932684540748596,0.06637421995401382,0.18391713500022888,-0.2753278911113739,0.1288910210132599,0.1288910210132599,-0.2753278911113739,0.18391713500022888,0.06637421995401382,-0.25932684540748596,0.22825466096401215,9.870699398085384e-16,-0.22825466096401215,0.25932684540748596,-0.06637421995401382,-0.18391713500022888,0.2753278911113739,-0.1288910210132599,-0.1288910210132599,0.2753278911113739,-0.18391713500022888,-0.06637421995401382,0.25932684540748596,-0.22825466096401215],[-0.20759953558444977,0.2753278911113739,-0.1575528085231781,-0.06637421995401382,0.24558131396770477,-0.25932684540748596,0.09834969788789749,0.1288910210132599,-0.2692908048629761,0.22825466096401215,-0.033430859446525574,-0.18391713500022888,0.2773500978946686,-0.18391713500022888,-0.033430859446525574,0.22825466096401215,-0.2692908048629761,0.1288910210132599,0.09834969788789749,-0.25932684540748596,0.24558131396770477,-0.06637421995401382,-0.1575528085231781,0.2753278911113739,-0.20759953558444977],[-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888,8.371955066048889e-16,-0.18391713500022888,0.2753278911113739,-0.22825466096401215,0.06637421995401382,0.1288910210132599,-0.25932684540748596,0.25932684540748596,-0.1288910210132599,-0.06637421995401382,0.22825466096401215,-0.2753278911113739,0.18391713500022888],[-0.1575528085231781,0.25932684540748596,-0.2692908048629761,0.18391713500022888,-0.033430859446525574,-0.1288910210132599,0.24558131396770477,-0.2753278911113739,0.20759953558444977,-0.06637421995401382,-0.09834969788789749,0.22825466096401215,-0.2773500978946686,0.22825466096401215,-0.09834969788789749,-0.06637421995401382,0.20759953558444977,-0.2753278911113739,0.24558131396770477,-0.1288910210132599,-0.033430859446525574,0.18391713500022888,-0.2692908048629761,0.25932684540748596,-0.1575528085231781],[-0.1288910210132599,0.22825466096401215,-0.2753278911113739,0.25932684540748596,-0.18391713500022888,0.06637421995401382,0.06637421995401382,-0.18391713500022888,0.25932684540748596,-0.2753278911113739,0.22825466096401215,-0.1288910210132599,-3.0802549003271684e-16,0.1288910210132599,-0.22825466096401215,0.2753278911113739,-0.25932684540748596,0.18391713500022888,-0.06637421995401382,-0.06637421995401382,0.18391713500022888,-0.25932684540748596,0.2753278911113739,-0.22825466096401215,0.1288910210132599],[-0.09834969788789749,0.18391713500022888,-0.24558131396770477,0.2753278911113739,-0.2692908048629761,0.22825466096401215,-0.1575528085231781,0.06637421995401382,0.033430859446525574,-0.1288910210132599,0.20759953558444977,-0.25932684540748596,0.2773500978946686,-0.25932684540748596,0.20759953558444977,-0.1288910210132599,0.033430859446525574,0.06637421995401382,-0.1575528085231781,0.22825466096401215,-0.2692908048629761,0.2753278911113739,-0.24558131396770477,0.18391713500022888,-0.09834969788789749],[-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382,6.798085926082532e-17,-0.06637421995401382,0.1288910210132599,-0.18391713500022888,0.22825466096401215,-0.25932684540748596,0.2753278911113739,-0.2753278911113739,0.25932684540748596,-0.22825466096401215,0.18391713500022888,-0.1288910210132599,0.06637421995401382],[0.033430859446525574,-0.06637421995401382,0.09834969788789749,-0.1288910210132599,0.1575528085231781,-0.18391713500022888,0.20759953558444977,-0.22825466096401215,0.24558131396770477,-0.25932684540748596,0.2692908048629761,-0.2753278911113739,0.2773500978946686,-0.2753278911113739,0.2692908048629761,-0.25932684540748596,0.24558131396770477,-0.22825466096401215,0.20759953558444977,-0.18391713500022888,0.1575528085231781,-0.1288910210132599,0.09834969788789749,-0.06637421995401382,0.033430859446525574]]
 
-  RLambda = [4.6419172286987305,15.514562606811523,33.45938491821289,58.21471405029297,89.4195556640625,126.61888122558594,169.27023315429688,216.7516632080078,268.37078857421875,323.3748474121094,380.9618225097656,440.29193115234375,500.5,560.7080688476562,620.0381469726562,677.6251220703125,732.6292114257812,784.2483520507812,831.7297973632812,874.381103515625,911.5804443359375,942.7852783203125,967.5405883789062,985.4854125976562,996.3580932617188]
+    RLambda = [4.6419172286987305,15.514562606811523,33.45938491821289,58.21471405029297,89.4195556640625,126.61888122558594,169.27023315429688,216.7516632080078,268.37078857421875,323.3748474121094,380.9618225097656,440.29193115234375,500.5,560.7080688476562,620.0381469726562,677.6251220703125,732.6292114257812,784.2483520507812,831.7297973632812,874.381103515625,911.5804443359375,942.7852783203125,967.5405883789062,985.4854125976562,996.3580932617188]
 
-  var alpha = 0.003
-  var beta = 0.8
-  var b = zeros(25); b[0] =  249.75
-  var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
-  var res = function(i) { return iter(i)[0] }
+    var alpha = 0.003
+    var beta = 0.8
+    var b = zeros(25); b[0] =  249.75
+    var iter = geniterMomentum(RQ, RLambda, b, alpha, beta).iter
+    var res = function(i) { return iter(i)[0] }
 
-  var sampleSVG = d3.select("#iterates")
-    .style("display", "block")
-      .append("svg")
-      .attr("width", 770)
-      .attr("height", 700)
+    var sampleSVG = d3.select("#iterates")
+      .style("display", "block")
+        .append("svg")
+        .attr("width", 770)
+        .attr("height", 700)
 
-  var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.6,0.8]).range(colorbrewer.YlGnBu[5]);
-  var jet = d3.scaleLinear().domain([-0,0.1,0.2,0.5,1.0,8]).range(colorbrewer.YlGnBu[5]);
-  var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.YlGnBu[3]);
+    var rosen = d3.scaleLinear().domain([0,0.2,0.5,0.6,0.8]).range(colorbrewer.YlGnBu[5]);
+    var jet = d3.scaleLinear().domain([-0,0.1,0.2,0.5,1.0,8]).range(colorbrewer.YlGnBu[5]);
+    var contrast = d3.scaleLinear().domain([-12,0,12]).range(colorbrewer.YlGnBu[3]);
 
-  var xstar = iter(10000000)
-  var numIters = 52
+    var xstar = iter(10000000)
+    var numIters = 52
 
-  var pathstr = "M 8,0"
+    var pathstr = "M 8,0"
 
-  for (var j = 0; j < 27; j++) {
-    if (j != 26 && j > 0) {
-      pathstr = pathstr + "L " + j*8 + "," + (j-1)*8 +  "L " + j*8 + "," + j*8
+    for (var j = 0; j < 27; j++) {
+      if (j != 26 && j > 0) {
+        pathstr = pathstr + "L " + j*8 + "," + (j-1)*8 +  "L " + j*8 + "," + j*8
+      }
+      if (j == 0) {
+        //pathstr = pathstr + "L " + j*8 + "," + j*8
+      }
+      if (j == 26) {
+        pathstr = pathstr + "L " + j*8 + "," + (j-1)*8
+      }
     }
-    if (j == 0) {
-      //pathstr = pathstr + "L " + j*8 + "," + j*8
-    }
-    if (j == 26) {
-      pathstr = pathstr + "L " + j*8 + "," + (j-1)*8
-    }
-  }
-  pathstr = pathstr + "L "+ 26*8 + ",0 L 8,0 "
+    pathstr = pathstr + "L "+ 26*8 + ",0 L 8,0 "
 
 
-  var Disps3 = []
-  var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 440 + ",0)")
-  for (var j = 0; j < numIters; j++) {
-    var disp = errorPlot.append("g")
-
-    var denter = disp.selectAll("rect")
-        .data(iter(j)[1])
-        .enter()
-
-    denter.append("rect")
-        .style("fill", function(d,i) { return rosen(d) })
-        .attr("height", 7.7)
-        .attr("width", 7.7)
-        .attr("x", function(d, i){return i*8+ 10})
-        .attr("y", function(d, i){return j*8 })
-    Disps3.push(disp)
-  }
-
-  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1px").attr("transform", "translate(2,0.5)")
-
-  var Disps4 = []
-  var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 220 + ",0)")
-  for (var j = 0; j < numIters; j++) {
-    var disp = errorPlot.append("g")
-
-    var denter = disp.selectAll("rect")
-        .data(iter(j)[1])
-        .enter()
-
-    denter.append("rect")
-        .style("fill", function(d,i) { return jet(d) })
-        .attr("height", 7.7)
-        .attr("width", 7.7)
-        .attr("x", function(d, i){return i*8+ 10})
-        .attr("y", function(d, i){return j*8 })
-
-    if ((j % 10 == 0) || j == 0) {
-    disp.append("text")
-        .attr("class", "figtext")
-        .attr("text-anchor", "end")
-        .attr("x", 0)
-        .attr("y", function(d, i){return (j*8 + 10) })
-        .html( (j == 0) ? "Iteration 0" : "" + j)
-    }
-
-    Disps4.push(disp)
-  }
-
-  errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1px").attr("transform", "translate(2,0.5)")
-
-
-  function update(alpha, beta) {
-    var iter = geniterMomentum(RQ, RLambda, b, Math.max(alpha, 0.00001), Math.min(Math.max(beta, 0.00001), 0.999)).iter
+    var Disps3 = []
+    var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 440 + ",0)")
     for (var j = 0; j < numIters; j++) {
-      var iterj = iter(j)
-      Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })
-      Disps4[j].selectAll("rect").data(iterj[1]).merge(Disps4[j]).style("fill", function(d,i) { return jet(d) })
+      var disp = errorPlot.append("g")
 
+      var denter = disp.selectAll("rect")
+          .data(iter(j)[1])
+          .enter()
+
+      denter.append("rect")
+          .style("fill", function(d,i) { return rosen(d) })
+          .attr("height", 7.7)
+          .attr("width", 7.7)
+          .attr("x", function(d, i){return i*8+ 10})
+          .attr("y", function(d, i){return j*8 })
+      Disps3.push(disp)
     }
-  }
 
-  var reset = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
+    errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1px").attr("transform", "translate(2,0.5)")
 
-  update(0.0035749243028120182, 0.8095238095238095)
+    var Disps4 = []
+    var errorPlot = sampleSVG.append("g").attr("transform", "translate(" + 220 + ",0)")
+    for (var j = 0; j < numIters; j++) {
+      var disp = errorPlot.append("g")
 
-  colorMap( d3.select("#rosen_colorbar1"),
-            194,
-            rosen,
-            d3.scaleLinear().domain([0,1]).range([0, 194]) )
+      var denter = disp.selectAll("rect")
+          .data(iter(j)[1])
+          .enter()
 
-  colorMap( d3.select("#rosen_colorbar2"),
-            194,
-            jet,
-            d3.scaleLinear().domain([0,1]).range([0, 194]) );
+      denter.append("rect")
+          .style("fill", function(d,i) { return jet(d) })
+          .attr("height", 7.7)
+          .attr("width", 7.7)
+          .attr("x", function(d, i){return i*8+ 10})
+          .attr("y", function(d, i){return j*8 })
 
-  // Swoopy Annotator
-  var annotations = [
-    {
-      "x": 0,
-      "y": 0,
-      "path": "M 817,95 A 23.869 23.869 0 0 0 792,72",
-      "text": "Optimal parameters",
-      "textOffset": [
-        767,
-        109
-      ]
+      if ((j % 10 == 0) || j == 0) {
+      disp.append("text")
+          .attr("class", "figtext")
+          .attr("text-anchor", "end")
+          .attr("x", 0)
+          .attr("y", function(d, i){return (j*8 + 10) })
+          .html( (j == 0) ? "Iteration 0" : "" + j)
+      }
+
+      Disps4.push(disp)
     }
-  ]
-  var sel = drawAnnotations(d3.select("#rosenViz"), annotations)
-  sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
 
-  callback(null);
+    errorPlot.append("g").append("path").attr("d", pathstr).style("stroke","black").style("fill","none").style("stroke-width","1px").attr("transform", "translate(2,0.5)")
+
+
+    function update(alpha, beta) {
+      var iter = geniterMomentum(RQ, RLambda, b, Math.max(alpha, 0.00001), Math.min(Math.max(beta, 0.00001), 0.999)).iter
+      for (var j = 0; j < numIters; j++) {
+        var iterj = iter(j)
+        Disps3[j].selectAll("rect").data(iterj[1]).merge(Disps3[j]).style("fill", function(d,i) { return rosen(Math.abs(d - xstar[1][i]) ) })
+        Disps4[j].selectAll("rect").data(iterj[1]).merge(Disps4[j]).style("fill", function(d,i) { return jet(d) })
+
+      }
+    }
+
+    var reset = slider2D(d3.select("#sliderz"), function(x,y) { update(x/RLambda[RLambda.length - 1],y) }, 4.6, 996.35)
+
+    update(0.0035749243028120182, 0.8095238095238095)
+
+    colorMap( d3.select("#rosen_colorbar1"),
+              194,
+              rosen,
+              d3.scaleLinear().domain([0,1]).range([0, 194]) )
+
+    colorMap( d3.select("#rosen_colorbar2"),
+              194,
+              jet,
+              d3.scaleLinear().domain([0,1]).range([0, 194]) );
+
+    // Swoopy Annotator
+    var annotations = [
+      {
+        "x": 0,
+        "y": 0,
+        "path": "M 817,95 A 23.869 23.869 0 0 0 792,72",
+        "text": "Optimal parameters",
+        "textOffset": [
+          767,
+          109
+        ]
+      }
+    ]
+    var sel = drawAnnotations(d3.select("#rosenViz"), annotations)
+    sel.selectAll("text").style("cursor", "pointer").style("pointer-events","all").on("click", reset)
+
   });
 
   </script>
@@ -1709,7 +1573,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   <p>
   There is a final point worth addressing. All the discussion above assumes access to the true gradient -- a luxury seldom afforded in modern machine learning. Computing the exact gradient requires a full pass over all the data, the cost of which can be prohibitively expensive. Instead, randomized approximations of the gradient, like minibatch sampling, are often used as a plug-in replacement of <d-math>\nabla f(w)</d-math>. We can write the approximation in two parts,
   </p>
-  <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "truegradientpluserror">
+  <figure style="width:510px; height:50px; display:block; margin-left:auto; margin-right:auto; position:relative" id="truegradientpluserror">
 
   <div style="position:relative; top:-45px">
 
@@ -1733,12 +1597,9 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figcaption>
   </div>
   </figure>
-  <script>
-  renderMath(document.getElementById("truegradientpluserror"))
-  </script>
 
   <p>
-  It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <dt-fn>
+  It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <d-fn>
   The momentum iterations are
   <d-math block>
   \begin{aligned}
@@ -1766,7 +1627,7 @@ x_{i}^{k}
 \end{array}\!\!\right)
   </d-math>
   Inverting the <d-math>2 \times 2</d-math> matrix on the left, and applying the formula recursively yields the final solution.
-  </dt-fn>
+  </d-fn>
   </p>
 
   <figure style="width:610px; height:80px; display:block; margin-left:auto; margin-right:auto; position:relative" id="iteratespluserror">
@@ -1816,12 +1677,10 @@ x_{i}^{k}
 
   </div>
   </figure>
-  <script>
-  renderMath(document.getElementById("iteratespluserror"))
-  </script>
+
   <p>
   The error term, <d-math>\epsilon^k</d-math>, with its dependence on the <d-math>w^k</d-math>, is a fairly hairy object. Following <d-cite key="flammarion2015averaging"></d-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
-     <dt-fn>On the 1D function <d-math>f(x)=\frac{\lambda}{2}x^{2}</d-math>, the objective value is
+     <d-fn>On the 1D function <d-math>f(x)=\frac{\lambda}{2}x^{2}</d-math>, the objective value is
 <d-math block>
 \begin{aligned}
 \mathbf{E}f(x^{k})&=\frac{\lambda}{2}\mathbf{E}[(x^{k})^{2}]\\&=\frac{\lambda}{2}\mathbf{E}\left(e_{2}^{T}R^{k}\left(\begin{array}{c}
@@ -1852,47 +1711,51 @@ x^{0}
 \end{aligned}
 </d-math>
 The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-math> and the fourth uses the fact they are uncorrelated.
-</dt-fn>, visualized here.
+</d-fn>, visualized here.
   </p>
-  <script src="assets/stochastic_milestones.js"></script>
-  <figure id="stochastic" style="position:relative; width:920px; height:460px">
-  <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value <d-math>\mathbf{E} f(w) - f(w^\star)</d-math> into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
-  <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px"><d-math>\mathbf{E} f(w) - f(w^\star) </d-math></span></figcaption>
-  <figcaption style="position:absolute; text-align:right; top:240px; left:12px; width:116px; height:120px"> The small black dots are a single run of stochastic gradient</figcaption>
 
-  <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
-  <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
+  <figure>
+    <d-figure id="stochastic" style="position:relative; width:920px; height:460px">
+      <figcaption style="position:absolute; text-align:left; top:30px; left:135px; width:280px; height:120px">We decompose the expected value of the objective value <d-math>\mathbf{E} f(w) - f(w^\star)</d-math> into a deterministic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#e0ecf4"></svg> and a stochastic part <svg style="position:relative; top:2px; width:3px; height:14px; background:#9ebcda"></svg>. </figcaption>
+      <figcaption style="position:absolute; text-align:left; top:210px; left:12px; width:116px; height:120px"> <span style="font-size:15px"><d-math>\mathbf{E} f(w) - f(w^\star) </d-math></span></figcaption>
+      <figcaption style="position:absolute; text-align:right; top:240px; left:12px; width:116px; height:120px"> The small black dots are a single run of stochastic gradient</figcaption>
 
-  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <d-cite key="sutskever2013importance"></d-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient, and Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient, and momentum is less effective.</figcaption>
+      <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
+      <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
-  <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
-  <div id = "stochasticgd" style="position:relative; left:15px"></div>
+      <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <d-cite key="sutskever2013importance"></d-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient, and Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient, and momentum is less effective.</figcaption>
+
+      <div id="sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
+      <div id="stochasticgd" style="position:relative; left:15px"></div>
+    </d-figure>
   </figure>
 
+  <script src="assets/stochastic_milestones.js"></script>
   <script>
-  deleteQueue.push(renderLoading(d3.select("#stochastic")))
-  renderQueue.push(function(callback) {
+    document.querySelector("#stochastic").addEventListener("ready", function() {
       var graphDiv = d3.select("#stochasticgd")
-                   .style("width",  920 + "px")
-                   .style("height", 300 + "px")
-                   .style("top", "170px")
-                   .style("position", "relative")
-                   .style("margin-left", "auto")
-                   .style("margin-right", "auto")
-                   .attr("width", 920)
-                   .attr("height", 500)
+        .style("width",  920 + "px")
+        .style("height", 300 + "px")
+        .style("top", "170px")
+        .style("position", "relative")
+        .style("margin-left", "auto")
+        .style("margin-right", "auto")
+        .attr("width", 920)
+        .attr("height", 500);
 
-    var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500)
+      var svg = graphDiv.append("svg").attr("width", 940).attr("height", 500);
 
-    var update = renderStochasticMilestones(svg, function() {})
-    var slidera = slider2D(d3.select("#sliderStep2DD"), function(x,y) { update(x,y) }, 1, 100)
-    slidera(0.5,0.5)
-  });
+      var update = renderStochasticMilestones(svg, function() {})
+      var slidera = slider2D(d3.select("#sliderStep2DD"), function(x,y) { update(x,y) }, 1, 100)
+      slidera(0.5,0.5);
+    });
   </script>
+
   <p>
   Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <d-cite key="sutskever2013importance"></d-cite> has observed, the transient phase seems to matter more than the fine-tuning phase in machine learning. And in fact, it has been recently suggested <d-cite key="zhang2016understanding"></d-cite> that this noise is a good thing -- it acts as a implicit regularizer, which, like early stopping, prevents overfitting in the fine-tuning phase of optimization.
   </p>
-  <hr>
+
+  <!-- <hr> -->
   <h2>Onwards and Downwards</h2>
   <p>
   The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <d-cite key="su2014differential"></d-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical, interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <d-cite key="rutishauser1959theory,hardtzen"></d-cite>. Geometric interpretations are emerging <d-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></d-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <d-cite key="allen2014linear"></d-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <d-cite key="nesterov2008accelerating"></d-cite>). But like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will converge into a satisfying whole.
@@ -2166,41 +2029,3 @@ The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-mat
 
   <distill-appendix></distill-appendix>
 </d-appendix>
-
-
-<!-- Figure render queue -->
-<script>
-
-// for (var i = 0; i < renderQueue.length; i++) {
-//   renderQueue[i](function() {})
-//   deleteQueue[i](function() {})
-// }
-  setTimeout(function() {
-    var q = d3.queue(1);
-
-    d3.zip(deleteQueue,renderQueue).forEach(function(fn) {
-      q.defer(function(callback) {
-        fn[1](callback);
-        fn[0](callback);
-        renderMath(document.body);
-      });
-      q.defer(function(callback) {
-        setTimeout(function() {
-          callback(null);
-        }, 50);
-      });
-    });
-    q.await(function(error) {
-      if (error) {
-        console.error("Render error.", error)
-      } else {
-        console.log("Render done.")
-      }
-    });
-  }, 50);
-
-// DEBUG
-// renderQueue.forEach( function (fn) { fn( function() {}) } )
-
-
-</script>

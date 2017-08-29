@@ -4,14 +4,18 @@
   <meta name="viewport" content="width=1080">
   <script src="http://localhost:8888/dist/template.v2.js"></script>
   <d-front-matter>
-    <script type="text/yml">
-      title: Why Momentum Really Works
-      description: "We often think of optimization with momentum as a ball rolling down a hill. This isn't wrong, but there is much more to the story."
-      authors:
-        - Gabriel Goh: http://gabgoh.github.io
-      affiliations:
-        - UC Davis: http://math.ucdavis.edu
-    </script>
+    <script type="text/json">{
+      "title": "Why Momentum Really Works",
+      "description": "We often think of optimization with momentum as a ball rolling down a hill. This isn't wrong, but there is much more to the story.",
+      "authors": [
+        {
+          "author": "Gabriel Goh",
+          "authorURL": "http://gabgoh.github.io",
+          "affiliation": "UC Davis",
+          "affiliationURL": "http://math.ucdavis.edu"
+        }
+      ]
+    }</script>
   </d-front-matter>
 
   <!-- Katex -->
@@ -202,7 +206,7 @@
 
   </script>
   <p>
-  Here’s a popular story about momentum <dt-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></dt-cite>: gradient descent is a man walking down a hill. He follows the steepest path downwards; his progress is slow, but steady. Momentum is a heavy ball rolling down the same hill. The added inertia acts both as a smoother and an accelerator, dampening oscillations and causing us to barrel through narrow valleys, small humps and local minima.
+  Here’s a popular story about momentum <d-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></d-cite>: gradient descent is a man walking down a hill. He follows the steepest path downwards; his progress is slow, but steady. Momentum is a heavy ball rolling down the same hill. The added inertia acts both as a smoother and an accelerator, dampening oscillations and causing us to barrel through narrow valleys, small humps and local minima.
   </p>
   <p>
   This standard story isn’t wrong, but it fails to explain many important behaviors of momentum. In fact, momentum can be understood far more precisely if we study it on the right model.
@@ -243,11 +247,11 @@
   </p>
 
   <p>
-  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior -- a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <dt-fn> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <dt-cite key="lessard2016analysis"></dt-cite> for a counterexample. </dt-fn> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
+  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior -- a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <dt-fn> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <d-cite key="lessard2016analysis"></d-cite> for a counterexample. </dt-fn> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
   </p>
 
   <p>
-  But there's more. A lower bound, courtesy of Nesterov <dt-cite key="nesterov2013introductory"></dt-cite>, states that momentum is, in a certain very narrow and technical sense, optimal. Now, this doesn't mean it is the best algorithm for all functions in all circumstances. But it does satisfy some curiously beautiful mathematical properties which scratch a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
+  But there's more. A lower bound, courtesy of Nesterov <d-cite key="nesterov2013introductory"></d-cite>, states that momentum is, in a certain very narrow and technical sense, optimal. Now, this doesn't mean it is the best algorithm for all functions in all circumstances. But it does satisfy some curiously beautiful mathematical properties which scratch a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
   </p>
 
 <hr>
@@ -263,7 +267,7 @@
 
   <d-math block> w^{\star} = A^{-1}b.</d-math>
 
-  Simple as this model may be, it is rich enough to approximate many functions (think of <d-math>A</d-math> as your favorite model of curvature -- the Hessian, Fisher Information Matrix <dt-cite key="amari1998natural"></dt-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write an exact closed formula for gradient descent on this function.
+  Simple as this model may be, it is rich enough to approximate many functions (think of <d-math>A</d-math> as your favorite model of curvature -- the Hessian, Fisher Information Matrix <d-cite key="amari1998natural"></d-cite>, etc) and captures all the key features of pathological curvature. And more importantly, we can write an exact closed formula for gradient descent on this function.
   </p>
 
   <p>
@@ -800,7 +804,7 @@ We can think of regularization as a function which decays the largest eigenvalue
 Gradient descent can be seen as employing a similar decay, but with the decay rate
 <d-math block> \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)</d-math>
 instead. Note that this decay is dependent on the step-size.
-</dt-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <dt-cite key="hintonNIPS"></dt-cite> indeed.
+</dt-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <d-cite key="hintonNIPS"></d-cite> indeed.
   </p>
 
 <hr>
@@ -825,7 +829,7 @@ instead. Note that this decay is dependent on the step-size.
   \end{aligned}
   </d-math>
 
-  Following <dt-cite key="o2015adaptive"></dt-cite>, we go through the same motions, with the change of basis <d-math>
+  Following <d-cite key="o2015adaptive"></d-cite>, we go through the same motions, with the change of basis <d-math>
   x^{k} = Q(w^{k} - w^\star)</d-math> and <d-math> y^{k} = Qz^{k}</d-math>, to yield the update rule
 
   <d-math block>
@@ -887,7 +891,7 @@ instead. Note that this decay is dependent on the step-size.
   -\alpha\beta & 1-\alpha\lambda_{i}
   \end{array}\!\!\right).
   </d-math>
-  There are many ways of taking a matrix to the <d-math>k^{th}</d-math> power. But for the <d-math>2 \times 2</d-math> case there is an elegant and little known formula <dt-cite key="williamsnthpower"></dt-cite> in terms of the eigenvalues of <d-math>R</d-math>, <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math>.
+  There are many ways of taking a matrix to the <d-math>k^{th}</d-math> power. But for the <d-math>2 \times 2</d-math> case there is an elegant and little known formula <d-cite key="williamsnthpower"></d-cite> in terms of the eigenvalues of <d-math>R</d-math>, <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math>.
 
   <d-math block>
 \color{#AAA}{\color{black}{R^{k}}=\begin{cases}
@@ -917,7 +921,7 @@ Which is, surprisingly, independent of the step-size or the eigenvalue <d-math>\
 \max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\}
 </d-math>
 
- </dt-fn>. By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <dt-cite key="flammarion2015averaging"></dt-cite>:
+ </dt-fn>. By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <d-cite key="flammarion2015averaging"></d-cite>:
   </p>
 
   <figure id = "momentum2D" style="width:984px; height:540px">
@@ -1017,7 +1021,7 @@ Which is, surprisingly, independent of the step-size or the eigenvalue <d-math>\
   </p>
 
   <p>
-  Momentum admits an interesting physical interpretation when <d-math>\alpha</d-math> is <dt-cite key="qian1999momentum"></dt-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
+  Momentum admits an interesting physical interpretation when <d-math>\alpha</d-math> is <d-cite key="qian1999momentum"></d-cite> small: it is a discretization of a damped harmonic oscillator. Consider a physical simulation operating in discrete time (like a video game).
   </p>
 
   <figure id = "momentum_annotations" style="width:530px; height:150px; display:block; margin-left:auto; margin-right:auto; position:relative">
@@ -1447,7 +1451,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   w^{k+1} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\gamma_{i}^{k}\nabla f(w^{i}) \qquad \text{ for some } \gamma_{i}^{k}
   </d-math>
 
-  contains momentum, gradient descent and a whole bunch of other algorithms you might dream up. This is what is assumed in Assumption 2.1.4 <dt-cite key="nesterov2013introductory"></dt-cite> of Nesterov. But let's push this even further, and expand this class to allow different step-sizes for different directions.
+  contains momentum, gradient descent and a whole bunch of other algorithms you might dream up. This is what is assumed in Assumption 2.1.4 <d-cite key="nesterov2013introductory"></d-cite> of Nesterov. But let's push this even further, and expand this class to allow different step-sizes for different directions.
 
   <d-math block>
   w^{k+1} ~~=~~ w^{0} ~+~ \sum_{i}^{k}\Gamma_{i}^{k}\nabla f(w^{i}) \quad \text{ for some diagonal matrix } \Gamma_{i}^{k} .
@@ -1819,7 +1823,7 @@ x_{i}^{k}
   renderMath(document.getElementById("iteratespluserror"))
   </script>
   <p>
-  The error term, <d-math>\epsilon^k</d-math>, with its dependence on the <d-math>w^k</d-math>, is a fairly hairy object. Following <dt-cite key="flammarion2015averaging"></dt-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
+  The error term, <d-math>\epsilon^k</d-math>, with its dependence on the <d-math>w^k</d-math>, is a fairly hairy object. Following <d-cite key="flammarion2015averaging"></d-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
      <dt-fn>On the 1D function <d-math>f(x)=\frac{\lambda}{2}x^{2}</d-math>, the objective value is
 <d-math block>
 \begin{aligned}
@@ -1862,7 +1866,7 @@ The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-mat
   <div class="figtext" style="position:absolute; left:705px; top:11px">Step-size α = </div>
   <div class="figtext" style="position:absolute; left:464px; top:30px">Momentum β = </div>
 
-  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <dt-cite key="sutskever2013importance"></dt-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient, and Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient, and momentum is less effective.</figcaption>
+  <figcaption style="position:absolute; text-align:left; top:400px; left:135px; width:640px; height:60px">As <d-cite key="sutskever2013importance"></d-cite> observes, the optimization has two phases. In the initial transient phase the magnitude of the noise is smaller than the magnitude of the gradient, and Momentum still makes good progress. In the second, stochastic phase, the noise overwhelms the gradient, and momentum is less effective.</figcaption>
 
   <div id = "sliderStep2DD" style="position:absolute; left:550px; width:250px; height:100px; top:10px"></div>
   <div id = "stochasticgd" style="position:relative; left:15px"></div>
@@ -1889,284 +1893,283 @@ The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-mat
   });
   </script>
   <p>
-  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <dt-cite key="sutskever2013importance"></dt-cite> has observed, the transient phase seems to matter more than the fine-tuning phase in machine learning. And in fact, it has been recently suggested <dt-cite key="zhang2016understanding"></dt-cite> that this noise is a good thing -- it acts as a implicit regularizer, which, like early stopping, prevents overfitting in the fine-tuning phase of optimization.
+  Note that there are a set of unfortunate tradeoffs which seem to pit the two components of error against each other. Lowering the step-size, for example, decreases the stochastic error, but also slows down the rate of convergence. And increasing momentum, contrary to popular belief, causes the errors to compound. Despite these undesirable properties, stochastic gradient descent with momentum has still been shown to have competitive performance on neural networks. As <d-cite key="sutskever2013importance"></d-cite> has observed, the transient phase seems to matter more than the fine-tuning phase in machine learning. And in fact, it has been recently suggested <d-cite key="zhang2016understanding"></d-cite> that this noise is a good thing -- it acts as a implicit regularizer, which, like early stopping, prevents overfitting in the fine-tuning phase of optimization.
   </p>
   <hr>
   <h2>Onwards and Downwards</h2>
   <p>
-  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <dt-cite key="su2014differential"></dt-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical, interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <dt-cite key="rutishauser1959theory,hardtzen"></dt-cite>. Geometric interpretations are emerging <dt-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></dt-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <dt-cite key="allen2014linear"></dt-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <dt-cite key="nesterov2008accelerating"></dt-cite>). But like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will converge into a satisfying whole.
+  The study of acceleration is seeing a small revival within the optimization community. If the ideas in this article excite you, you may wish to read <d-cite key="su2014differential"></d-cite>, which fully explores the idea of momentum as the discretization of a certain differential equation. But other, less physical, interpretations exist. There is an algebraic interpretation of momentum in terms of approximating polynomials <d-cite key="rutishauser1959theory,hardtzen"></d-cite>. Geometric interpretations are emerging <d-cite key="bubeck2015geometric,drusvyatskiy2016optimal"></d-cite>, connecting momentum to older methods, like the Ellipsoid method. And finally, there are interpretations relating momentum to duality <d-cite key="allen2014linear"></d-cite>, perhaps providing a clue as how to accelerate second order methods and Quasi Newton (for a first step, see <d-cite key="nesterov2008accelerating"></d-cite>). But like the proverbial blind men feeling an elephant, momentum seems like something bigger than the sum of its parts. One day, hopefully soon, the many perspectives will converge into a satisfying whole.
   </p>
 </d-article>
 
-<p>
+<d-appendix>
 
-  </p>
+  <d-acknowledgements>
+    <h3>Acknowledgments</h3>
 
+    <p>
+    I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided complete redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
+    </p>
+    <p>
+    I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. I would like to thank Reviewer B, in particular, for pointing out two non-trivial errors in the original manuscript (discussion <a href="https://github.com/distillpub/post--momentum/issues/34">here</a>). The contour plotting library for the hero visualization is the joint work of Ben Frederickson, Jeff Heer and Mike Bostock.
+    </p>
+    <p>
+    Many thanks to the numerous pull requests and issues filed on github. Thanks in particular, to Osemwaro Pedro for spotting an off by one error in one of the equations. And also to Dan Schmidt who did an editing pass over the whole project, correcting numerous typographical and grammatical errors.
+    </p>
 
-<dt-appendix class="centered">
+    <h3>Discussion and Review</h3>
+    <p>
+    <a href = "https://github.com/distillpub/post--momentum/issues/29">Reviewer A - Matt Hoffman</a><br>
+    <a href = "https://github.com/distillpub/post--momentum/issues/34">Reviewer B - Anonymous</a><br>
+    <a href = "https://github.com/distillpub/post--momentum/issues/51">Discussion with User derifatives</a>
+    </p>
+    
+  </d-acknowledgements>
 
+  <d-bibliography>
+    <script type="text/bibtex">
+    @article{o2015adaptive,
+      title={Adaptive restart for accelerated gradient schemes},
+      author={O’Donoghue, Brendan and Candes, Emmanuel},
+      journal={Foundations of computational mathematics},
+      volume={15},
+      number={3},
+      pages={715--732},
+      year={2015},
+      publisher={Springer},
+      url={https://arxiv.org/abs/1204.3982},
+      doi={10.1007/s10208-013-9150-3}
+    }
 
-  <h3>Acknowledgments</h3>
+    @article{flammarion2015averaging,
+      title={From averaging to acceleration, there is only a step-size},
+      author={Flammarion, Nicolas and Bach, Francis},
+      booktitle={Proceedings of the International Conference on Learning Theory (COLT)},
+      year={2015},
+      url={https://arxiv.org/abs/1504.01577}
+    }
 
-  <p>
-  I am deeply indebted to the editorial contributions of Shan Carter and Chris Olah, without which this article would be greatly impoverished. Shan Carter provided complete redesigns of many of my original interactive widgets, a visual coherence for all the figures, and valuable optimizations to the page's performance. Chris Olah provided impeccable editorial feedback at all levels of detail and abstraction - from the structure of the content, to the alignment of equations.
-  </p>
-  <p>
-  I am also grateful to Michael Nielsen for providing the title of this article, which really tied the article together. Marcos Ginestra provided editorial input for the earliest drafts of this article, and spiritual encouragement when I needed it the most. And my gratitude extends to my reviewers, Matt Hoffman and Anonymous Reviewer B for their astute observations and criticism. I would like to thank Reviewer B, in particular, for pointing out two non-trivial errors in the original manuscript (discussion <a href="https://github.com/distillpub/post--momentum/issues/34">here</a>). The contour plotting library for the hero visualization is the joint work of Ben Frederickson, Jeff Heer and Mike Bostock.
-  </p>
+    @article{ioffe2015batch,
+      title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
+      author={Ioffe, Sergey and Szegedy, Christian},
+      journal={arXiv preprint arXiv:1502.03167},
+      year={2015},
+      url={https://arxiv.org/abs/1502.03167}
+    }
 
-  <p>
-  Many thanks to the numerous pull requests and issues filed on github. Thanks in particular, to Osemwaro Pedro for spotting an off by one error in one of the equations. And also to Dan Schmidt who did an editing pass over the whole project, correcting numerous typographical and grammatical errors.
-  </p>
+    @article{duchi2011adaptive,
+      title={Adaptive subgradient methods for online learning and stochastic optimization},
+      author={Duchi, John and Hazan, Elad and Singer, Yoram},
+      journal={Journal of Machine Learning Research},
+      volume={12},
+      number={Jul},
+      pages={2121--2159},
+      year={2011},
+      url={http://jmlr.org/papers/v12/duchi11a.html}
+    }
 
-  <h4>Discussion and Review</h4>
-  <p>
-  <a href = "https://github.com/distillpub/post--momentum/issues/29">Reviewer A - Matt Hoffman</a><br>
-  <a href = "https://github.com/distillpub/post--momentum/issues/34">Reviewer B - Anonymous</a><br>
-  <a href = "https://github.com/distillpub/post--momentum/issues/51">Discussion with User derifatives</a>
-  </p>
+    @article{kingma2014adam,
+      title={Adam: A method for stochastic optimization},
+      author={Kingma, Diederik and Ba, Jimmy},
+      journal={arXiv preprint arXiv:1412.6980},
+      year={2014},
+      url={https://arxiv.org/abs/1412.6980}
+    }
 
-</dt-appendix>
+    @book{briggs2000multigrid,
+      title={A multigrid tutorial},
+      author={Briggs, William L and Henson, Van Emden and McCormick, Steve F},
+      year={2000},
+      publisher={SIAM},
+      doi={10.1137/1.9780898719505}
+    }
 
+    @article{su2014differential,
+      title={A differential equation for modeling Nesterov’s accelerated gradient method: Theory and insights},
+      author={Su, Weijie and Boyd, Stephen and Candes, Emmanuel},
+      booktitle={Advances in Neural Information Processing Systems},
+      pages={2510--2518},
+      year={2014},
+      url={https://arxiv.org/abs/1503.01243}
+    }
 
-<script type="text/bibliography">
-@article{o2015adaptive,
-  title={Adaptive restart for accelerated gradient schemes},
-  author={O’Donoghue, Brendan and Candes, Emmanuel},
-  journal={Foundations of computational mathematics},
-  volume={15},
-  number={3},
-  pages={715--732},
-  year={2015},
-  publisher={Springer},
-  url={https://arxiv.org/abs/1204.3982},
-  doi={10.1007/s10208-013-9150-3}
-}
+    @article{polyak1964some,
+      title={Some methods of speeding up the convergence of iteration methods},
+      author={Polyak, Boris T},
+      journal={USSR Computational Mathematics and Mathematical Physics},
+      volume={4},
+      number={5},
+      pages={1--17},
+      year={1964},
+      publisher={Elsevier},
+      url={https://www.researchgate.net/profile/Boris_Polyak2/publication/243648538_Some_methods_of_speeding_up_the_convergence_of_iteration_methods/links/5666fa3808ae34c89a01fda1.pdf},
+      doi={10.1016/0041-5553(64)90137-5}
+    }
 
-@article{flammarion2015averaging,
-  title={From averaging to acceleration, there is only a step-size},
-  author={Flammarion, Nicolas and Bach, Francis},
-  booktitle={Proceedings of the International Conference on Learning Theory (COLT)},
-  year={2015},
-  url={https://arxiv.org/abs/1504.01577}
-}
+    @article{flammarion2015averaging,
+      title={From Averaging to Acceleration, There is Only a Step-size.},
+      author={Flammarion, Nicolas and Bach, Francis R},
+      booktitle={COLT},
+      pages={658--695},
+      year={2015},
+      url={https://arxiv.org/abs/1504.01577}
+    }
 
-@article{ioffe2015batch,
-  title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
-  author={Ioffe, Sergey and Szegedy, Christian},
-  journal={arXiv preprint arXiv:1502.03167},
-  year={2015},
-  url={https://arxiv.org/abs/1502.03167}
-}
+    @article{williamsnthpower,
+      title={The Nth Power of a 2x2 Matrix.},
+      author={Williams, Kenneth},
+      journal={Mathematics Magazine},
+      volume={65},
+      number={5},
+      pages={336},
+      year={1992},
+      publisher={MAA},
+      url={http://people.math.carleton.ca/~williams/papers/pdf/175.pdf},
+      doi={10.2307/2691246}
+    }
 
-@article{duchi2011adaptive,
-  title={Adaptive subgradient methods for online learning and stochastic optimization},
-  author={Duchi, John and Hazan, Elad and Singer, Yoram},
-  journal={Journal of Machine Learning Research},
-  volume={12},
-  number={Jul},
-  pages={2121--2159},
-  year={2011},
-  url={http://jmlr.org/papers/v12/duchi11a.html}
-}
+    @article{hardtzen,
+      title={The Zen of Gradient Descent},
+      author={Hardt, Moritz},
+      year={2013},
+      url={http://blog.mrtz.org/2013/09/07/the-zen-of-gradient-descent.html}
+    }
 
-@article{kingma2014adam,
-  title={Adam: A method for stochastic optimization},
-  author={Kingma, Diederik and Ba, Jimmy},
-  journal={arXiv preprint arXiv:1412.6980},
-  year={2014},
-  url={https://arxiv.org/abs/1412.6980}
-}
+    @book{nesterov2013introductory,
+      title={Introductory lectures on convex optimization: A basic course},
+      author={Nesterov, Yurii},
+      volume={87},
+      year={2013},
+      publisher={Springer Science \& Business Media},
+      doi={10.1007/978-1-4419-8853-9}
+    }
 
-@book{briggs2000multigrid,
-  title={A multigrid tutorial},
-  author={Briggs, William L and Henson, Van Emden and McCormick, Steve F},
-  year={2000},
-  publisher={SIAM},
-  doi={10.1137/1.9780898719505}
-}
+    @article{rutishauser1959theory,
+      title={Theory of gradient methods},
+      author={Rutishauser, Heinz},
+      booktitle={Refined iterative methods for computation of the solution and the eigenvalues of self-adjoint boundary value problems},
+      pages={24--49},
+      year={1959},
+      publisher={Springer},
+      doi={10.1007/978-3-0348-7224-9_2}
+    }
 
-@article{su2014differential,
-  title={A differential equation for modeling Nesterov’s accelerated gradient method: Theory and insights},
-  author={Su, Weijie and Boyd, Stephen and Candes, Emmanuel},
-  booktitle={Advances in Neural Information Processing Systems},
-  pages={2510--2518},
-  year={2014},
-  url={https://arxiv.org/abs/1503.01243}
-}
+    @article{bubeck2015geometric,
+      title={A geometric alternative to Nesterov's accelerated gradient descent},
+      author={Bubeck, S{\'e}bastien and Lee, Yin Tat and Singh, Mohit},
+      journal={arXiv preprint arXiv:1506.08187},
+      year={2015},
+      url={https://arxiv.org/pdf/1506.08187.pdf}
+    }
 
-@article{polyak1964some,
-  title={Some methods of speeding up the convergence of iteration methods},
-  author={Polyak, Boris T},
-  journal={USSR Computational Mathematics and Mathematical Physics},
-  volume={4},
-  number={5},
-  pages={1--17},
-  year={1964},
-  publisher={Elsevier},
-  url={https://www.researchgate.net/profile/Boris_Polyak2/publication/243648538_Some_methods_of_speeding_up_the_convergence_of_iteration_methods/links/5666fa3808ae34c89a01fda1.pdf},
-  doi={10.1016/0041-5553(64)90137-5}
-}
+    @article{drusvyatskiy2016optimal,
+      title={An optimal first order method based on optimal quadratic averaging},
+      author={Drusvyatskiy, Dmitriy and Fazel, Maryam and Roy, Scott},
+      journal={arXiv preprint arXiv:1604.06543},
+      year={2016},
+      url={https://arxiv.org/pdf/1604.06543.pdf}
+    }
 
-@article{flammarion2015averaging,
-  title={From Averaging to Acceleration, There is Only a Step-size.},
-  author={Flammarion, Nicolas and Bach, Francis R},
-  booktitle={COLT},
-  pages={658--695},
-  year={2015},
-  url={https://arxiv.org/abs/1504.01577}
-}
+    @article{allen2014linear,
+      title={Linear coupling: An ultimate unification of gradient and mirror descent},
+      author={Allen-Zhu, Zeyuan and Orecchia, Lorenzo},
+      journal={arXiv preprint arXiv:1407.1537},
+      year={2014},
+      url={https://arxiv.org/pdf/1407.1537.pdf}
+    }
 
-@article{williamsnthpower,
-  title={The Nth Power of a 2x2 Matrix.},
-  author={Williams, Kenneth},
-  journal={Mathematics Magazine},
-  volume={65},
-  number={5},
-  pages={336},
-  year={1992},
-  publisher={MAA},
-  url={http://people.math.carleton.ca/~williams/papers/pdf/175.pdf},
-  doi={10.2307/2691246}
-}
+    @article{nesterov2008accelerating,
+      title={Accelerating the cubic regularization of Newton’s method on convex problems},
+      author={Nesterov, Yu},
+      journal={Mathematical Programming},
+      volume={112},
+      number={1},
+      pages={159--181},
+      year={2008},
+      publisher={Springer},
+      doi={10.1007/s10107-006-0089-x},
+      url={http://folk.uib.no/ssu029/Pdf_file/Nesterov08.pdf}
+    }
 
-@article{hardtzen,
-  title={The Zen of Gradient Descent},
-  author={Hardt, Moritz},
-  year={2013},
-  url={http://blog.mrtz.org/2013/09/07/the-zen-of-gradient-descent.html}
-}
+    @article{qian1999momentum,
+      title={On the momentum term in gradient descent learning algorithms},
+      author={Qian, Ning},
+      journal={Neural networks},
+      volume={12},
+      number={1},
+      pages={145--151},
+      year={1999},
+      publisher={Elsevier},
+      doi={10.1016/s0893-6080(98)00116-6},
+      url={https://pdfs.semanticscholar.org/735d/4220d5579cc6afe956d9f6ea501a96ae99e2.pdf}
+    }
 
-@book{nesterov2013introductory,
-  title={Introductory lectures on convex optimization: A basic course},
-  author={Nesterov, Yurii},
-  volume={87},
-  year={2013},
-  publisher={Springer Science \& Business Media},
-  doi={10.1007/978-1-4419-8853-9}
-}
+    @article{amari1998natural,
+      title={Natural gradient works efficiently in learning},
+      author={Amari, Shun-Ichi},
+      journal={Neural computation},
+      volume={10},
+      number={2},
+      pages={251--276},
+      year={1998},
+      publisher={MIT Press},
+      doi={10.1162/089976698300017746},
+      url={http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.452.7280&rep=rep1&type=pdf}
+    }
 
-@article{rutishauser1959theory,
-  title={Theory of gradient methods},
-  author={Rutishauser, Heinz},
-  booktitle={Refined iterative methods for computation of the solution and the eigenvalues of self-adjoint boundary value problems},
-  pages={24--49},
-  year={1959},
-  publisher={Springer},
-  doi={10.1007/978-3-0348-7224-9_2}
-}
+    @inproceedings{wiesler2011convergence,
+      title={A convergence analysis of log-linear training},
+      author={Wiesler, Simon and Ney, Hermann},
+      booktitle={Advances in Neural Information Processing Systems},
+      pages={657--665},
+      year={2011},
+      url={http://papers.nips.cc/paper/4421-a-convergence-analysis-of-log-linear-training.pdf}
+    }
 
-@article{bubeck2015geometric,
-  title={A geometric alternative to Nesterov's accelerated gradient descent},
-  author={Bubeck, S{\'e}bastien and Lee, Yin Tat and Singh, Mohit},
-  journal={arXiv preprint arXiv:1506.08187},
-  year={2015},
-  url={https://arxiv.org/pdf/1506.08187.pdf}
-}
-
-@article{drusvyatskiy2016optimal,
-  title={An optimal first order method based on optimal quadratic averaging},
-  author={Drusvyatskiy, Dmitriy and Fazel, Maryam and Roy, Scott},
-  journal={arXiv preprint arXiv:1604.06543},
-  year={2016},
-  url={https://arxiv.org/pdf/1604.06543.pdf}
-}
-
-@article{allen2014linear,
-  title={Linear coupling: An ultimate unification of gradient and mirror descent},
-  author={Allen-Zhu, Zeyuan and Orecchia, Lorenzo},
-  journal={arXiv preprint arXiv:1407.1537},
-  year={2014},
-  url={https://arxiv.org/pdf/1407.1537.pdf}
-}
-
-@article{nesterov2008accelerating,
-  title={Accelerating the cubic regularization of Newton’s method on convex problems},
-  author={Nesterov, Yu},
-  journal={Mathematical Programming},
-  volume={112},
-  number={1},
-  pages={159--181},
-  year={2008},
-  publisher={Springer},
-  doi={10.1007/s10107-006-0089-x},
-  url={http://folk.uib.no/ssu029/Pdf_file/Nesterov08.pdf}
-}
-
-@article{qian1999momentum,
-  title={On the momentum term in gradient descent learning algorithms},
-  author={Qian, Ning},
-  journal={Neural networks},
-  volume={12},
-  number={1},
-  pages={145--151},
-  year={1999},
-  publisher={Elsevier},
-  doi={10.1016/s0893-6080(98)00116-6},
-  url={https://pdfs.semanticscholar.org/735d/4220d5579cc6afe956d9f6ea501a96ae99e2.pdf}
-}
-
-@article{amari1998natural,
-  title={Natural gradient works efficiently in learning},
-  author={Amari, Shun-Ichi},
-  journal={Neural computation},
-  volume={10},
-  number={2},
-  pages={251--276},
-  year={1998},
-  publisher={MIT Press},
-  doi={10.1162/089976698300017746},
-  url={http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.452.7280&rep=rep1&type=pdf}
-}
-
-@inproceedings{wiesler2011convergence,
-  title={A convergence analysis of log-linear training},
-  author={Wiesler, Simon and Ney, Hermann},
-  booktitle={Advances in Neural Information Processing Systems},
-  pages={657--665},
-  year={2011},
-  url={http://papers.nips.cc/paper/4421-a-convergence-analysis-of-log-linear-training.pdf}
-}
-
-@article{sutskever2013importance,
-  title={On the importance of initialization and momentum in deep learning.},
-  author={Sutskever, Ilya and Martens, James and Dahl, George E and Hinton, Geoffrey E},
-  journal={ICML (3)},
-  volume={28},
-  pages={1139--1147},
-  year={2013},
-  url={http://www.jmlr.org/proceedings/papers/v28/sutskever13.pdf}
-}
+    @article{sutskever2013importance,
+      title={On the importance of initialization and momentum in deep learning.},
+      author={Sutskever, Ilya and Martens, James and Dahl, George E and Hinton, Geoffrey E},
+      journal={ICML (3)},
+      volume={28},
+      pages={1139--1147},
+      year={2013},
+      url={http://www.jmlr.org/proceedings/papers/v28/sutskever13.pdf}
+    }
 
 
-@article{hintonNIPS,
-  title={Deep Learning, NIPS'2015 Tutorial},
-  author={Hinton, Geoff and Bengio, Yoshua and LeCun, Yann},
-  year={2015},
-  url={http://www.iro.umontreal.ca/~bengioy/talks/DL-Tutorial-NIPS2015.pdf}
-}
+    @article{hintonNIPS,
+      title={Deep Learning, NIPS'2015 Tutorial},
+      author={Hinton, Geoff and Bengio, Yoshua and LeCun, Yann},
+      year={2015},
+      url={http://www.iro.umontreal.ca/~bengioy/talks/DL-Tutorial-NIPS2015.pdf}
+    }
 
-@article{zhang2016understanding,
-  title={Understanding deep learning requires rethinking generalization},
-  author={Zhang, Chiyuan and Bengio, Samy and Hardt, Moritz and Recht, Benjamin and Vinyals, Oriol},
-  journal={arXiv preprint arXiv:1611.03530},
-  year={2016},
-  url={https://arxiv.org/abs/1611.03530}
-}
+    @article{zhang2016understanding,
+      title={Understanding deep learning requires rethinking generalization},
+      author={Zhang, Chiyuan and Bengio, Samy and Hardt, Moritz and Recht, Benjamin and Vinyals, Oriol},
+      journal={arXiv preprint arXiv:1611.03530},
+      year={2016},
+      url={https://arxiv.org/abs/1611.03530}
+    }
 
-@article{lessard2016analysis,
-  title={Analysis and design of optimization algorithms via integral quadratic constraints},
-  author={Lessard, Laurent and Recht, Benjamin and Packard, Andrew},
-  journal={SIAM Journal on Optimization},
-  volume={26},
-  number={1},
-  pages={57--95},
-  year={2016},
-  publisher={SIAM},
-  url={https://arxiv.org/abs/1408.3595}
-}
+    @article{lessard2016analysis,
+      title={Analysis and design of optimization algorithms via integral quadratic constraints},
+      author={Lessard, Laurent and Recht, Benjamin and Packard, Andrew},
+      journal={SIAM Journal on Optimization},
+      volume={26},
+      number={1},
+      pages={57--95},
+      year={2016},
+      publisher={SIAM},
+      url={https://arxiv.org/abs/1408.3595}
+    }
 
-</script>
+    </script>
+  </d-bibliography>
+  
+  <distill-appendix></distill-appendix>
+</d-appendix>
+
 
 <!-- Figure render queue -->
 <script>

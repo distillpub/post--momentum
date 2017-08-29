@@ -18,9 +18,6 @@
     }</script>
   </d-front-matter>
 
-  <!-- Katex -->
-  <!--<script src="assets/lib/auto-render.min.js"></script>-->
-  <!--<script src="assets/lib/katex.min.js"></script>-->
   <link rel="stylesheet" href="assets/lib/katex.min.css">
   <link rel="stylesheet" type="text/css" href="assets/widgets.css">
 
@@ -43,17 +40,19 @@
 
     var deleteQueue = [];
     function renderLoading(figure) {
-      var loadingScreen = figure.append("svg")
-      .style("width", figure.style("width"))
-      .style("height", figure.style("height"))
-      .style("position","absolute")
-      .style("top", "0px")
-      .style("left","0px")
-      .style("background","white")
-      .style("border", "0px dashed #DDD")
-      .style("opacity", 1)
+      // var loadingScreen = figure.append("svg")
+      // .style("width", figure.style("width"))
+      // .style("height", figure.style("height"))
+      // .style("position","absolute")
+      // .style("top", "0px")
+      // .style("left","0px")
+      // .style("background","white")
+      // .style("border", "0px dashed #DDD")
+      // .style("opacity", 1)
 
-      return function(callback) { loadingScreen.remove() };
+      return function(callback) {
+        // loadingScreen.remove()
+      };
 
     }
 
@@ -139,12 +138,12 @@
   </g>
 </svg>
 
-<d-article class="centered">
+<d-article>
   <d-title>
     <h1>Why Momentum Really Works</h1>
   </d-title>
   <figure style="position:relative; width:984px; height:400px;">
-    <div id="banana" style="position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></div>
+    <d-figure id="banana" style="height: 300px;position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></d-figure>
     <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
       <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step-size α = 0.02</text>
     </div>
@@ -161,49 +160,49 @@
   <script src="assets/lib/contour_plot.js"></script>
   <script src="assets/iterates.js"></script>
   <script>
+    document.querySelector("#banana").addEventListener("ready", () => {
+      // Render Foreground
+      var iterControl = genIterDiagram(bananaf, [1,1/3], [[-2,2],[2/3 + 0.4,-2/3 + 0.4]])
+                        .alpha(0.003)
+                        .beta(0)
+                        (d3.select("#banana").style("position","relative"))
 
-  // Render Foreground
-  var iterControl = genIterDiagram(bananaf, [1,1/3], [[-2,2],[2/3 + 0.4,-2/3 + 0.4]])
-                    .alpha(0.003)
-                    .beta(0)
-                    (d3.select("#banana").style("position","relative"))
+      var iterChange = iterControl.control
+      var getw0 = iterControl.w0
 
-  var iterChange = iterControl.control
-  var getw0 = iterControl.w0
+      var StepRange = d3.scaleLinear().domain([0,100]).range([0,0.0062])
+      var MomentumRange = d3.scaleLinear().domain([0,100]).range([0,0.98])
 
-  var StepRange = d3.scaleLinear().domain([0,100]).range([0,0.0062])
-  var MomentumRange = d3.scaleLinear().domain([0,100]).range([0,0.98])
+      var update = function (i,j) { iterChange(i, 0, getw0()) }
 
-  var update = function (i,j) { iterChange(i, 0, getw0()) }
+      var slidera = sliderGen([230, 40])
+                  .ticks([0,0.003,0.006])
+                  .ticktitles( function(d,i) { return ["0", "0.003", "0.006"][i]})
+                  .change( function (i) {
+                    d3.select("#sliderAlpha").selectAll(".figtext").html("Step-size α = " + getalpha().toPrecision(2) )
+                    iterChange(getalpha(), getbeta(), getw0() )
+                  } )
+                  .startxval(0.003)
+                  .cRadius(7)
+                  .shifty(-12)
+                  .margins(20,20)
 
-  var slidera = sliderGen([230, 40])
-              .ticks([0,0.003,0.006])
-              .ticktitles( function(d,i) { return ["0", "0.003", "0.006"][i]})
-              .change( function (i) {
-                d3.select("#sliderAlpha").selectAll(".figtext").html("Step-size α = " + getalpha().toPrecision(2) )
-                iterChange(getalpha(), getbeta(), getw0() )
-              } )
-              .startxval(0.003)
-              .cRadius(7)
-              .shifty(-12)
-              .margins(20,20)
+      var sliderb = sliderGen([230, 40])
+                  .ticks([0,0.5,0.99])
+                  .change( function (i) {
+                    d3.select("#sliderBeta").selectAll(".figtext").html("Momentum β = " + getbeta().toPrecision(2) )
+                    iterChange(getalpha(), getbeta(), getw0() )
+                  } )
+                  .cRadius(7)
+                  .shifty(-12)
+                  .startxval(0.74)
+                  .margins(20,20)
 
-  var sliderb = sliderGen([230, 40])
-              .ticks([0,0.5,0.99])
-              .change( function (i) {
-                d3.select("#sliderBeta").selectAll(".figtext").html("Momentum β = " + getbeta().toPrecision(2) )
-                iterChange(getalpha(), getbeta(), getw0() )
-              } )
-              .cRadius(7)
-              .shifty(-12)
-              .startxval(0.74)
-              .margins(20,20)
+      var getalpha = slidera( d3.select("#sliderAlpha")).xval
+      var getbeta  = sliderb( d3.select("#sliderBeta")).xval
 
-  var getalpha = slidera( d3.select("#sliderAlpha")).xval
-  var getbeta  = sliderb( d3.select("#sliderBeta")).xval
-
-  iterChange(getalpha(), getbeta(), getw0() )
-
+      iterChange(getalpha(), getbeta(), getw0() )
+    });
   </script>
   <p>
   Here’s a popular story about momentum <d-cite key="sutskever2013importance,polyak1964some,rutishauser1959theory"></d-cite>: gradient descent is a man walking down a hill. He follows the steepest path downwards; his progress is slow, but steady. Momentum is a heavy ball rolling down the same hill. The added inertia acts both as a smoother and an accelerator, dampening oscillations and causing us to barrel through narrow valleys, small humps and local minima.
@@ -254,7 +253,7 @@
   But there's more. A lower bound, courtesy of Nesterov <d-cite key="nesterov2013introductory"></d-cite>, states that momentum is, in a certain very narrow and technical sense, optimal. Now, this doesn't mean it is the best algorithm for all functions in all circumstances. But it does satisfy some curiously beautiful mathematical properties which scratch a very human itch for perfection and closure. But more on that later. Let's say this for now -- momentum is an algorithm for the book.
   </p>
 
-<hr>
+<!-- <hr> -->
   <h2>First Steps: Gradient Descent</h2>
   <p>
   We begin by studying gradient descent on the simplest model possible which isn't trivial -- the convex quadratic,
@@ -279,14 +278,13 @@
 
   Here's the trick. There is a very natural space to view gradient descent where all the dimensions act independently -- the eigenvectors of <d-math>A</d-math>.
   </p>
-  <figure style = "width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative" id = "change_of_variables">
-  <div id = "mom1" style="width:400px; position:absolute; left:0px; top:0px"></div>
-  <div id = "mom2" style="width:400px; position:absolute; left:400px; top:0px"></div>
-  </svg>
+  <figure id="change_of_variables" style="width:750px; height:340px; display:block; margin-left:auto; margin-right:auto; position:relative">
+    <d-figure id="mom1" style="width:400px; height:340px; position:absolute; left:0px; top:0px"></d-figure>
+    <d-figure id="mom2" style="width:400px; height:340px; position:absolute; left:400px; top:0px"></d-figure>
   </figure>
   <script>
-  deleteQueue.push(renderLoading(d3.select("#change_of_variables")))
-  renderQueue.push(function(callback) {
+  // deleteQueue.push(renderLoading(d3.select("#change_of_variables")))
+  document.querySelector("#mom1").addEventListener("ready", () => {
     var U = givens(Math.PI/4)
     var Ut = numeric.transpose(U)
     // Render Foreground
@@ -325,11 +323,10 @@
                           numeric.dot(Ut,c2.w0())) })
               (right)
 
-  // Initialize
-  c2.control(0.018,0,[-2.5,1])
-  c1.control(0.018,0,numeric.dot(Ut,[-2.5,1]));
-  callback(null);
-});
+    // Initialize
+    c2.control(0.018,0,[-2.5,1])
+    c1.control(0.018,0,numeric.dot(Ut,[-2.5,1]));
+  });
 
 </script>
 <p>
@@ -1923,7 +1920,7 @@ The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-mat
     <a href = "https://github.com/distillpub/post--momentum/issues/34">Reviewer B - Anonymous</a><br>
     <a href = "https://github.com/distillpub/post--momentum/issues/51">Discussion with User derifatives</a>
     </p>
-    
+
   </d-acknowledgements>
 
   <d-bibliography>
@@ -2166,7 +2163,7 @@ The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-mat
 
     </script>
   </d-bibliography>
-  
+
   <distill-appendix></distill-appendix>
 </d-appendix>
 

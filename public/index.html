@@ -24,37 +24,6 @@
   <script src="assets/lib/lib.js"></script>
   <script src="assets/utils.js"></script>
 </head>
-<div id="math-cache" style="display: none;">
-  <d-math class="star">\star</d-math>
-  <d-math class="plus">+</d-math>
-  <d-math class="minus">-</d-math>
-  <d-math class="equals">=</d-math>
-  <d-math class="alpha">\alpha</d-math>
-  <d-math class="lambda">\lambda</d-math>
-  <d-math class="beta">\beta</d-math>
-  <d-math class="r">R</d-math>
-  <d-math class="alpha-equals">\alpha=</d-math>
-  <d-math class="beta-equals">\beta=</d-math>
-  <d-math class="beta-equals-zero">\beta = 0</d-math>
-  <d-math class="beta-equals-one">\beta=1</d-math>
-  <d-math class="alpha-equals-one-over-lambda-i">\alpha = 1/\lambda_i</d-math>
-  <d-math class="model">\text{model}</d-math>
-  <d-math class="p">0 p_1</d-math>
-  <d-math class="phat">0 \bar{p}_1</d-math>
-  <d-math class="two-sqrt-beta">2\sqrt{\beta}</d-math>
-  <d-math class="lambda-i">\lambda_i</d-math>
-  <d-math class="lambda-i-equals-zero">\lambda_i = 0</d-math>
-  <d-math class="alpha-gt-one-over-lambda-i">\alpha > 1/\lambda_i</d-math>
-  <d-math class="max-sigma-one">\max\{|\sigma_1|,|\sigma_2|\} > 1</d-math>
-  <d-math class="x-i-k">x_i^k - x_i^*</d-math>
-  <d-math class="xi-i">\xi_i</d-math>
-  <d-math class="beta-equals-one-minus">\beta = (1 - \sqrt{\alpha \lambda_i})^2</d-math>
-</div>
-<script>
-  function MathCache(id) {
-    return document.querySelector("#math-cache ." + id).innerHTML;
-  }
-</script>
 <svg style="display: none;">
   <g id="pointerThingy">
     <circle fill="none" stroke="#FF6C00" stroke-linecap="round" cx="0" cy="0" r="14"/>
@@ -212,7 +181,7 @@
   </p>
 
   <p>
-  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior -- a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <d-fn> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <d-cite key="lessard2016analysis"></d-cite> for a counterexample. </d-fn> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
+  The new algorithm may seem at first glance like a cheap hack. A simple trick to get around gradient descent's more aberrant behavior -- a smoother for oscillations between steep canyons. But the truth, if anything, is the other way round. It is gradient descent which is the hack. First, momentum gives up to a quadratic speedup on many functions. <d-footnote> It is possible, however, to construct very specific counterexamples where momentum does not converge, even on convex functions. See <d-cite key="lessard2016analysis"></d-cite> for a counterexample. </d-footnote> This is no small matter -- this is similar to the speedup you get from the Fast Fourier Transform, Quicksort, and Grover's Algorithm. When the universe gives you quadratic speedups, you should start to pay attention.
   </p>
 
   <p>
@@ -363,12 +332,10 @@
 
       var updateSliderGD = renderMilestones(svg, function() {});
 
-      var alphaHTML = MathCache("alpha-equals");
-
       var slidera = sliderGen([250, 80])
         .ticks([0,1,200/(101),2])
         .change( function (i) {
-          var html = alphaHTML + '<span style="font-weight: normal;">' + i.toPrecision(4) + "</span>";
+          var html = '<d-math class="alpha-equals">\\alpha=</d-math><span style="font-weight: normal;">' + i.toPrecision(4) + "</span>";
           d3.select("#stepSizeMilestones")
           .html("Stepsize " + html )
           updateSliderGD(i,0.000)
@@ -704,7 +671,7 @@
 
   </script>
   <p>
-    This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<d-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+    This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<d-footnote>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
     <d-math block>
     \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
     </d-math>
@@ -719,7 +686,7 @@
     Gradient descent can be seen as employing a similar decay, but with the decay rate
     <d-math block> \text{ Gradient Descent Regularized } \lambda_i = \frac{1}{\lambda_i} \left( 1-\left(1-\alpha\lambda_{i}\right)^{k} \right)</d-math>
     instead. Note that this decay is dependent on the step-size.
-    </d-fn> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <d-cite key="hintonNIPS"></d-cite> indeed.
+  </d-footnote> But early stopping has a distinct advantage. Once the step-size is chosen, there are no regularization parameters to fiddle with. Indeed, in the course of a single optimization, we have the entire family of models, from underfitted to overfitted, at our disposal. This gift, it seems, doesn't come at a price. A beautiful free lunch <d-cite key="hintonNIPS"></d-cite> indeed.
   </p>
 
 <!-- <hr> -->
@@ -756,7 +723,7 @@
 
   in which each component acts independently of the other components (though <d-math>x^k_i</d-math> and <d-math>y^k_i</d-math> are coupled). This lets us rewrite our iterates as
 
-  <d-fn>
+  <d-footnote>
   This is true as we can write updates in matrix form as
   <d-math block>
   \left(\!\!\begin{array}{cc}
@@ -791,7 +758,7 @@
   \end{array}\!\!\right)
   </d-math>
 
-  </d-fn>
+</d-footnote>
   <d-math block>
     \left(\!\!\begin{array}{c}
     y_{i}^{k}\\
@@ -816,7 +783,7 @@
   </d-math>
 
   This formula is rather complicated, but the takeaway here is that it plays the exact same role the individual convergence rates, <d-math>1-\alpha\lambda_i</d-math> do in gradient descent. But instead of one geometric series, we have two coupled series, which may have real or complex values. The convergence rate is therefore the slowest of the two rates, <d-math>\max\{|\sigma_{1}|,|\sigma_{2}|\}</d-math>
-  <d-fn>
+  <d-footnote>
     We can write out the convergence rates explicitly. The eigenvalues are
     <d-math block>
       \begin{aligned}
@@ -835,7 +802,7 @@
     <d-math block>
       \max\{|\sigma_{1}|,|\sigma_{2}|\}=\tfrac{1}{2}\max\left\{ |1-\alpha\lambda_{i}+\beta\pm\sqrt{(1-\alpha\lambda_{i}+\beta)^{2}-4\beta}|\right\}
     </d-math>
-  </d-fn>
+  </d-footnote>
   . By plotting this out, we see there are distinct regions of the parameter space which reveal a rich taxonomy of convergence behavior <d-cite key="flammarion2015averaging"></d-cite>:
   </p>
 
@@ -917,7 +884,7 @@
   </script>
 
   <p>
-    For what values of <d-math>\alpha</d-math> and <d-math>\beta</d-math> does momentum converge? Since we need both <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math> to converge, our convergence criterion is now <d-math>\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1</d-math>. The range of available step-sizes work out <d-fn>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</d-fn> to be
+    For what values of <d-math>\alpha</d-math> and <d-math>\beta</d-math> does momentum converge? Since we need both <d-math>\sigma_1</d-math> and <d-math>\sigma_2</d-math> to converge, our convergence criterion is now <d-math>\max\{|\sigma_{1}|,|\sigma_{2}|\} < 1</d-math>. The range of available step-sizes work out <d-footnote>This can be derived by reducing the inequalities for all 4 + 1 cases in the explicit form of the convergence rate above.</d-footnote> to be
 
     <d-math block>0<\alpha\lambda_{i}<2+2\beta \qquad \text{for} \qquad 0 \leq \beta < 1</d-math>
 
@@ -1027,7 +994,7 @@
 
   <h3>Optimal parameters</h3>
   <p>
-  To get a global convergence rate, we must optimize over both <d-math>\alpha</d-math> and <d-math>\beta</d-math>. This is a more complicated affair,<d-fn> We must optimize over
+  To get a global convergence rate, we must optimize over both <d-math>\alpha</d-math> and <d-math>\beta</d-math>. This is a more complicated affair,<d-footnote> We must optimize over
   <d-math block>
   \min_{\alpha,\beta}\max\left\{ \bigg\| \! \left(\begin{array}{cc}
   \beta & \lambda_{i}\\
@@ -1037,7 +1004,7 @@
   -\alpha\beta & 1-\alpha\lambda_{n}
   \end{array}\right)\! \bigg\|\right\}.
   </d-math>
-  (<d-math>\|\cdot \|</d-math> here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </d-fn> but they work out to be
+  (<d-math>\|\cdot \|</d-math> here denotes the magnitude of the maximum eigenvalue), and occurs when the roots of the characteristic polynomial are repeated for the matrices corresponding to the extremal eigenvalues. </d-footnote> but they work out to be
   <d-math block>
   \alpha = \left(\frac{2}{\sqrt{\lambda_{1}}+\sqrt{\lambda_{n}}}\right)^{2}  \quad \beta = \left(\frac{\sqrt{\lambda_{n}}-\sqrt{\lambda_{1}}}{\sqrt{\lambda_{n}}+\sqrt{\lambda_{1}}}\right)^{2}
   </d-math>
@@ -1154,7 +1121,7 @@
   </figure>
 
   <p>
-  The optimal solution to this problem is a vector of all <d-math>1</d-math>'s <d-fn>The above optimization problem is bounded from below by <d-math>0</d-math>, and vector of all <d-math>1</d-math>'s achieve this. </d-fn>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
+  The optimal solution to this problem is a vector of all <d-math>1</d-math>'s <d-footnote>The above optimization problem is bounded from below by <d-math>0</d-math>, and vector of all <d-math>1</d-math>'s achieve this. </d-footnote>. An inspection of the gradient iteration reveals why we take a long time to get there. The gradient step, for each component, is some form of weighted average of the current value and its neighbors:
 
   <d-math block>
 w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
@@ -1240,11 +1207,11 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
   <p>
   The Laplacian matrix, <d-math>L_G</d-math>
-  <d-fn>This can be written explicitly as
+  <d-footnote>This can be written explicitly as
   <d-math block>
   [L_{G}]_{ij}=\begin{cases} \text{degree of vertex }i & i=j\\ -1 & i\neq j,(i,j)\text{ or }(j,i)\in E\\ 0 & \text{otherwise} \end{cases}
   </d-math>
-  </d-fn>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of <d-math>L_G</d-math>, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
+</d-footnote>, which dominates the behavior of the optimization problem, is a valuable bridge between linear algebra and graph theory. This is a rich field of study, but one fact is pertinent to our discussion here. The conditioning of <d-math>L_G</d-math>, here defined as the ratio of the second eigenvector to the last (the first eigenvalue is always 0, with eigenvector equal to the matrix of all 1's), is directly connected to the connectivity of the graph.
   </p>
   <figure>
     <d-figure id="laplacianConditioning" style="width:900px; height:265px">
@@ -1599,7 +1566,7 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
   </figure>
 
   <p>
-  It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <d-fn>
+  It is helpful to think of our approximate gradient as the injection of a special kind of noise into our iteration. And using the machinery developed in the previous sections, we can deal with this extra term directly. On a quadratic, the error term cleaves cleanly into a separate term, where <d-footnote>
   The momentum iterations are
   <d-math block>
   \begin{aligned}
@@ -1627,7 +1594,7 @@ x_{i}^{k}
 \end{array}\!\!\right)
   </d-math>
   Inverting the <d-math>2 \times 2</d-math> matrix on the left, and applying the formula recursively yields the final solution.
-  </d-fn>
+</d-footnote>
   </p>
 
   <figure style="width:610px; height:80px; display:block; margin-left:auto; margin-right:auto; position:relative" id="iteratespluserror">
@@ -1680,7 +1647,7 @@ x_{i}^{k}
 
   <p>
   The error term, <d-math>\epsilon^k</d-math>, with its dependence on the <d-math>w^k</d-math>, is a fairly hairy object. Following <d-cite key="flammarion2015averaging"></d-cite>, we model this as independent 0-mean Gaussian noise. In this simplified model, the objective also breaks into two separable components, a sum of a deterministic error and a stochastic error
-     <d-fn>On the 1D function <d-math>f(x)=\frac{\lambda}{2}x^{2}</d-math>, the objective value is
+     <d-footnote>On the 1D function <d-math>f(x)=\frac{\lambda}{2}x^{2}</d-math>, the objective value is
 <d-math block>
 \begin{aligned}
 \mathbf{E}f(x^{k})&=\frac{\lambda}{2}\mathbf{E}[(x^{k})^{2}]\\&=\frac{\lambda}{2}\mathbf{E}\left(e_{2}^{T}R^{k}\left(\begin{array}{c}
@@ -1711,7 +1678,7 @@ x^{0}
 \end{aligned}
 </d-math>
 The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-math> and the fourth uses the fact they are uncorrelated.
-</d-fn>, visualized here.
+</d-footnote>, visualized here.
   </p>
 
   <figure>
@@ -1785,6 +1752,8 @@ The third inequality uses the fact that <d-math>\mathbf{E} \epsilon^k = 0</d-mat
     </p>
 
   </d-acknowledgements>
+  <d-footnote-list></d-footnote-list>
+
 
   <d-bibliography>
     <script type="text/bibtex">

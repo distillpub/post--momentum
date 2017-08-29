@@ -18,9 +18,9 @@ function phaseDiagram(divin) {
     return m
   }
 
-  var textCaptions = ["<center><b style=\"color:black\">Overdamping</b></center><div style=\"margin:5px\"></div> When " + MathCache("beta") + " is too small (e.g. in Gradient Descent, " + MathCache("beta-equals-zero") + "), we're over-damping. The particle is immersed in a viscous fluid which saps it of its kinetic energy at every timestep.",
-                      "<b style=\"color:black\"><center>Critical Damping</center></b> <div style=\"margin:5px\"></div>The best value of " + MathCache("beta") + " lies in the middle of the two extremes. This sweet spot happens when the eigenvalues of " + MathCache("r") + " are repeated, when " + MathCache("beta-equals-one-minus") + ".",
-                      "<b style=\"color:black\"><center>Underdamping</center></b><div style=\"margin:5px\"></div> When " + MathCache("beta") + " is too large we're under-damping. Here the resistance is too small, and spring oscillates up and down forever, missing the optimal value over and over. "]
+  var textCaptions = ["<center><b style=\"color:black\">Overdamping</b></center><div style=\"margin:5px\"></div> When " + '<d-math>\\beta</d-math>' + " is too small (e.g. in Gradient Descent, " + '<d-math class="beta-equals-zero">\\beta = 0</d-math>' + "), we're over-damping. The particle is immersed in a viscous fluid which saps it of its kinetic energy at every timestep.",
+                      "<b style=\"color:black\"><center>Critical Damping</center></b> <div style=\"margin:5px\"></div>The best value of " + '<d-math>\\beta</d-math>' + " lies in the middle of the two extremes. This sweet spot happens when the eigenvalues of " + '<d-math class="r">R</d-math>' + " are repeated, when " + '<d-math class="beta-equals-one-minus">\\beta = (1 - \\sqrt{\\alpha \\lambda_i})^2</d-math>' + ".",
+                      "<b style=\"color:black\"><center>Underdamping</center></b><div style=\"margin:5px\"></div> When " + '<d-math>\\beta</d-math>' + " is too large we're under-damping. Here the resistance is too small, and spring oscillates up and down forever, missing the optimal value over and over. "]
 
   var al = 0.0001
   var optbeta = Math.pow(1 - Math.sqrt(al*100),2)
@@ -159,7 +159,7 @@ function phaseDiagram(divin) {
   axis.selectAll("path").remove()
   axis.select("text").style("text-anchor", "start");
 
-  var html = MathCache("beta");
+  var html = '<d-math>\\beta</d-math>';
   // Axis
   linesvg.append("text")
     .attr("class", "figtext")

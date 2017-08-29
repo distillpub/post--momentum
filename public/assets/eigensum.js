@@ -9,7 +9,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   var equations = [];
 
   function renderEquation(hat, value, number) {
-    var html = hat ? MathCache("phat") : MathCache("p");
+    var html = hat ? '<d-math class="phat">0 \\bar{p}_1</d-math>' : '<d-math class="p">0 p_1</d-math>';
     html = html.replace('<span class="mord mathrm">0</span>', value);
     html = html.replace('<span class="mord mathrm">1</span>', number);
     return html;
@@ -25,7 +25,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
         .style("width", "110px")
         .style("height", "25px")
         .style("font-size", "16px")
-        .html(MathCache("star"));
+        .html('<d-math class="star">\\star</d-math>');
 
 
       // Add pluses and equal signs
@@ -55,7 +55,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   // Render Equations
   for (var i =0; i < 7; i++) {
 
-    var html = MathCache("model");
+    var html = '<d-math class="model">\\text{model}</d-math>';
     if (i != 6) {
       html = renderEquation(hat, wi[i].toPrecision(3), i+1);
     }
@@ -101,7 +101,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
 
     // Add pluses and equal signs
     if (i < 5) {
-      var html = MathCache("plus");
+      var html = '<d-math class="plus">+</d-math>';
       mathdiv.append("span").style("text-align","center")
       .style("display","inline-block")
       .style("width", "25px")
@@ -110,7 +110,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
       .html(html)
     } else{
     if (i == 5) {
-      var html = MathCache("equals");
+      var html = '<d-math class="equals">=</d-math>';
          mathdiv.append("span").style("text-align","center")
       .style("display","inline-block")
       .style("width", "26px")
@@ -366,4 +366,3 @@ function renderEigenSum(svg, xv, b, dragCallback, colors) {
 
   return {poly:display_poly};
 }
-

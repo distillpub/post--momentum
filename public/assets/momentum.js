@@ -177,19 +177,19 @@ function renderTaxonomy(div) {
 
   var top = 270
   var spacing = 190
-  var updateDR = genPhase(0,top,0, [-1.4,1.4], "Ripples", "R's eigenvalues are complex, and the iterates display low frequency ripples. Surprisingly, the convergence rate " + MathCache("two-sqrt-beta") + " is independent of " + MathCache("alpha") + " and " + MathCache("lambda-i") + ".")
+  var updateDR = genPhase(0,top,0, [-1.4,1.4], "Ripples", "R's eigenvalues are complex, and the iterates display low frequency ripples. Surprisingly, the convergence rate " + '<d-math class="two-sqrt-beta">2\\sqrt{\\beta}</d-math>' + " is independent of " + '<d-math class="alpha">\\alpha</d-math>' + " and " + '<d-math class="lambda-i">\\lambda_i</d-math>' + ".")
   updateDR(getTrace(0.0017,0.94,1,1))
 
   var updateMC = genPhase(1,top,spacing*1,[-1.4,1.4], "Monotonic Decrease", "R's eigenvalues are both real, are positive, and have norm less than one. The behavior here resembles gradient descent.")
   updateMC(getTrace(0.00093, 0.16,1,1))
 
-  var updateD = genPhase(2,top,spacing*2,[-1.4,1.4], "1-Step Convergence", "When " + MathCache("alpha-equals-one-over-lambda-i") + ", and " + MathCache("beta-equals-zero") + ", we converge in one step. This is a very special point, and kills the error in the eigenspace completely.")
+  var updateD = genPhase(2,top,spacing*2,[-1.4,1.4], "1-Step Convergence", "When " + '<d-math class="alpha-equals-one-over-lambda-i">\\alpha = 1/\\lambda_i</d-math>' + ", and " + '<d-math class="beta-equals-zero">\\beta = 0</d-math>' + ", we converge in one step. This is a very special point, and kills the error in the eigenspace completely.")
   updateD(getTrace(0.0213, 0.06,1,1))
 
-  var updateIC = genPhase(3,top,spacing*3,[-1.4,1.4], "Monotonic Oscillations", "When " + MathCache("alpha-gt-one-over-lambda-i") + ", the iterates flip between " + MathCache("plus") + " and " + MathCache("minus") + " at each iteration. These are often referred to as 'oscillations' in gradient descent.")
+  var updateIC = genPhase(3,top,spacing*3,[-1.4,1.4], "Monotonic Oscillations", "When " + '<d-math class="alpha-gt-one-over-lambda-i">\\alpha > 1/\\lambda_i</d-math>' + ", the iterates flip between " + '<d-math class="plus">+</d-math>' + " and " + '<d-math class="minus">-</d-math>' + " at each iteration. These are often referred to as 'oscillations' in gradient descent.")
   updateIC(getTrace(0.01, 0.0001,1,1))
 
-  var updateMO = genPhase(4,top,spacing*4,[-5,5], "Divergence", "When " + MathCache("max-sigma-one") + ", the iterates diverge. ")
+  var updateMO = genPhase(4,top,spacing*4,[-5,5], "Divergence", "When " + '<d-math class="max-sigma-one">\\max\\{|\\sigma_1|,|\\sigma_2|\\} > 1</d-math>' + ", the iterates diverge. ")
   updateMO(getTrace(0.02, 0.045,1,1))
 
   var svg = div.append("svg")
@@ -384,7 +384,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
       .call(d3.axisLeft(ybeta).ticks(1).tickSize(4))
 
 
-    var html = MathCache("beta-equals");
+    var html = '<d-math class="beta-equals">\\beta=</d-math>';
     divin
       .append("text")
       .style("position","absolute")
@@ -394,7 +394,7 @@ function render2DSliderGen(updateDR, updateMC, updateIC, updateMO, updateD,
       .attr("class", "figtext")
       .html("Momentum " + html)
 
-    var html = MathCache("alpha-equals");
+    var html = '<d-math class="alpha-equals">\\alpha=</d-math>';
     divin
       .append("text")
       .style("position","absolute")

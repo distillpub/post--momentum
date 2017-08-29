@@ -41,7 +41,7 @@ function renderEigenFeatures(divin) {
         .attr("class", "figtext")
         .style("width", "300px")
         .style("text-align", "left")
-        .html("The x coordinates of the black dots are " + MathCache("xi-i") + ". Our data corresponds to 5 clusters of points, centered around -1, 0.5, 0, 0.5, and 1.")
+        .html("The x coordinates of the black dots are " + '<d-math class="xi-i">\\xi_i</d-math>' + ". Our data corresponds to 5 clusters of points, centered around -1, 0.5, 0, 0.5, and 1.")
 
   var x = d3.scaleLinear().domain([-1.1,1.1]).range([0, width]);
   var y = d3.scaleLinear().domain([-3,3]).range([height, 0]);
@@ -349,4 +349,3 @@ function renderNN(eigenCallback, polyCallback) {
         .html("Base Features")
 
 }
-

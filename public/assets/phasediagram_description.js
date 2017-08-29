@@ -128,7 +128,7 @@ function phaseDiagram_dec(divin) {
     .style("left", 730 + "px")
     .style("top", 60 + "px")
     .style("font-size", "12px")
-    .html("<b>" + MathCache("beta") + ": Horizontal Axis</b><br>When " + MathCache("lambda-i-equals-zero") + " and " + MathCache("beta-equals-one") + ", the object moves at constant speed. As " + MathCache("beta") + " goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
+    .html("<b>" + '<d-math class="beta">\\beta</d-math>' + ": Horizontal Axis</b><br>When " + '<d-math class="lambda-i-equals-zero">\\lambda_i = 0</d-math>' + " and " + '<d-math class="beta-equals-one">\\beta=1</d-math>' + ", the object moves at constant speed. As " + '<d-math class="beta">\\beta</d-math>' + " goes down, the particle decelerates, losing a proportion of its energy at each tick. ")
 
   divin.append("figcaption")
     .style("position","absolute")
@@ -137,7 +137,7 @@ function phaseDiagram_dec(divin) {
     .style("left", 730 + "px")
     .style("top", (120*2 + 50) + "px")
     .style("font-size", "12px")
-    .html("<b> " + MathCache("lambda") + ": Vertical Axis</b><br> The external force causes the particle to return to the origin. Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
+    .html("<b> " + '<d-math class="lambda">\\lambda</d-math>' + ": Vertical Axis</b><br> The external force causes the particle to return to the origin. Combining damping and the force field, the particle behaves like a damped harmonic oscillator, returning lazily to equlibrium.")
 
   for (var i = 0; i < 6; i ++ ) {
     for (var j = 0; j < 4; j ++) {

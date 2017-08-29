@@ -259,7 +259,7 @@ function stemGraphGen(graphWidth, graphHeight, n) {
   var borderTop = 20
   var borderLeft = -5
   var axis = [-1, 1]
-  var ylabel = MathCache("x-i-k");
+  var ylabel = '<d-math class="x-i-k">x_i^k - x_i^*</d-math>';
   var ylabelsize = "13px"
   var r1 = 2
   var r2 = 0

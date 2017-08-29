@@ -76,19 +76,17 @@
 <d-article>
   <d-title>
     <h1>Why Momentum Really Works</h1>
+    <figure style="position:relative; width:984px; height:400px;">
+      <d-figure id="banana" style="height: 300px;position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></d-figure>
+      <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
+        <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step-size α = 0.02</text>
+      </div>
+      <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
+        <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
+      </div>
+    </figure>
+    <h2>We often think of Momentum as a means of dampening oscillations and speeding up the iterations, leading to faster convergence. But it has other interesting behavior. It allows a larger range of step-sizes to be used, and creates its own oscillations. What is going on?</h2>
   </d-title>
-  <figure style="position:relative; width:984px; height:400px;">
-    <d-figure id="banana" style="height: 300px;position:relative; border: 1px solid rgba(0, 0, 0, 0.2);"></d-figure>
-    <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
-      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step-size α = 0.02</text>
-    </div>
-    <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
-      <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
-    </div>
-    <figcaption id="Bananacaption" style="position:absolute; width: 420px; height: 90px; left: 540px; top: 320px;">
-      We often think of Momentum as a means of dampening oscillations and speeding up the iterations, leading to faster convergence. But it has other interesting behavior. It allows a larger range of step-sizes to be used, and creates its own oscillations. What is going on?
-    </figcaption>
-  </figure>
 
   <d-byline></d-byline>
 

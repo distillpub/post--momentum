@@ -1,8 +1,8 @@
 {
   "scripts": {
     "build": "cat node_modules/d3/build/d3.min.js node_modules/numeric/numeric-1.2.6.min.js node_modules/d3-swoopy-drag/swoopy-drag.js node_modules/d3-tip/index.js > public/assets/lib/lib.js",
-    "serve": "python -m SimpleHTTPServer",
-    "cache-template": "curl http://distill.pub/template.v1.js > public/assets/lib/template.v1.js"
+    "serve": "python3 -m http.server -b localhost",
+    "cache-template": "curl http://distill.pub/template.v2.js > public/assets/lib/template.v2.js"
   },
   "dependencies": {
     "d3": "^4.7.1",

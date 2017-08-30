@@ -14,7 +14,7 @@ function genIterDiagram(f, xstar, axis) {
   /*
     Configurable Parameters
   */
-  var w = 984
+  var w = 928;
   var h = 300
   var totalIters = 150
   var state_beta = 0.0

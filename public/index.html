@@ -81,7 +81,7 @@
       <div id="sliderAlpha" style="position:absolute; width:300px; height: 50px; left:20px; top: 320px;">
         <text class="figtext" style="top: -5px; left: 20px; position: relative;">Step-size α = 0.02</text>
       </div>
-      <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;;">
+      <div id="sliderBeta" style="position:absolute; width: 300px; height: 50px; left: 280px; top: 320px;">
         <text class="figtext" style="top: -5px; left: 20px; position: relative;">Momentum β = 0.99</text>
       </div>
     </figure>
@@ -257,26 +257,20 @@
   </script>
   <p>
     Every symmetric matrix <d-math>A</d-math> has an eigenvalue decomposition
-  </p>
   <d-math block>
     A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
   </d-math>
-  <p>
     and, as per convention, we will assume that the <d-math>\lambda_i</d-math>'s are sorted, from smallest <d-math>\lambda_1</d-math> to biggest <d-math>\lambda_n</d-math>. If we perform a change of basis, <d-math>x^{k} = Q^T(w^{k} - w^\star)</d-math>, the iterations break apart, becoming:
-  </p>
   <d-math block>
     \begin{aligned}
     x_{i}^{k+1} & =x_{i}^{k}-\alpha \lambda_ix_{i}^{k} \\[0.4em]
      &= (1-\alpha\lambda_i)x^k_i=(1-\alpha \lambda_i)^{k+1}x^0_i
     \end{aligned}
   </d-math>
-  <p>
     Moving back to our original space <d-math>w</d-math>, we can see that
-  </p>
   <d-math block>
     w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
   </d-math>
-  <p>
     and there we have it -- gradient descent in closed form.
   </p>
   <h3>Decomposing the Error</h3>
@@ -1508,7 +1502,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
 
   Therefore the fact we start at 0 guarantees that that component must remain stoically there till an element either before or after it turns nonzero. And therefore, by induction, for any linear first order algorithm,
   </p>
-  <div style="position:relative; height:178px">
   <d-math block>
   \begin{array}{lllllllll}
     w^{0} & = & [~~0, & 0, & 0, & \ldots & 0, & 0, & \ldots & 0~]\\[0.35em]
@@ -1518,7 +1511,6 @@ w_{i}^{k+1}=w_{i}^{k}-\alpha\sum_{j\in N}(w_{i}^{k}-w_{j}^{k})-\begin{cases}
    w^{k} & = & [~w_{1}^{k}, & w_{2}^{k}, & w_{3}^{k}, & \ldots &  w_{k}^{k}, & 0, & \ldots & 0~].\\
   \end{array}
   </d-math>
-  </div>
   <p>
   Think of this restriction as a "speed of light" of information transfer. Error signals will take at least <d-math>k</d-math> steps to move from <d-math>w_0</d-math> to <d-math>w_k</d-math>. We can therefore sum up the errors which cannot have changed yet<d-footnote>We use the infinity norm to measure our error, similar results can be derived for the 1 and 2 norms.</d-footnote>:
 

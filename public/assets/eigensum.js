@@ -9,9 +9,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   var equations = [];
 
   function renderEquation(hat, value, number) {
-    var html = hat ? '<d-math class="phat">0 \\bar{p}_1</d-math>' : '<d-math class="p">0 p_1</d-math>';
-    html = html.replace('<span class="mord mathrm">0</span>', value);
-    html = html.replace('<span class="mord mathrm">1</span>', number);
+    var html = hat ? '<d-math class="phat">' + value + ' \\bar{p}_' + number + '</d-math>' : '<d-math class="p">' + value + ' p_' + number + '</d-math>';
     return html;
   }
 

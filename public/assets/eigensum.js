@@ -11,7 +11,7 @@ function renderEigenPanel(eigensum, U, x, b, wi, refit, hat, renderStars) {
   function renderEquation(hat, value, number) {
     var html = hat ? MathCache("phat") : MathCache("p");
     html = html.replace('<span class="mord mathrm">0</span>', value);
-    html = html.replace('<span class="mord mathrm">1</span>', number);
+    html = html.replace('<span class="mord mathrm mtight">1</span>', number);
     return html;
   }
 

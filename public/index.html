@@ -364,7 +364,7 @@
   <p>
   For most step-sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvectors' struggles are revealed. By writing the contributions of each eigenspace's error to the loss
   <dt-math block>
-  f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
+  f(w^{k})-f(w^{\star})=\frac{1}{2}[x^k]^T\Lambda x^k=\frac{1}{2}\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
   </dt-math>
   we can visualize the contributions of each error component to the loss.
   </p>

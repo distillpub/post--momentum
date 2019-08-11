@@ -333,13 +333,13 @@
 
 </script>
 <p>
-  Every symmetric matrix <dt-math>A</dt-math> has an eigenvalue decomposition
+  Every real symmetric matrix <dt-math>A</dt-math> has an eigenvalue decomposition
 
   <dt-math block>
   A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
   </dt-math>
 
-  and, as per convention, we will assume that the <dt-math>\lambda_i</dt-math>'s are sorted, from smallest <dt-math>\lambda_1</dt-math> to biggest <dt-math>\lambda_n</dt-math>. If we perform a change of basis, <dt-math>x^{k} = Q^T(w^{k} - w^\star)</dt-math>, the iterations break apart, becoming:
+  and, as per convention, we will assume that the <dt-math>\lambda_i</dt-math>'s are sorted, from smallest <dt-math>\lambda_1</dt-math> to biggest <dt-math>\lambda_n</dt-math>. If we perform a change of basis, <dt-math>x^{k} = Q^T(w^{k} - w^\star)Q</dt-math>, the iterations break apart, becoming:
 
   <dt-math block>
   \begin{aligned}
@@ -351,7 +351,7 @@
   Moving back to our original space <dt-math>w</dt-math>, we can see that
 
   <dt-math block>
-  w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
+  w^k - w^\star = Qx^kQ^T=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
   </dt-math>
 
   and there we have it -- gradient descent in closed form.
@@ -599,7 +599,7 @@
   </p>
 
   <p>
-  The path of convergence, as we know, is elucidated when we view the iterates in the space of <dt-math>Q</dt-math> (the eigenvectors of <dt-math>Z^T Z</dt-math>). So let's recast our regression problem in the basis of <dt-math>Q</dt-math>. First, we do a change of basis, by rotating <dt-math>w</dt-math> into <dt-math>Qw</dt-math>, and counter-rotating our feature maps <dt-math>p</dt-math> into eigenspace, <dt-math>\bar{p}</dt-math>. We can now conceptualize the same regression as one over a different polynomial basis, with the model
+  The path of convergence, as we know, is elucidated when we view the iterates in the space of <dt-math>Q</dt-math> (the eigenvectors of <dt-math>Z^T Z</dt-math>). So let's recast our regression problem in the basis of <dt-math>Q</dt-math>. First, we do a change of basis, by rotating <dt-math>w</dt-math> into <dt-math>QwQ^T</dt-math>, and counter-rotating our feature maps <dt-math>p</dt-math> into eigenspace, <dt-math>\bar{p}</dt-math>. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
   <dt-math block>
   \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad \bar{p}_{i}=\sum q_{ij}p_j.

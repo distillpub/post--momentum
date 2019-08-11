@@ -691,7 +691,7 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in <dt-math>d_i</dt-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. The eigenfeatures, the principal components of the data, give us exactly the decomposition we need to order the features by the model's sensitivity to perturbations in <dt-math>d_i</dt-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>
@@ -790,11 +790,11 @@
 
   </script>
   <p>
-  This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+  This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regularization. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regularization we add a quadratic penalty to the loss function, minimizing
 <dt-math block>
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 </dt-math>
-Recall that <dt-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</dt-math>. The solution to Tikhonov Regression is therefore
+Recall that <dt-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</dt-math>. The solution to Tikhonov Regularization is therefore
 <dt-math block>
 (Z^{T}Z+\eta I)^{-1}(Zd)=Q\ \text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
 </dt-math>

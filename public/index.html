@@ -263,7 +263,7 @@
     f(w) = \tfrac{1}{2}w^TAw - b^Tw, \qquad w \in \mathbf{R}^n.
   </dt-math>
 
-  Assume <dt-math>A</dt-math> is symmetric and invertible, then the optimal solution <dt-math>w^{\star}</dt-math> occurs at
+  Assume <dt-math>A</dt-math> is symmetric and invertible, then (assuming one exists) the optimal solution <dt-math>w^{\star}</dt-math> occurs at
 
   <dt-math block> w^{\star} = A^{-1}b.</dt-math>
 
@@ -333,13 +333,13 @@
 
 </script>
 <p>
-  Every symmetric matrix <dt-math>A</dt-math> has an eigenvalue decomposition
+  Every real symmetric matrix <dt-math>A</dt-math> has an eigenvalue decomposition
 
   <dt-math block>
   A=Q\ \text{diag}(\lambda_{1},\ldots,\lambda_{n})\ Q^{T},\qquad Q = [q_1,\ldots,q_n],
   </dt-math>
 
-  and, as per convention, we will assume that the <dt-math>\lambda_i</dt-math>'s are sorted, from smallest <dt-math>\lambda_1</dt-math> to biggest <dt-math>\lambda_n</dt-math>. If we perform a change of basis, <dt-math>x^{k} = Q^T(w^{k} - w^\star)</dt-math>, the iterations break apart, becoming:
+  and, as per convention, we will assume that the <dt-math>\lambda_i</dt-math>'s are sorted, from smallest <dt-math>\lambda_1</dt-math> to biggest <dt-math>\lambda_n</dt-math>. If we perform a change of basis, <dt-math>x^{k} = Q^T(w^{k} - w^\star)Q</dt-math>, the iterations break apart, becoming:
 
   <dt-math block>
   \begin{aligned}
@@ -351,7 +351,7 @@
   Moving back to our original space <dt-math>w</dt-math>, we can see that
 
   <dt-math block>
-  w^k - w^\star = Qx^k=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
+  w^k - w^\star = Qx^kQ^T=\sum_i^n x^0_i(1-\alpha\lambda_i)^k q_i
   </dt-math>
 
   and there we have it -- gradient descent in closed form.
@@ -364,12 +364,12 @@
   <p>
   For most step-sizes, the eigenvectors with largest eigenvalues converge the fastest. This triggers an explosion of progress in the first few iterations, before things slow down as the smaller eigenvectors' struggles are revealed. By writing the contributions of each eigenspace's error to the loss
   <dt-math block>
-  f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}[x_{i}^{0}]^2
+  f(w^{k})-f(w^{\star})=\sum(1-\alpha\lambda_{i})^{2k}\lambda_{i}(x_{i}^{0})^2
   </dt-math>
   we can visualize the contributions of each error component to the loss.
   </p>
   <figure style="position:relative; width:920px; height:360px" id = "milestones_gd">
-  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">Optimization can be seen as combination of several component problems, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> <dt-math>\lambda_1=0.01</dt-math>, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> <dt-math>\lambda_2=0.1</dt-math>, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> <dt-math>\lambda_3=1</dt-math> respectively. </figcaption>
+  <figcaption style="position:absolute; text-align:left; left:135px; width:350px; height:80px">The loss can be seen as combination of several component losses, shown here as <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> 1 <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> 2 <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> 3 with eigenvalues <svg style="position:relative; top:2px; width:3px; height:14px; background:#fde0dd"></svg> <dt-math>\lambda_1=0.01</dt-math>, <svg style="position:relative; top:2px; width:3px; height:14px; background:#fa9fb5"></svg> <dt-math>\lambda_2=0.1</dt-math>, and <svg style="position:relative; top:2px; width:3px; height:14px; background:#c51b8a"></svg> <dt-math>\lambda_3=1</dt-math> respectively. </figcaption>
 
 <!-- ["#fde0dd", "#fa9fb5", "#c51b8a"]
  -->
@@ -417,21 +417,22 @@
 
       var alphaHTML = MathCache("alpha-equals");
 
+      var optimal_pt = 1.98005;
       var slidera = sliderGen([250, 80])
-                  .ticks([0,1,200/(101),2])
+                  .ticks([0, 1, optimal_pt, 2])
                   .change( function (i) {
-                    var html = alphaHTML + '<span style="font-weight: normal;">' + i.toPrecision(4) + "</span>";
+                    var html = alphaHTML + '<span style="font-weight: normal;">' + i.toPrecision(5) + "</span>";
                     d3.select("#stepSizeMilestones")
                       .html("Stepsize " + html )
                     updateSliderGD(i,0.000)
                   } )
                   .ticktitles(function(d,i) { return [0,1,"",2][i] })
-                  .startxval(200/(101))
+                  .startxval(optimal_pt)
                   .cRadius(7)
                   .shifty(-12)
                   .shifty(10)
                   .margins(20,20)(d3.select("#sliderStep"))
-
+      slidera.init()
 
       // renderDraggable(svg, [133.5, 23], [114.5, 90], 2, " ").attr("opacity", 0.1)
       // renderDraggable(svg, [133.5, 88], [115.5, 95], 2, " ").attr("opacity", 0.1)
@@ -473,7 +474,7 @@
         .attr("dx", -295)
         .attr("text-anchor", "start")
         .attr("fill", "gray")
-        .text("At the optimum, the rates of convergence of the largest and smallest eigenvalues equalize.")
+        .text("At the optimal step size, the rates of convergence of the largest and smallest eigenvalues equalize.")
 
       callback(null);
     });
@@ -599,7 +600,7 @@
   </p>
 
   <p>
-  The path of convergence, as we know, is elucidated when we view the iterates in the space of <dt-math>Q</dt-math> (the eigenvectors of <dt-math>Z^T Z</dt-math>). So let's recast our regression problem in the basis of <dt-math>Q</dt-math>. First, we do a change of basis, by rotating <dt-math>w</dt-math> into <dt-math>Qw</dt-math>, and counter-rotating our feature maps <dt-math>p</dt-math> into eigenspace, <dt-math>\bar{p}</dt-math>. We can now conceptualize the same regression as one over a different polynomial basis, with the model
+  The path of convergence, as we know, is elucidated when we view the iterates in the space of <dt-math>Q</dt-math> (the eigenvectors of <dt-math>Z^T Z</dt-math>). So let's recast our regression problem in the basis of <dt-math>Q</dt-math>. First, we do a change of basis, by rotating <dt-math>w</dt-math> into <dt-math>QwQ^T</dt-math>, and counter-rotating our feature maps <dt-math>p</dt-math> into eigenspace, <dt-math>\bar{p}</dt-math>. We can now conceptualize the same regression as one over a different polynomial basis, with the model
 
   <dt-math block>
   \text{model}(\xi)~=~x_{1}\bar{p}_{1}(\xi)~+~\cdots~+~x_{n}\bar{p}_{n}(\xi)\qquad \bar{p}_{i}=\sum q_{ij}p_j.
@@ -690,7 +691,7 @@
 
   </script>
   <p>
-  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. And the eigenfeatures, the principal components of the data, give us exactly the decomposition we need to sort the features by its sensitivity to perturbations in <dt-math>d_i</dt-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
+  The observations in the above diagram can be justified mathematically. From a statistical point of view, we would like a model which is, in some sense, robust to noise. Our model cannot possibly be meaningful if the slightest perturbation to the observations changes the entire model dramatically. The eigenfeatures, the principal components of the data, give us exactly the decomposition we need to order the features by the model's sensitivity to perturbations in <dt-math>d_i</dt-math>'s. The most robust components appear in the front (with the largest eigenvalues), and the most sensitive components in the back (with the smallest eigenvalues).
   </p>
 
   <p>
@@ -789,11 +790,11 @@
 
   </script>
   <p>
-  This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regression. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regression we add a quadratic penalty to the regression, minimizing
+  This effect is harnessed with the heuristic of early stopping : by stopping the optimization early, you can often get better generalizing results. Indeed, the effect of early stopping is very similar to that of more conventional methods of regularization, such as Tikhonov Regularization. Both methods try to suppress the components of the smallest eigenvalues directly, though they employ different methods of spectral decay.<dt-fn>In Tikhonov Regularization we add a quadratic penalty to the loss function, minimizing
 <dt-math block>
 \text{minimize}\qquad\tfrac{1}{2}\|Zw-d\|^{2}+\frac{\eta}{2}\|w\|^{2}=\tfrac{1}{2}w^{T}(Z^{T}Z+\eta I)w-(Zd)^{T}w
 </dt-math>
-Recall that <dt-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</dt-math>. The solution to Tikhonov Regression is therefore
+Recall that <dt-math>Z^{T}Z=Q\ \text{diag}(\Lambda_{1},\ldots,\Lambda_{n})\ Q^T</dt-math>. The solution to Tikhonov Regularization is therefore
 <dt-math block>
 (Z^{T}Z+\eta I)^{-1}(Zd)=Q\ \text{diag}\left(\frac{1}{\lambda_{1}+\eta},\cdots,\frac{1}{\lambda_{n}+\eta}\right)Q^T(Zd)
 </dt-math>
